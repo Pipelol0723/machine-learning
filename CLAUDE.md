@@ -89,7 +89,9 @@ machine learning/
 │  ├─ Taller_2_KMeans/                        (+ KMEANS NOSUP 26-2.pdf)
 │  ├─ Taller_3_Jerarquico/                    (ward / complete / average vs K-Means)
 │  ├─ Taller_4_DBSCAN/                        (días atípicos + anomalía contextual por franja)
-│  └─ Presentacion_Talleres_C2/               (deck único de los 4 talleres, 65 diap. + guion de video)
+│  ├─ Presentacion_Talleres_C2/               (deck único de los 4 talleres, 65 diap. + guion de video)
+│  └─ Parcial_2_Aprendizaje_Supervisado/      (Shiro Guardian: plan, cuaderno, mockup, informe, póster,
+│                                              presentación, guion; todo regenerable desde generadores/)
 └─ 3er_Corte_Nov/
 ```
 
@@ -202,6 +204,29 @@ fuerte: confirma con números el sesgo de representatividad que el Taller 1 decl
 - Un solo `eps` no sirve para densidades distintas: separar por **tipo de día** (días) o por
   **franja** (lecturas), nunca por calendario.
 
+### 4.6 Convenciones de anticipación (Parcial 2, 2026-10-21)
+- **Pico** = lecturas > 200 Wh agrupadas con `gap=3` sobre la serie completa. **En calma** = fuera de
+  `[inicio, fin]` de todo pico. **Etiqueta de anticipación** = lectura en calma en `[s−3, s−1]` (un pico
+  empieza en los próximos 30 min).
+- **"≥ 20 min" = al menos dos lecturas de antelación** (nominal; el margen real es de 10 a 20 min). Nunca
+  escribir "20 minutos" sin "al menos dos lecturas", ni "a tiempo" sin minutos.
+- **Particiones:** `fit` = 85 % inicial del entrenamiento temporal con retardos (hasta el 13-abr),
+  **validación** = 15 % final (2.368 lecturas, 51 picos), purga de 3 lecturas en las fronteras; la
+  **prueba** es el mismo mes de las anclas (84 picos). Todo lo que usa la etiqueta se estima en `fit`; los
+  cortes del semáforo, en validación; la prueba se reporta.
+- **Presupuesto frente a realizado — nunca mezclarlos.** Cortes = cuantiles de la calma de validación con
+  presupuesto `r` = tasa base de la etiqueta en entrenamiento (7,66 % de la calma ≈ 101 min/día). Para
+  comparar señales: el mismo top-`r` de la calma de prueba. El titular "desplegado" se reporta con su rojo
+  realizado (9,68 % ≈ 127 min/día), con la regla y el azar a ese mismo rojo. Cada vez que se diga "mismo
+  tiempo en rojo", decir cuál.
+- **Listones:** la regla de nivel (consumo actual, sin etiquetas) y el azar; una regla sin etiquetas no
+  puede ser "el modelo elegido". Una tabla de frecuencias estimada con etiquetas **sí** es un modelo
+  entrenado. **Selección por parsimonia:** el más simple a menos de 10 puntos del mejor, en validación.
+- **Diferencias con rango plausible:** bootstrap pareado por día (2.000 réplicas, semilla 42). Con 84 picos,
+  "no se distingue" cuando el IC incluye 0.
+- **Vector "un paso adelante":** exógenas de `t`; `lag1 = A(t)`, `lag2 = A(t−1)`, `lag3 = A(t−2)`,
+  `lag6 = A(t−5)`; ventana de la última hora sobre `A(t−5..t)`; `assert` de no fuga.
+
 ---
 
 ## 5. Estado de los talleres
@@ -296,6 +321,10 @@ reales en 27,4 días = 3,1/día). ⚠ El 0,40 se eligió barriendo umbrales sobr
 validación. Además, ese detector reconoce picos ya empezados: no mide anticipación. La
 regresión logística con retardos tiene mejor F1 por lectura (0,657) pero detecta 17 puntos menos de
 eventos con el mismo presupuesto de avisos — por eso no es la elegida.
+
+**Desde el Parcial 2 (2026-10-21), el anticipador vigente de Guardian es el modelo mínimo de dos
+variables (G0)**, evaluado por antelación con las convenciones de §4.6 (hallazgos 26–27). El detector
+RF + retardos queda como referencia histórica de "reconocer un pico en curso".
 
 ---
 
@@ -397,6 +426,34 @@ eventos con el mismo presupuesto de avisos — por eso no es la elegida.
     madrugada DBSCAN ve lo que el umbral no ve (86 % de su ruido bajo 200 Wh); en la tarde ignora lo
     que el umbral marca por rutina. **Ninguna de las dos es inmune a la estación** (mayo: −33 % y
     −25 %): ambas se reajustan cada mes.
+
+*Hallazgos del Parcial 2 (2026-10-21) — convenciones en §4.6, cifras en `cifras.json` del parcial:*
+
+26. **Reconocer no es anticipar.** El "86,9 % de picos detectados" del parcial 1 contaba avisos que
+    tocaban picos ya en curso (alertas de 100 min de media; en 23 de los 35 picos con alerta previa, la
+    alerta ya venía encendida), y su umbral 0,40 se eligió en la prueba. Con el mismo presupuesto de rojo
+    que Guardian anticipa 26,2 % de los picos con ≥ 20 min. → Guardian se evalúa por antelación, no por
+    "evento tocado".
+27. **Para anticipar con estos sensores basta lo simple.** El modelo mínimo de dos variables (G0: consumo
+    actual + frecuencia histórica de picos por hora × laborable/fin de semana, 48 celdas) gana la selección
+    en validación (41,2 %) y en prueba ningún modelo de 36 variables se distingue de él (el mejor, la
+    logística que anticipa, +1,2 puntos, IC −11,1 a 12,9). **Titular desplegado: 28 de 84 picos (33,3 %)
+    con ≥ 20 min, a 127 min/día en rojo, 3,10 avisos/día y 61,2 % de avisos falsos**; la regla del medidor
+    al mismo rojo, 21 de 84 (+8,3 puntos, IC −1,2 a 18,4: no concluyente); azar 18,4 %. → El anticipador
+    de Guardian es G0 (exportable: corre en la página y en el hogar); la complejidad queda para el gemelo.
+28. **Los bosques derivan más que lo simple.** Con cortes de abril, en mayo G1 queda en rojo el 40,72 % de
+    la calma y G4 el 34,40 % (G0, 9,68 %). Reentrenados sin temperaturas de las habitaciones bajan a
+    18,2 % y 14,1 %: el hallazgo 18 vale también para clasificar.
+29. **La validación es optimista:** G0 41,2 % en validación frente a 27,4 % en prueba con el mismo
+    presupuesto; el decil más alto de la calibración, 31 frente a 20 de cada 100 (11,7 puntos). → La
+    probabilidad que entra al MDP lleva su rango y se recalibra cada mes.
+30. **El gemelo no le gana a repetir la última lectura en error típico:** MAE 28,17 frente a 26,64 Wh
+    (pierde), RMSE 60,54 frente a 66,44 Wh (gana); en lecturas > 200 Wh ambos subestiman (sesgo −101,40
+    frente a −58,61 Wh). → Su valor en el MDP es condicionar por hora, luces, clima y acción; refuerza el
+    hallazgo 3.
+31. **Lo que "aplazar" puede tocar es acotado:** solo el 39,7 % del exceso sobre 200 Wh del mes (20,24 de
+    50,9 kWh) ocurre en picos avisados con ≥ 20 min. El resto exige saber qué aparato se enciende
+    (hallazgo 4).
 
 ---
 
@@ -535,17 +592,46 @@ Plan completo: `2do_Corte_Oct/Plan_Talleres_Corte2.md`. Decisiones tomadas con e
   jerárquico: Andrés; DBSCAN: Alex; cierre compartido). Construida desde los cuadernos verificados,
   **no** desde las `*_presentacion_ampliada.pptx`, que tienen errores señalados el 2026-09-30.
 
+- **Parcial 2 — Aprendizaje Supervisado — TERMINADO (2026-10-21); falta la sustentación.** Carpeta
+  `2do_Corte_Oct/Parcial_2_Aprendizaje_Supervisado/`. Enunciado: `Documentacion/PARCIAL C2 de Aprendizaje
+  Supervisado 26-1.pdf` (dice 26-1 pero es el vigente: el profesor lo subió a Classroom junto con 3 ejemplos
+  de otros grupos de 2025, que no se copian). Partes: informe ejecutivo APA (1,0) · mockup funcional (2,5) ·
+  presentación de implementación en una organización real (0,5) · póster académico (1,0). Sin fecha de
+  entrega; habrá una sustentación corta.
+  - **Plan:** `PLAN_DESARROLLO.md` (aprobado el 21-oct; reemplazó un plan de taquilla de cine copiado de
+    un ejemplo) y `planeacion/` (especificaciones por hito, reglas de diseño, historial de iteraciones
+    entre agentes que redactan y que critican). Decisiones del usuario: mockup lo más simple posible (se
+    quedó en 2 tarjetas); organización real = **Shiro como producto propio**; cifras solo en kWh; póster
+    A1 vertical; guion de sustentación con reparto.
+  - **Pregunta Shiro:** ¿cuánto antes puede avisar Guardian de un pico y con qué modelo? Respuesta:
+    hallazgos 26–31 (caso B: modelo mínimo de dos variables, 28 de 84 picos con ≥ 20 min).
+  - **Entregables (todo se regenera desde `generadores/`):** `construir_cuaderno.py` →
+    `Parcial2_Guardian.ipynb` (46 celdas, ≈ 97 s, determinista, 21/21 anclas contra los cuadernos
+    anteriores) → `cifras.json` (fuente única: 751 cifras nuevas + 128 heredadas) y
+    `mockup/datos_mockup.json`; `Mockup_Shiro_Guardian.html` (sin red ni librerías: tarjeta «¿Y si…?»
+    con el modelo calculando en vivo y tarjeta «semáforo del mes» con deslizador y antes/después; pie
+    "Verificación: OK"); `Informe_Ejecutivo_Shiro_Guardian` (APA 7, 19 pp., 12 de cuerpo, sin métricas
+    técnicas en el cuerpo); `Poster_Shiro_Guardian` (A1, figuras `POSTER_*` a 18 pt);
+    `Implementacion_Shiro_Guardian` (7 diapositivas con notas); `Guion_Sustentacion_Shiro_Guardian`
+    (10 min: Jose apertura y cierre, Sofía datos y elección del modelo, Andrés resultados y demo, Alex
+    ética e implementación). `generadores/verificar.py` comprueba residuos, términos prohibidos en el
+    cuerpo del informe, pares aleatoria/temporal y que las cifras sean idénticas en todas las piezas:
+    **debe terminar con código 0 antes de cualquier entrega**. Escudo oficial en `recursos/`.
+  - Para cambiar cualquier pieza se edita su generador y se regenera; nunca se edita el .docx/.pptx a mano.
+
 **Pendientes que siguen abiertos:**
 - **Formalizar el MDP por escrito** y construir el entorno de simulación con la función de
   transición ya decidida (lineal + retardos) e incertidumbre por **franja × tipo de día**. El estado
-  incluye el tipo de día estimado con su confianza (margen) y la bandera «día desconocido».
-- **Prototipo de Guardian con dos alarmas** (umbral + DBSCAN por franja, solo subidas) evaluado por
-  episodio con igual tiempo en alerta, contra el detector RF vigente.
+  incluye el tipo de día estimado con su confianza (margen) y la bandera «día desconocido», y la
+  **probabilidad calibrada de pico en 30 min de G0 con su rango** (hallazgos 27 y 29).
+- **Segunda alarma de Guardian (DBSCAN por franja, solo subidas)**, evaluada con las convenciones de
+  §4.6 contra el anticipador G0. *(La primera alarma, anticipada, quedó hecha en el Parcial 2.)*
 - **Incorporar UCI Household (#235)** para medir la caída de desempeño al cambiar de vivienda.
 - **Codificar `hora`** — probado en el C2-T1 con CatBoost categórico: en árboles **no aporta**.
   Queda solo para modelos de distancia (KNN, seno/coseno).
 - **Probar el detector RF sin temperaturas interiores** (hallazgo 18): en regresión quitarlas elimina
-  el sesgo estacional; falta ver si el detector también mejora con el mismo tiempo en alerta.
+  el sesgo estacional. *Avance del Parcial 2 (hallazgo 28):* sin ellas, la deriva del rojo en mayo baja
+  (G1 40,72 → 18,2 %, G4 34,40 → 14,1 %); falta medir su anticipación con el mismo presupuesto (§4.6).
 - **Agente de Q-learning** entrenado y evaluado dentro del gemelo, con métricas de ahorro simulado
   frente a una política base.
 - *(Hecho en el parcial: variables de retardo.)*
