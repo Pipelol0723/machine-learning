@@ -289,8 +289,11 @@ Línea base de clasificación (todo "normal"): accuracy 0,904 · F1 0,000.
 Recall es la métrica crítica del sector. RF no es ganador absoluto.
 
 **Detector vigente (parcial):** Random Forest + retardos, partición temporal, umbral 0,40 →
-F1 por lectura 0,580 (desde 0,167 sin retardos) · **86,9 % de eventos reales detectados ·
-3,0 alertas/día · 37,3 % de alertas falsas** (84 episodios reales en 27,4 días = 3,1/día). La
+F1 por lectura **0,47** (el 0,580 es con el umbral por defecto 0,5, igual que el 0,167 sin retardos) ·
+**86,9 % de eventos reales detectados · 3,0 alertas/día · 37,3 % de alertas falsas** (84 episodios
+reales en 27,4 días = 3,1/día). ⚠ El 0,40 se eligió barriendo umbrales sobre el mes de prueba
+(`Parcial_Corte1.ipynb` c.38–c.40, índices desde 0), contra §4.3; el Parcial 2 calibra los cortes en
+validación. Además, ese detector reconoce picos ya empezados: no mide anticipación. La
 regresión logística con retardos tiene mejor F1 por lectura (0,657) pero detecta 17 puntos menos de
 eventos con el mismo presupuesto de avisos — por eso no es la elegida.
 
