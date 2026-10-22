@@ -251,6 +251,12 @@ registrar("part_umbral_p90_temporal", p90_temporal, "Wh", 0, F1, "Percentil 90 d
 registrar("part_umbral_p90_fit", p90_fit, "Wh", 0, F1, "Percentil 90 del consumo en fit")
 registrar("part_n_variables", len(COLS), "", 0, F1, "Variables del vector con retardos (29 exógenas + 7 retardos)")
 registrar("part_n_exogenas", len(FEATURES), "", 0, F1, "Variables exógenas (sin rv1/rv2)")
+registrar("part_n_retardos", len(RETARDOS), "", 0, F1, "Retardos del consumo (lag1, lag2, lag3, lag6, media_1h, max_1h, std_1h)")
+lect_por_dia = df.groupby(df["date"].dt.normalize()).size()
+registrar("datos_dias_incompletos", int((lect_por_dia < 144).sum()), "", 0, F1,
+          "Días de calendario con menos de 144 lecturas (primero y último del dataset)")
+registrar("datos_appliances_multiplo10_pct", float((df[TARGET] % 10 == 0).mean() * 100), "%", 0, F1,
+          "% de lecturas de consumo que son múltiplo de 10 Wh")
 registrar("part_n_lecturas_dl", N, "lecturas", 0, F1, "Lecturas de la serie con retardos")
 for nombre, (a, b) in SEG.items():
     clave = {"fit": "fit", "validación": "val", "prueba": "prueba"}[nombre]
@@ -641,6 +647,8 @@ registrar("n1c_det040_p20", (ant_det >= 20).mean() * 100, "%", 1, F6,
           "% de picos con ≥ 20 min del detector P1 a 0,40 contado como semáforo (solo lecturas en calma)")
 registrar("n1c_det_mismo_r_p20", (ant_det_r >= 20).mean() * 100, "%", 1, F6,
           "% de picos con ≥ 20 min del detector P1 con el mismo tiempo en rojo que Guardian (top-r de su probabilidad)")
+registrar("n1c_det_mismo_r_n20", int((ant_det_r >= 20).sum()), "picos", 0, F6,
+          "Picos con ≥ 20 min del detector P1 con el mismo tiempo en rojo que Guardian (numerador de n1c_det_mismo_r_p20)")
 print(f"Contexto: a 0,40 el detector estaba en alerta el {pct_es(alerta_calma_pct)} del tiempo tranquilo de prueba "
       f"(presupuesto de Guardian: {pct_es(r * 100, 2)}). Contado como semáforo: {pct_es((ant_det >= 20).mean() * 100)} de "
       f"picos con ≥ 20 min; con el mismo tiempo en rojo que Guardian: {pct_es((ant_det_r >= 20).mean() * 100)}.")
@@ -923,6 +931,7 @@ registrar("sel_elegido", ELEG, "", 0, F9, "Modelo elegido para el semáforo de G
 registrar("sel_elegido_nombre", NOMBRE[ELEG], "", 0, F9, "Nombre llano del modelo elegido")
 registrar("sel_nivel", NIVEL[ELEG], "", 0, F9, "Nivel de simplicidad del elegido (0 = mínimo)")
 registrar("sel_nvars", NVARS[ELEG], "", 0, F9, "Variables que usa el elegido")
+registrar("sel_n_candidatos", len(CANDIDATOS), "", 0, F9, "Señales candidatas supervisadas (sin contar la regla de nivel)")
 registrar("sel_n_pasan_piso", len(pasan), "", 0, F9, "Candidatos que pasan el piso en validación")
 registrar("sel_pasan_piso", ", ".join(pasan) if pasan else "ninguno", "", 0, F9, "Candidatos que pasan el piso")
 registrar("sel_mejor_p20_val", mejor_p20_val, "%", 1, F9, "Mejor % de picos con ≥ 20 min en validación")
@@ -1099,6 +1108,12 @@ registrar("caso_d_regla_mismo_r", d_er, "puntos", 1, F10, "Elegido − regla en 
 registrar("caso_d_regla_mismo_r_ic_inf", lo_er, "puntos", 1, F10, "IC 95 % inferior")
 registrar("caso_d_regla_mismo_r_ic_sup", hi_er, "puntos", 1, F10, "IC 95 % superior")
 registrar("titular_m10_pct", M_REGLA["p10"], "%", 1, F10, "% de picos con ≥ 10 min de la regla al mismo rojo realizado")
+registrar("titular_m10_n", M_REGLA["n10"], "picos", 0, F10, "Picos con ≥ 10 min de la regla al mismo rojo realizado")
+registrar("titular_m30_n", M_REGLA["n30"], "picos", 0, F10, "Picos con ≥ 30 min de la regla al mismo rojo realizado")
+registrar("titular_p20_fraccion", f"{int(round(MD['p20'] / 10))} de cada 10", "", 0, F10,
+          "titular_p20 en décimos redondeados, para el lenguaje llano")
+registrar("titular_falsos_fraccion", f"{int(round(MD['falsos'] / 10))} de cada 10", "", 0, F10,
+          "titular_falsos en décimos redondeados, para el lenguaje llano")
 registrar("titular_m30_pct", M_REGLA["p30"], "%", 1, F10, "% de picos con ≥ 30 min de la regla al mismo rojo realizado")
 registrar("titular_p10", MD["p10"], "%", 1, F10, "% de picos avisados con ≥ 10 min por el elegido desplegado")
 registrar("titular_p30", MD["p30"], "%", 1, F10, "% de picos avisados con ≥ 30 min por el elegido desplegado")
@@ -1119,6 +1134,8 @@ registrar("lect_elegido_sensibilidad", LECT["sensibilidad"], "%", 1, FL,
 registrar("lect_elegido_f1", LECT["f1"], "", 2, FL, "F1 por lectura del elegido desplegado (etiqueta: precede un pico)")
 registrar("lect_todo_verde_exactitud", LECT["todo_verde_exactitud"], "%", 1, FL,
           "Exactitud de pintar todo de verde (F1 = 0) en la calma de prueba")
+registrar("lect_todo_verde_f1", f1_score(y_l, np.zeros_like(rojo_l), zero_division=0), "", 2, FL,
+          "F1 por lectura de pintar todo de verde en la calma de prueba (sin rojos predichos)")
 registrar("lect_elegido_auc", LECT["auc"], "", 3, FL,
           "Probabilidad de que un momento previo a un pico puntúe más que uno tranquilo (AUC del elegido, calma de prueba)")
 registrar("lect_regla_auc", LECT["auc_regla"], "", 3, FL, "Ídem para la regla de nivel")
@@ -1461,6 +1478,22 @@ base_nunca = (~rojo_el_t).mean() * 100
 registrar("expl_base_nunca_rojo", base_nunca, "%", 1, F12,
           "Coincidencia que lograría un explicador que nunca pinta rojo (línea base de la fidelidad, calma de prueba)")
 registrar("expl_n_reglas_rojas", sum(rg["rojo"] for rg in REGLAS), "", 0, F12, "Hojas del árbol que dicen ROJO")
+# Umbrales de las reglas de ROJO (en el orden del árbol), para citarlas fuera de la figura
+CORTO = {"freq_hora_pct": ("frec", "%", 1), "lag1": ("consumo", "Wh", 1)}
+for i_, rg in enumerate([rg for rg in REGLAS if rg["rojo"]], start=1):
+    lim = {}
+    for f_, op, u_ in rg["condiciones"]:
+        lo_, hi_ = lim.get(f_, (-np.inf, np.inf))
+        lim[f_] = (max(lo_, u_), hi_) if op == ">" else (lo_, min(hi_, u_))
+    for f_, (lo_, hi_) in lim.items():
+        k_, u_, d_ = CORTO.get(f_, (f_.lower(), "", 3))
+        if np.isfinite(lo_):
+            registrar(f"expl_regla_roja_{i_}_{k_}_desde", lo_, u_, d_, F12, f"Regla roja {i_}: {LLANO.get(f_, f_)} > este valor")
+        if np.isfinite(hi_):
+            registrar(f"expl_regla_roja_{i_}_{k_}_hasta", hi_, u_, d_, F12, f"Regla roja {i_}: {LLANO.get(f_, f_)} ≤ este valor")
+    registrar(f"expl_regla_roja_{i_}_de_cada_100", int(round(rg["prop_rojo"] * 100)), "", 0, F12,
+              f"Regla roja {i_}: de cada 100 momentos así en el entrenamiento, cuántos estaban en rojo")
+    registrar(f"expl_regla_roja_{i_}_n", rg["n"], "", 0, F12, f"Regla roja {i_}: momentos de entrenamiento que cumplen la regla")
 print("Reglas del explicador (profundidad 3):")
 for rg in REGLAS:
     print("  " + rg["texto"])
@@ -1483,7 +1516,11 @@ md(r'''
 ## 13. Energía y casos críticos (N1f)
 **Necesidad de Shiro.** La acción "aplazar" solo puede actuar sobre la energía de los picos que se avisaron con margen.
 Se mide la energía del mes de prueba, la que cae dentro de picos y el **exceso sobre 200 Wh**, y cuánto de ese exceso
-corresponde a picos avisados con ≥ 20 min por el elegido desplegado. Después, dos **casos críticos** elegidos por regla
+corresponde a picos avisados con ≥ 20 min por el elegido desplegado. Ese exceso es **medido**. Aparte, y rotulado
+**SIMULADO**, se calculan tres escenarios de impacto (bajo, medio y alto) que multiplican ese exceso medido por dos
+**supuestos declarados, no medidos**: qué parte de esa energía se podía correr de hora (% evitable) y qué parte de las
+propuestas acepta la persona (% aceptadas). Ningún dato del hogar estima esos dos porcentajes: los escenarios solo
+acotan el orden de magnitud y no se mezclan con lo medido. Después, dos **casos críticos** elegidos por regla
 (no a mano): el pico no anticipado con más energía y el aviso falso más largo.
 ''')
 
@@ -1518,6 +1555,30 @@ registrar("energia_exceso_anticipado_kwh", exc_ant, "kWh", 2, F13, "Exceso de lo
 registrar("energia_exceso_anticipado_pct", exc_ant / exc_a * 100, "%", 1, F13, "% del exceso que cae en picos avisados con ≥ 20 min")
 registrar("energia_picos_anticipados_kwh", kwh_ant, "kWh", 1, F13, "Energía de los picos avisados con ≥ 20 min")
 print(f"Exceso en picos avisados con ≥ 20 min: {num_es(exc_ant, 2)} kWh ({pct_es(exc_ant / exc_a * 100)} del exceso)")
+
+# Impacto SIMULADO: exceso medido en picos avisados con ≥ 20 min × % evitable × % de propuestas aceptadas.
+# Los dos porcentajes son supuestos declarados (no salen de los datos); solo acotan el orden de magnitud.
+ESCENARIOS_SIM = [("bajo", 10, 50), ("medio", 25, 70), ("alto", 50, 90)]
+ESC_SIM = []
+print("Impacto SIMULADO (supuestos declarados, no medidos) sobre el exceso medido de "
+      f"{num_es(exc_ant, 2)} kWh en picos avisados con ≥ 20 min:")
+for nom_, ev_, ac_ in ESCENARIOS_SIM:
+    kwh_sim = exc_ant * ev_ / 100 * ac_ / 100
+    registrar(f"sim_{nom_}_evitable_pct", ev_, "%", 0, F13,
+              f"SIMULADO, escenario {nom_}: supuesto de % del exceso avisado que se podía correr de hora (no medido)")
+    registrar(f"sim_{nom_}_aceptadas_pct", ac_, "%", 0, F13,
+              f"SIMULADO, escenario {nom_}: supuesto de % de propuestas que acepta la persona (no medido)")
+    registrar(f"sim_{nom_}_kwh", kwh_sim, "kWh", 2, F13,
+              f"SIMULADO, escenario {nom_}: exceso avisado con ≥ 20 min × {ev_} % evitable × {ac_} % aceptadas (kWh en el mes de prueba)")
+    registrar(f"sim_{nom_}_pct_exceso", kwh_sim / exc_a * 100, "%", 1, F13,
+              f"SIMULADO, escenario {nom_}: % del exceso sobre 200 Wh de todo el mes de prueba que se habría corrido de hora")
+    ESC_SIM.append({"escenario": nom_, "evitable_pct": ev_, "aceptadas_pct": ac_, "kwh": float(kwh_sim),
+                    "pct_exceso_mes": float(kwh_sim / exc_a * 100)})
+    print(f"   {nom_:5s}: {num_es(exc_ant, 2)} kWh × {ev_} % evitable × {ac_} % aceptadas = {num_es(kwh_sim, 2)} kWh "
+          f"({pct_es(kwh_sim / exc_a * 100)} del exceso del mes) · SIMULADO")
+registrar("sim_nota", "SIMULADO: escenarios con supuestos declarados (% evitable y % de propuestas aceptadas) aplicados "
+          "al exceso medido en picos avisados con al menos 20 min; no son ahorro medido ni promesa.", "", 0, F13,
+          "Advertencia que acompaña a la tabla de escenarios simulados")
 
 # Colores desplegados del elegido en prueba
 rojo_d = dd["rojo"]; am_d = calma & (SCORE[ELEG] >= CORTES[ELEG][1]) & ~rojo_d
@@ -1592,6 +1653,7 @@ registrar("caso1_ventana_fragil", int(FRAGIL_C1), "", 0, F13,
           "Caso crítico 1: 1 si algún margen sobre el corte amarillo en [s−3, s−1] es menor que 0,01 (color frágil)")
 registrar("caso1_narrativa_en", "s−2", "", 0, F13, "Caso crítico 1: momento en que se ancla la narrativa (20 min antes)")
 registrar("caso1_energia_wh", c1_["energia_wh"], "Wh", 0, F13, "Caso crítico 1: energía del pico")
+registrar("caso1_exceso_kwh", c1_["exceso_wh"] / 1000, "kWh", 2, F13, "Caso crítico 1: exceso sobre 200 Wh del pico")
 registrar("caso1_duracion_min", c1_["duracion_min"], "min", 0, F13, "Caso crítico 1: duración del pico")
 registrar("caso1_max_wh", c1_["max_wh"], "Wh", 0, F13, "Caso crítico 1: lectura máxima")
 registrar("caso1_wh_previo", float(A[S[p_c1] - 1]), "Wh", 0, F13, "Caso crítico 1: consumo 10 min antes del inicio")
@@ -1754,7 +1816,29 @@ DIA_AD = {"dia": DIA.date().isoformat(), "indice_inicio": int(idx_dia[0] - cl), 
 registrar("ejemplo_dia", DIA.date().isoformat(), "fecha", 0, "§14 Ejemplos", "Día del antes/después")
 registrar("ejemplo_dia_picos", len(picos_dia), "picos", 0, "§14 Ejemplos", "Picos del día del antes/después")
 registrar("ejemplo_dia_pct", pct_med * 100, "%", 0, "§14 Ejemplos", "% de picos del día avisados con ≥ 20 min")
-# Pico del día para la frase "a las {hh:mm} el semáforo pasó a rojo, {k} min antes del pico"
+registrar("ejemplo_dia_n20", int(sum(q["antelacion_min"] >= 20 for q in picos_dia)), "", 0, "§14 Ejemplos",
+          "Picos del día avisados con ≥ 20 min (al menos dos lecturas de antelación)")
+
+# Deslizador de rojo de la página (tarjeta 2): lo que se ve con r = 12 % y r = 5 %. Misma lógica que evaluar() de la
+# página: cortes = cuantil lineal 1−r de la calma de validación, aplicados tal cual a la prueba (el ámbar no cambia estas
+# cifras). Así el guion puede citar lo que muestra la página sin teclearlo.
+FD = "§14 Deslizador de la página"
+for r_demo, et_ in ((0.12, "r12"), (0.05, "r05")):
+    cr_demo = cortes_val(SCORE[ELEG], r_demo)[0]
+    m_demo, _ = evaluar(calma & (SCORE[ELEG] >= cr_demo), cl, N)
+    txt_r = f"deslizador de rojo en {num_es(r_demo * 100, 2)} % (cortes de validación, desplegado en prueba)"
+    registrar(f"demo_{et_}_r", r_demo * 100, "%", 2, FD, f"Valor del {txt_r}")
+    registrar(f"demo_{et_}_n20", m_demo["n20"], "picos", 0, FD, f"Picos avisados con ≥ 20 min · {txt_r}")
+    registrar(f"demo_{et_}_p20", m_demo["p20"], "%", 1, FD, f"% de picos avisados con ≥ 20 min · {txt_r}")
+    registrar(f"demo_{et_}_avisos_dia", m_demo["avisos_dia"], "avisos/día", 2, FD, f"Avisos por día · {txt_r}")
+    registrar(f"demo_{et_}_min_dia", m_demo["min_dia"], "min/día", 0, FD, f"Minutos al día en rojo · {txt_r}")
+    registrar(f"demo_{et_}_falsos", m_demo["falsos"], "%", 1, FD, f"% de avisos falsos · {txt_r}")
+    registrar(f"demo_{et_}_rojo_pct", m_demo["rojo_pct"], "%", 2, FD, f"% de la calma de prueba en rojo (realizado) · {txt_r}")
+    print(f"Página con el rojo en {num_es(r_demo * 100, 2)} %: {m_demo['n20']} de {m_demo['picos']} picos con ≥ 20 min "
+          f"({pct_es(m_demo['p20'])}), {num_es(m_demo['avisos_dia'], 2)} avisos/día, {num_es(m_demo['min_dia'], 0)} min/día "
+          f"en rojo, {pct_es(m_demo['falsos'])} de avisos falsos, rojo realizado {pct_es(m_demo['rojo_pct'], 2)}")
+# Pico del día para la frase "el semáforo estaba en rojo desde las {inicio_rojo}, {min_desde_inicio_rojo} min antes del
+# pico de las {hh:mm}" (la antelación de las cifras del mes se cuenta solo dentro de la ventana de 30 min)
 con_rojo = [q for q in picos_dia if q["primer_rojo"]]
 if con_rojo:
     q_ = sorted(con_rojo, key=lambda q: (-q["antelacion_min"], q["inicio"]))[0]
@@ -2508,8 +2592,8 @@ for i_, y0_, alto_, hito_, corte_, mod_w, dec_w, cif_w in filas6:
 y_l0, y_l1 = filas6[0][1] + 1.0, filas6[-1][1] + 1.0
 ax.plot([0.022, 0.022], [y_l0, y_l1], color=GRIS, lw=2, zorder=1, clip_on=False)
 titular(fig, "Evolución de los modelos de Shiro: de reconocer a anticipar",
-        "Informa: qué decisión de arquitectura dejó cada entrega · cifras en par aleatoria / temporal leídas de las salidas "
-        "guardadas de cada cuaderno · el F1 del detector es a umbral 0,40 (el 0,580 de la tabla del proyecto era a 0,5)",
+        "Informa: qué decisión de arquitectura dejó cada entrega · cifras en par aleatoria / temporal, tomadas de los "
+        "cuadernos de cada entrega · el detector del parcial 1 se mide a su umbral de 0,40",
         sobre_ejes=2)
 guardar(fig, "g6", "G6_evolucion_modelos",
         "Línea de tiempo vertical Taller 2 → Taller 3 → Parcial 1 → Taller 1 del 2.º corte → Parcial 2 con la decisión de "
@@ -2518,6 +2602,212 @@ guardar(fig, "g6", "G6_evolucion_modelos",
 registrar("fig_n", len(FIGS), "", 0, F17, "Figuras exportadas a 300 dpi")
 que_cambia(f"informe y póster tienen {len(FIGS)} figuras a 300 dpi trazables a este cuaderno; ninguna dibuja una curva "
            f"'con Shiro', porque no hay modelo del efecto de la acción.")
+''')
+
+md(r'''
+### 17b. Versiones de póster de G1, G2, G3 y G5
+**Necesidad de Shiro.** El póster A1 se lee a uno o dos metros: las figuras del informe, reducidas a la columna del
+póster, dejan sus etiquetas en unos 8–9 pt. Estas versiones se dibujan **al tamaño físico de la caja del póster**
+(una columna de 594 mm en tres, menos su relleno: unos 170 mm de ancho), así que lo que aquí mide 18 pt mide 18 pt
+impreso. Llevan las mismas cifras que G1, G2, G3 y G5 (las mismas variables), sin título ni subtítulo (los pone la
+sección del póster), con leyendas cortas y menos marcas en los ejes. G5 se queda con el consumo y la franja del semáforo
+de cada caso; el panel del puntaje no sería legible a este tamaño y su explicación va en el texto del póster. Las
+figuras G1–G6 del informe no cambian. Al guardar se comprueba que ningún texto baja de 18 pt, se sale de la figura o se
+encima con otro.
+''')
+
+code(r'''
+from matplotlib.text import Text
+from matplotlib.lines import Line2D
+
+PT, PT_CLAVE = 18, 22                               # pt al tamaño impreso: etiquetas y cifras clave
+CAJA_MM = (594 - 2 * 14 - 2 * 8) / 3 - 2 * 6.5      # ancho de una figura en el póster A1: columna menos su relleno (mm)
+GRIS_BARRA = "#3c4043"
+RC_POSTER = {"font.size": PT, "axes.labelsize": PT, "xtick.labelsize": PT, "ytick.labelsize": PT, "legend.fontsize": PT,
+             "axes.linewidth": 1.2, "xtick.major.width": 1.2, "ytick.major.width": 1.2, "xtick.major.size": 6,
+             "ytick.major.size": 6, "xtick.major.pad": 5, "ytick.major.pad": 5, "hatch.linewidth": 1.4,
+             "legend.handlelength": 1.6, "legend.handleheight": 0.9, "legend.columnspacing": 1.2,
+             "legend.handletextpad": 0.5, "legend.borderaxespad": 0.1, "legend.borderpad": 0.1, "legend.labelspacing": 0.3}
+
+def lienzo(alto_mm):
+    return plt.figure(figsize=(CAJA_MM / 25.4, alto_mm / 25.4))
+
+def eje(fig, x0, y0, w, h, **kw):
+    """Ejes con posición en mm desde la esquina inferior izquierda (la figura se guarda sin recortar)."""
+    W_, H_ = fig.get_size_inches() * 25.4
+    return fig.add_axes([x0 / W_, y0 / H_, w / W_, h / H_], **kw)
+
+def rotulo(ax, x, y, grande, chico, ha="left", va="top", trans=None):
+    """Cifra clave (PT_CLAVE, negrita) con su explicación (PT) debajo."""
+    tr_ = trans or ax.transData
+    n_ = chico.count("\n") + 1
+    if va == "top":
+        ax.text(x, y, grande, transform=tr_, fontsize=PT_CLAVE, fontweight="bold", ha=ha, va="top")
+        ax.text(x, y, chico, fontsize=PT, ha=ha, va="top", linespacing=1.15,
+                transform=offset_copy(tr_, fig=ax.figure, y=-PT_CLAVE * 1.3, units="points"))
+    else:
+        ax.text(x, y, chico, transform=tr_, fontsize=PT, ha=ha, va="bottom", linespacing=1.15)
+        ax.text(x, y, grande, fontsize=PT_CLAVE, fontweight="bold", ha=ha, va="bottom",
+                transform=offset_copy(tr_, fig=ax.figure, y=PT * 1.25 * n_ + 3, units="points"))
+
+def comprobar_poster(fig, nombre):
+    """Ningún texto por debajo de PT, fuera de la figura ni encimado con otro."""
+    fig.canvas.draw()
+    ren_ = fig.canvas.get_renderer()
+    W_, H_ = fig.bbox.width, fig.bbox.height
+    cajas_ = []
+    for t_ in fig.findobj(Text):
+        if not t_.get_visible() or not t_.get_text().strip():
+            continue
+        b_ = t_.get_window_extent(ren_)
+        assert t_.get_fontsize() >= PT - 1e-6, f"{nombre}: «{t_.get_text()}» a {t_.get_fontsize()} pt"
+        assert b_.x0 >= -0.5 and b_.y0 >= -0.5 and b_.x1 <= W_ + 0.5 and b_.y1 <= H_ + 0.5, \
+            f"{nombre}: «{t_.get_text()}» se sale de la figura ({b_.x0:.0f}, {b_.y0:.0f}, {b_.x1:.0f}, {b_.y1:.0f} de {W_:.0f} × {H_:.0f} px)"
+        cajas_.append((t_.get_text(), b_))
+    for i_, (ta_, ba_) in enumerate(cajas_):
+        for tb_, bb_ in cajas_[i_ + 1:]:
+            assert not ba_.overlaps(bb_), f"{nombre}: «{ta_}» se encima con «{tb_}»"
+    return len(cajas_)
+
+def guardar_poster(fig, clave, desc):
+    n_ = comprobar_poster(fig, clave)
+    ruta = f"figuras/POSTER_{clave.upper()}.png"
+    fig.savefig(ruta, dpi=300, facecolor="white", metadata={"Software": None})   # sin recorte: tamaño físico exacto
+    ancho_, alto_ = (v_ * 25.4 for v_ in fig.get_size_inches())
+    plt.close(fig)
+    registrar(f"fig_poster_{clave}_ruta", ruta, "", 0, F17, desc)
+    print(f"{ruta}: {num_es(ancho_, 1)} × {num_es(alto_, 1)} mm, {n_} textos ≥ {PT} pt sin encimarse · {desc}")
+
+with plt.rc_context(RC_POSTER):
+    # ------------------------------------------------------------ POSTER_G1: el día de ejemplo con el semáforo
+    fig = lienzo(116)
+    ML_, MR_ = 27, 8
+    ax = eje(fig, ML_, 28, CAJA_MM - ML_ - MR_, 86)
+    axs = eje(fig, ML_, 12, CAJA_MM - ML_ - MR_, 12, sharex=ax)
+    for p in ids_d:
+        if (E[p] >= ix1[0]) and (S[p] <= ix1[-1]):
+            a_h = (FECHA.iloc[max(S[p], ix1[0])] - DIA).total_seconds() / 3600
+            b_h = (FECHA.iloc[min(E[p], ix1[-1])] - DIA).total_seconds() / 3600 + 1 / 6
+            ax.axvspan(a_h, b_h, color=ROJO_TENUE, alpha=0.6, lw=0, zorder=0)
+    ax.plot(hx + 1 / 12, A[ix1], color=TINTA, lw=2.4, zorder=3)
+    ax.axhline(UMBRAL, color=GRIS, ls="--", lw=1.6, zorder=1)
+    ymax_p = float(A[ix1].max()) * 1.75
+    ax.set_ylim(0, ymax_p); ax.set_yticks(np.arange(0, ymax_p, 400)); ax.yaxis.set_major_formatter(FMT_WH)
+    ax.set_ylabel("Wh cada 10 min")
+    ax.text(0.2, UMBRAL + ymax_p * 0.015, f"{num_es(UMBRAL, 0)} Wh", color=GRIS_OSC, va="bottom")   # umbral de pico
+    # Rótulos: el primero a la izquierda de su pico, el segundo a la derecha (arriba) y el siguiente bajo, a la izquierda
+    POS_G1 = [("right", "top"), ("left", "top"), ("right", "bottom")]
+    y_barra = ymax_p * 0.52
+    for i_, q_ in enumerate(sorted(DIA_AD["picos"], key=lambda q: q["inicio"])):
+        hs_ = (pd.Timestamp(q_["inicio"]) - DIA).total_seconds() / 3600
+        ha_, va_ = POS_G1[i_ % 3]
+        t_p = f"{pd.Timestamp(q_['inicio']):%H:%M}"
+        if q_["primer_rojo"]:
+            hr_ = (pd.Timestamp(q_["inicio_rojo"]) - DIA).total_seconds() / 3600
+            t_r = f"{pd.Timestamp(q_['inicio_rojo']):%H:%M}"
+            ax.plot([hr_, hs_], [y_barra, y_barra], color=ROJO, lw=6, solid_capstyle="butt", zorder=4)
+            ax.plot([hr_, hr_], [0, y_barra], color=ROJO, lw=1.4, ls=":", zorder=2)
+            chico_ = f"de aviso, pico {t_p}"
+            if q_["min_desde_inicio_rojo"] > q_["antelacion_min"]:
+                chico_ += f"\n(rojo desde {t_r}; se cuentan {q_['antelacion_min']})"
+            elif ha_ == "right":
+                chico_ = f"de aviso\npico {t_p}"
+            grande_ = f"{q_['antelacion_min']} min"
+            x_ = hr_ - 0.25 if ha_ == "right" else hs_ + 0.45
+        else:
+            grande_, chico_ = "sin aviso", f"pico {t_p}"
+            x_ = hs_ - 0.3 if ha_ == "right" else hs_ + 0.9
+        y_ = ymax_p * 0.97 if va_ == "top" else UMBRAL + ymax_p * 0.06
+        rotulo(ax, x_, y_, grande_, chico_, ha=ha_, va=va_)
+    tira(axs, hx, [str(COLOR[j_]) for j_ in ix1], 1 / 6)
+    axs.set_xlim(0, 24); axs.set_xticks(range(0, 25, 6)); axs.set_xticklabels([f"{h_:02d}:00" for h_ in range(0, 25, 6)])
+    ax.tick_params(labelbottom=False)
+    axs.set_ylabel("Guardian", rotation=0, ha="right", va="center")
+    guardar_poster(fig, "g1", f"G1 para el póster: consumo del {fecha_es(DIA).split(' ')[0]}, picos sombreados, tira del "
+                              f"semáforo y antelación de cada pico; sin título ni leyenda")
+
+    # ------------------------------------------------------------ POSTER_G2: picos avisados con margen (barras horizontales)
+    fig = lienzo(124)
+    ML_, MR_ = 33, 3
+    ax = eje(fig, ML_, 22, CAJA_MM - ML_ - MR_, 78)
+    SER_P = [("elegido_desp", GRIS_BARRA, MD), ("regla_mismo_rojo", GRIS_CLARO, M_REGLA)]
+    for i_, m in enumerate((10, 20, 30)):
+        g_ = 2 - i_
+        for k_, (et_, col_, mm_) in enumerate(SER_P):
+            v_, lo_, hi_ = FIG2[(et_, m)]
+            y_ = g_ + (0.2 if k_ == 0 else -0.2)
+            ax.barh(y_, v_, height=0.36, color=col_, zorder=2)
+            ax.errorbar(v_, y_, xerr=[[v_ - lo_], [hi_ - v_]], fmt="none", ecolor=TINTA, elinewidth=1.6, capsize=5, zorder=3)
+            clave_ = k_ == 0 and m == 20
+            ax.text(hi_ + 1.2, y_, f"{pct_es(v_)} · {mm_['n' + str(m)]} de {len(ids_te)}", va="center",
+                    fontsize=PT_CLAVE if clave_ else PT, fontweight="bold" if clave_ else "normal")
+        ax.plot([AZAR_UMB[m]] * 2, [g_ - 0.46, g_ + 0.46], color=GRIS_OSC, ls=(0, (3, 2)), lw=2.2, zorder=4)
+    ax.set_yticks([2, 1, 0]); ax.set_yticklabels(["≥ 10 min", "≥ 20 min", "≥ 30 min"])
+    ax.get_yticklabels()[1].set_fontweight("bold")
+    ax.tick_params(axis="y", length=0)
+    ax.set_ylabel("Antelación")
+    ax.set_ylim(-0.6, 2.6); ax.set_xlim(0, 92); ax.set_xticks([0, 20, 40, 60]); ax.xaxis.set_major_formatter(FMT_PCT)
+    ax.set_xlabel(f"Picos avisados (% de los {len(ids_te)} del mes)")
+    eb_ = Line2D([], [], color=TINTA, lw=1.6, marker="|", ms=12, mew=1.6, label="rango plausible 95 %")
+    fig.legend(handles=[Patch(facecolor=GRIS_BARRA, label=f"Guardian ({ELEG})"),
+                        Patch(facecolor=GRIS_CLARO, label="regla de nivel"),
+                        Line2D([], [], color=GRIS_OSC, ls=(0, (3, 2)), lw=2.2, label="azar"), eb_],
+               loc="upper left", bbox_to_anchor=(ML_ / CAJA_MM, 0.995), ncol=2, numpoints=2)
+    guardar_poster(fig, "g2", f"G2 para el póster: % de los {len(ids_te)} picos con ≥ 10, ≥ 20 y ≥ 30 min de antelación, "
+                              f"{ELEG} desplegado frente a la regla de nivel con el mismo rojo, IC 95 % y azar")
+
+    # ------------------------------------------------------------ POSTER_G3: acierto de cada color
+    fig = lienzo(72)
+    ML_, MR_ = 28, 3
+    ax = eje(fig, ML_, 20, CAJA_MM - ML_ - MR_, 50)
+    for y_, c_ in zip([2, 1, 0], ["verde", "amarillo", "rojo"]):
+        ax.barh(y_, ACIERTO[c_], height=0.62, color=COLOR_SEM[c_])
+        clave_ = c_ == "rojo"
+        ax.text(max(ACIERTO[c_], r_te * 100) + 0.6, y_, f"{num_es(ACIERTO[c_], 1)} de cada 100", va="center",
+                fontsize=PT_CLAVE if clave_ else PT, fontweight="bold" if clave_ else "normal")
+    ax.axvline(r_te * 100, color=GRIS_OSC, ls=(0, (3, 2)), lw=1.8)
+    ax.text(r_te * 100 + 0.5, -0.8, f"tasa base del mes: {pct_es(r_te * 100, 1)}", color=GRIS_OSC, va="center")
+    ax.set_yticks([2, 1, 0]); ax.set_yticklabels(["verde", "amarillo", "rojo"]); ax.tick_params(axis="y", length=0)
+    ax.set_ylim(-1.15, 2.5); ax.set_xlim(0, 38); ax.set_xticks([0, 10, 20, 30]); ax.xaxis.set_major_formatter(FMT_PCT)
+    ax.set_xlabel("Lecturas con un pico en los 30 min siguientes")
+    guardar_poster(fig, "g3", "G3 para el póster: acierto de cada color (de cada 100 lecturas, cuántas precedieron un pico) "
+                              "frente a la tasa base del mes")
+
+    # ------------------------------------------------------------ POSTER_G5: los dos casos críticos (consumo + semáforo)
+    fig = lienzo(146)
+    ML_, MR_ = 25, 8
+    WA_ = CAJA_MM - ML_ - MR_
+    f_c1 = fecha_es(FECHA.iloc[S[p_c1]]).split(" ")[0]
+    f_c2 = fecha_es(FECHA.iloc[a_c2[0]]).split(" ")[0]
+    BLOQUES5 = [
+        (w1, 79, f"Caso 1 · pico sin aviso · {f_c1}", "sin rojo antes del pico",
+         f"de {num_es(A[S[p_c1] - 1], 0)} a {num_es(c1_['max_wh'], 0)} Wh; duró {c1_['duracion_min']} min "
+         f"(se ven {min_vis_c1})"),
+        (w2, 6, f"Caso 2 · aviso falso más largo · {f_c2}", f"{c2_['duracion_min']} min en rojo sin pico",
+         f"{hhmm(a_c2[0])}–{hhmm(a_c2[-1])}; el consumo no pasó de {num_es(c2_['wh_max_durante'], 0)} Wh"),
+    ]
+    for w_, yb_, tit_, grande_, chico_ in BLOQUES5:
+        a1 = eje(fig, ML_, yb_ + 18, WA_, 40)
+        a2 = eje(fig, ML_, yb_ + 9, WA_, 7, sharex=a1)
+        xw = np.arange(len(w_))
+        for p in range(len(S)):
+            if E[p] >= w_[0] and S[p] <= w_[-1]:
+                a1.axvspan(max(S[p], w_[0]) - w_[0], min(E[p], w_[-1]) - w_[0] + 1, color=ROJO_TENUE, alpha=0.6, lw=0,
+                           zorder=0)
+        a1.plot(xw + 0.5, A[w_], color=TINTA, lw=2.4, zorder=3)
+        a1.axhline(UMBRAL, color=GRIS, ls="--", lw=1.6)
+        tope_ = max(float(A[w_].max()), UMBRAL) * 2.0
+        paso_ = 300 if tope_ > 800 else 100
+        a1.set_ylim(0, tope_); a1.set_yticks(np.arange(0, float(A[w_].max()) + 1, paso_))
+        a1.yaxis.set_major_formatter(FMT_WH); a1.set_ylabel("Wh")
+        a1.set_title(tit_, loc="left", fontsize=PT, fontweight="bold", pad=6)
+        rotulo(a1, 0.015, 0.97, grande_, chico_, trans=a1.transAxes)
+        tira(a2, xw, [str(COLOR[j_]) for j_ in w_], 1)
+        tk_ = [i_ for i_ in range(len(w_)) if FECHA.iloc[w_[i_]].minute == 0]
+        a2.set_xticks(tk_); a2.set_xticklabels([hhmm(w_[i_]) for i_ in tk_]); a2.set_xlim(0, len(w_))
+        a1.tick_params(labelbottom=False)
+    guardar_poster(fig, "g5", f"G5 para el póster: consumo y franja del semáforo del caso 1 ({f_c1}) y del caso 2 ({f_c2}) "
+                              f"con su anotación; sin el panel del puntaje")
 ''')
 
 # =====================================================================================
@@ -2622,11 +2912,16 @@ MOCK = {
                      "en lecturas > 200 Wh subestima (altas_sesgo < 0): el pronóstico se queda corto en los picos")},
     "momentos_tarjeta1": MOMENTOS, "situaciones_tarjeta4": SITUACIONES, "dia_antes_despues": DIA_AD,
     "casos_criticos": CASOS,
+    "escenarios_simulados": {"escenarios": ESC_SIM, "base_kwh": float(exc_ant),
+                             "nota": ("SIMULADO: kwh = base_kwh × evitable_pct × aceptadas_pct / 10.000; los dos "
+                                      "porcentajes son supuestos declarados, no medidos (mismas claves sim_* de cifras.json)")},
     "esperado": {"tarjeta2_elegido_desplegado": metricas_card2(RES[("desp", ELEG)]),
                  "tarjeta2_regla_mismo_rojo": metricas_card2(M_REGLA),
                  "colores_momentos": [m_["color_esperado"] for m_ in MOMENTOS],
                  "azar_p20_desplegado": azar_teo_d,
                  "exceso_anticipado_kwh": float(exc_ant), "exceso_total_kwh": float(exc_a),
+                 "antes_despues_inicio_rojo": DIA_AD["pico_frase"]["inicio_rojo"] if "pico_frase" in DIA_AD else None,
+                 "antes_despues_min_desde_inicio_rojo": DIA_AD["pico_frase"]["min_desde_inicio_rojo"] if "pico_frase" in DIA_AD else None,
                  "por_lectura": {k_: float(v_) for k_, v_ in LECT.items()},
                  "nota": ("métricas con r por defecto y cortes de validación; antelación ≥ 20 min = rojo en s−3 o s−2; "
                           "tarjeta2_elegido_desplegado y tarjeta2_regla_mismo_rojo tienen el mismo rojo realizado")},
@@ -2671,7 +2966,10 @@ OBLIG = ["caso_letra", "caso_frase", "sel_elegido", "sel_nivel", "titular_n20", 
          "part_umbral_p90_temporal", "n1c_antes_ya_encendida_n", "fig2_elegido_desp_p20_ic_inf",
          "cal_deciles_con_rango", "cal_optimismo_max", "caso1_ventana_fragil", "caso1_margen_amarillo_s1",
          "semillas_linea", "semillas_g4_val_p20_media", "semillas_elegido_cambia_n", "semillas_complejo_cambia_n",
-         "fig_n"] + [f"fig_g{i}_ruta" for i in range(1, 7)]
+         "fig_n", "sim_nota", "ejemplo_dia_n20", "titular_m10_n", "titular_p20_fraccion", "titular_falsos_fraccion",
+         "expl_regla_roja_1_de_cada_100", "caso1_exceso_kwh", "sel_n_candidatos", "lect_todo_verde_f1", "part_n_retardos",
+         "datos_dias_incompletos", "datos_appliances_multiplo10_pct", "n1c_det_mismo_r_n20"] + \
+         [f"demo_{r_}_{c_}" for r_ in ("r12", "r05") for c_ in ("n20", "p20", "avisos_dia", "min_dia", "falsos", "rojo_pct")] +[f"fig_g{i}_ruta" for i in range(1, 7)]         + [f"sim_{e_}_{c_}" for e_ in ("bajo", "medio", "alto") for c_ in ("evitable_pct", "aceptadas_pct", "kwh", "pct_exceso")]
 faltan = [k for k in OBLIG if k not in C_["nuevas"]]
 assert not faltan, faltan
 for i in range(1, 7):
@@ -2679,7 +2977,7 @@ for i in range(1, 7):
 assert len(M_["calibracion"]["mostrar_rango"]) == len(M_["calibracion"]["tasa_mdp"])
 assert "ventana_fragil" in M_["casos_criticos"]["pico_no_anticipado"]
 for k in ["serie_prueba", "picos_prueba", "validacion_calma", "parametros_elegido", "calibracion", "explicador", "g3c",
-          "momentos_tarjeta1", "situaciones_tarjeta4", "dia_antes_despues", "esperado", "r_defecto"]:
+          "momentos_tarjeta1", "situaciones_tarjeta4", "dia_antes_despues", "esperado", "r_defecto", "escenarios_simulados"]:
     assert k in M_, k
 assert len(M_["serie_prueba"]["wh"]) == N - cl and len(M_["momentos_tarjeta1"]) == 5 and len(M_["situaciones_tarjeta4"]) == 4
 
@@ -2735,7 +3033,8 @@ lineas = [
     f"9. Persistencia: gemelo MAE {t('n1b_g3a_total_mae')} vs {t('n1b_persistencia_total_mae')}; RMSE {t('n1b_g3a_total_rmse')} vs "
     f"{t('n1b_persistencia_total_rmse')}; sesgo en > 200 Wh {t('n1b_g3a_altas_sesgo')} vs {t('n1b_persistencia_altas_sesgo')}.",
     f"10. Energía: exceso sobre 200 Wh {t('energia_exceso_kwh')}; en picos avisados con ≥ 20 min {t('energia_exceso_anticipado_kwh')} "
-    f"({t('energia_exceso_anticipado_pct')}).",
+    f"({t('energia_exceso_anticipado_pct')}). SIMULADO (supuestos declarados): bajo {t('sim_bajo_kwh')}, medio "
+    f"{t('sim_medio_kwh')}, alto {t('sim_alto_kwh')}.",
     f"11. Explicador: {t('expl_fidelidad')} de coincidencia con el semáforo en prueba ({t('expl_base_nunca_rojo')} si nunca "
     f"pintara rojo); reproduce el {t('expl_cobertura')} del rojo. Rojo realizado entre señales {t('deriva_rojo_min')}–{t('deriva_rojo_max')}.",
     f"12. Frase: {FRASE}",

@@ -1,6 +1,6 @@
 # Plan del Parcial 2 (Aprendizaje Supervisado) — Shiro Guardian: ¿cuánto antes se puede avisar de un pico de consumo?
 
-> **Estado:** borrador para aprobación (21-oct-2026). Reemplaza el plan anterior de taquilla de cine (TMDB), que copiaba el tema de un ejemplo de otro grupo. No se escribe código hasta que el usuario lo apruebe. Historial de iteraciones y reglas de diseño en `planeacion/`.
+> **Estado:** aprobado el 21-oct-2026 (sí a las 4 decisiones; cifras solo en kWh). Reemplaza el plan anterior de taquilla de cine (TMDB), que copiaba el tema de un ejemplo de otro grupo. **Ajustes posteriores del usuario (21-oct):** el mockup se queda con las tarjetas 1–2 (sin pasada 2); se añade un guion de sustentación con reparto entre los 4 integrantes y recorrido de la demo; póster A1 vertical en PDF; autores en este orden: Jose Leonardo Diazgranados, Sofía Londoño, Andrés Felipe Céspedes Rondón, Alex Duran. El enunciado vigente es el PDF "26-1" que el profesor subió a Classroom con los 3 ejemplos; no hay fecha de entrega y habrá una sustentación corta. Historial de iteraciones y reglas de diseño en `planeacion/`.
 
 ## Portada — lo que hay que decidir (≈ 2 páginas)
 

@@ -1,7 +1,7 @@
 {
  "meta": {
-  "fecha_ejecucion": "2026-10-21T17:13:41",
-  "segundos": 79.4,
+  "fecha_ejecucion": "2026-10-21T23:04:49",
+  "segundos": 97.0,
   "sklearn": "1.9.0",
   "pandas": "3.0.5",
   "numpy": "2.4.6",
@@ -88,6 +88,30 @@
    "particion": "temporal",
    "fuente": "§1 Datos y particiones",
    "descripcion": "Variables exógenas (sin rv1/rv2)"
+  },
+  "part_n_retardos": {
+   "valor": 7,
+   "texto": "7",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§1 Datos y particiones",
+   "descripcion": "Retardos del consumo (lag1, lag2, lag3, lag6, media_1h, max_1h, std_1h)"
+  },
+  "datos_dias_incompletos": {
+   "valor": 2,
+   "texto": "2",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§1 Datos y particiones",
+   "descripcion": "Días de calendario con menos de 144 lecturas (primero y último del dataset)"
+  },
+  "datos_appliances_multiplo10_pct": {
+   "valor": 100.0,
+   "texto": "100 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§1 Datos y particiones",
+   "descripcion": "% de lecturas de consumo que son múltiplo de 10 Wh"
   },
   "part_n_lecturas_dl": {
    "valor": 19729,
@@ -1096,6 +1120,14 @@
    "particion": "temporal",
    "fuente": "§6 N1c",
    "descripcion": "% de picos con ≥ 20 min del detector P1 con el mismo tiempo en rojo que Guardian (top-r de su probabilidad)"
+  },
+  "n1c_det_mismo_r_n20": {
+   "valor": 22,
+   "texto": "22 picos",
+   "unidad": "picos",
+   "particion": "temporal",
+   "fuente": "§6 N1c",
+   "descripcion": "Picos con ≥ 20 min del detector P1 con el mismo tiempo en rojo que Guardian (numerador de n1c_det_mismo_r_p20)"
   },
   "n1c_antes_ya_encendida_n": {
    "valor": 23,
@@ -3737,6 +3769,14 @@
    "fuente": "§9 Selección",
    "descripcion": "Variables que usa el elegido"
   },
+  "sel_n_candidatos": {
+   "valor": 6,
+   "texto": "6",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§9 Selección",
+   "descripcion": "Señales candidatas supervisadas (sin contar la regla de nivel)"
+  },
   "sel_n_pasan_piso": {
    "valor": 5,
    "texto": "5",
@@ -4025,6 +4065,38 @@
    "fuente": "§10 Casos",
    "descripcion": "% de picos con ≥ 10 min de la regla al mismo rojo realizado"
   },
+  "titular_m10_n": {
+   "valor": 37,
+   "texto": "37 picos",
+   "unidad": "picos",
+   "particion": "temporal",
+   "fuente": "§10 Casos",
+   "descripcion": "Picos con ≥ 10 min de la regla al mismo rojo realizado"
+  },
+  "titular_m30_n": {
+   "valor": 19,
+   "texto": "19 picos",
+   "unidad": "picos",
+   "particion": "temporal",
+   "fuente": "§10 Casos",
+   "descripcion": "Picos con ≥ 30 min de la regla al mismo rojo realizado"
+  },
+  "titular_p20_fraccion": {
+   "valor": "3 de cada 10",
+   "texto": "3 de cada 10",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§10 Casos",
+   "descripcion": "titular_p20 en décimos redondeados, para el lenguaje llano"
+  },
+  "titular_falsos_fraccion": {
+   "valor": "6 de cada 10",
+   "texto": "6 de cada 10",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§10 Casos",
+   "descripcion": "titular_falsos en décimos redondeados, para el lenguaje llano"
+  },
   "titular_m30_pct": {
    "valor": 22.619048,
    "texto": "22,6 %",
@@ -4120,6 +4192,14 @@
    "particion": "temporal",
    "fuente": "§10 Por lectura",
    "descripcion": "Exactitud de pintar todo de verde (F1 = 0) en la calma de prueba"
+  },
+  "lect_todo_verde_f1": {
+   "valor": 0.0,
+   "texto": "0,00",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§10 Por lectura",
+   "descripcion": "F1 por lectura de pintar todo de verde en la calma de prueba (sin rojos predichos)"
   },
   "lect_elegido_auc": {
    "valor": 0.770353,
@@ -5001,6 +5081,78 @@
    "fuente": "§12 Explicador",
    "descripcion": "Hojas del árbol que dicen ROJO"
   },
+  "expl_regla_roja_1_frec_desde": {
+   "valor": 13.785395,
+   "texto": "13,8 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 1: frecuencia histórica de picos a esta hora (en laborable o en fin de semana, según el día) (%) > este valor"
+  },
+  "expl_regla_roja_1_frec_hasta": {
+   "valor": 28.849123,
+   "texto": "28,8 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 1: frecuencia histórica de picos a esta hora (en laborable o en fin de semana, según el día) (%) ≤ este valor"
+  },
+  "expl_regla_roja_1_consumo_desde": {
+   "valor": 95.0,
+   "texto": "95,0 Wh",
+   "unidad": "Wh",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 1: consumo actual (Wh) > este valor"
+  },
+  "expl_regla_roja_1_de_cada_100": {
+   "valor": 87,
+   "texto": "87",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 1: de cada 100 momentos así en el entrenamiento, cuántos estaban en rojo"
+  },
+  "expl_regla_roja_1_n": {
+   "valor": 478,
+   "texto": "478",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 1: momentos de entrenamiento que cumplen la regla"
+  },
+  "expl_regla_roja_2_frec_desde": {
+   "valor": 28.849123,
+   "texto": "28,8 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 2: frecuencia histórica de picos a esta hora (en laborable o en fin de semana, según el día) (%) > este valor"
+  },
+  "expl_regla_roja_2_consumo_desde": {
+   "valor": 75.0,
+   "texto": "75,0 Wh",
+   "unidad": "Wh",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 2: consumo actual (Wh) > este valor"
+  },
+  "expl_regla_roja_2_de_cada_100": {
+   "valor": 100,
+   "texto": "100",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 2: de cada 100 momentos así en el entrenamiento, cuántos estaban en rojo"
+  },
+  "expl_regla_roja_2_n": {
+   "valor": 269,
+   "texto": "269",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§12 Explicador",
+   "descripcion": "Regla roja 2: momentos de entrenamiento que cumplen la regla"
+  },
   "energia_prueba_kwh": {
    "valor": 380.03,
    "texto": "380,0 kWh",
@@ -5056,6 +5208,110 @@
    "particion": "temporal",
    "fuente": "§13 Energía",
    "descripcion": "Energía de los picos avisados con ≥ 20 min"
+  },
+  "sim_bajo_evitable_pct": {
+   "valor": 10,
+   "texto": "10 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario bajo: supuesto de % del exceso avisado que se podía correr de hora (no medido)"
+  },
+  "sim_bajo_aceptadas_pct": {
+   "valor": 50,
+   "texto": "50 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario bajo: supuesto de % de propuestas que acepta la persona (no medido)"
+  },
+  "sim_bajo_kwh": {
+   "valor": 1.012,
+   "texto": "1,01 kWh",
+   "unidad": "kWh",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario bajo: exceso avisado con ≥ 20 min × 10 % evitable × 50 % aceptadas (kWh en el mes de prueba)"
+  },
+  "sim_bajo_pct_exceso": {
+   "valor": 1.986651,
+   "texto": "2,0 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario bajo: % del exceso sobre 200 Wh de todo el mes de prueba que se habría corrido de hora"
+  },
+  "sim_medio_evitable_pct": {
+   "valor": 25,
+   "texto": "25 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario medio: supuesto de % del exceso avisado que se podía correr de hora (no medido)"
+  },
+  "sim_medio_aceptadas_pct": {
+   "valor": 70,
+   "texto": "70 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario medio: supuesto de % de propuestas que acepta la persona (no medido)"
+  },
+  "sim_medio_kwh": {
+   "valor": 3.542,
+   "texto": "3,54 kWh",
+   "unidad": "kWh",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario medio: exceso avisado con ≥ 20 min × 25 % evitable × 70 % aceptadas (kWh en el mes de prueba)"
+  },
+  "sim_medio_pct_exceso": {
+   "valor": 6.953278,
+   "texto": "7,0 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario medio: % del exceso sobre 200 Wh de todo el mes de prueba que se habría corrido de hora"
+  },
+  "sim_alto_evitable_pct": {
+   "valor": 50,
+   "texto": "50 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario alto: supuesto de % del exceso avisado que se podía correr de hora (no medido)"
+  },
+  "sim_alto_aceptadas_pct": {
+   "valor": 90,
+   "texto": "90 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario alto: supuesto de % de propuestas que acepta la persona (no medido)"
+  },
+  "sim_alto_kwh": {
+   "valor": 9.108,
+   "texto": "9,11 kWh",
+   "unidad": "kWh",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario alto: exceso avisado con ≥ 20 min × 50 % evitable × 90 % aceptadas (kWh en el mes de prueba)"
+  },
+  "sim_alto_pct_exceso": {
+   "valor": 17.879859,
+   "texto": "17,9 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "SIMULADO, escenario alto: % del exceso sobre 200 Wh de todo el mes de prueba que se habría corrido de hora"
+  },
+  "sim_nota": {
+   "valor": "SIMULADO: escenarios con supuestos declarados (% evitable y % de propuestas aceptadas) aplicados al exceso medido en picos avisados con al menos 20 min; no son ahorro medido ni promesa.",
+   "texto": "SIMULADO: escenarios con supuestos declarados (% evitable y % de propuestas aceptadas) aplicados al exceso medido en picos avisados con al menos 20 min; no son ahorro medido ni promesa.",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "Advertencia que acompaña a la tabla de escenarios simulados"
   },
   "caso1_inicio": {
    "valor": "2016-05-13T11:10:00",
@@ -5177,6 +5433,14 @@
    "fuente": "§13 Energía",
    "descripcion": "Caso crítico 1: energía del pico"
   },
+  "caso1_exceso_kwh": {
+   "valor": 3.05,
+   "texto": "3,05 kWh",
+   "unidad": "kWh",
+   "particion": "temporal",
+   "fuente": "§13 Energía",
+   "descripcion": "Caso crítico 1: exceso sobre 200 Wh del pico"
+  },
   "caso1_duracion_min": {
    "valor": 260,
    "texto": "260 min",
@@ -5296,6 +5560,126 @@
    "particion": "temporal",
    "fuente": "§14 Ejemplos",
    "descripcion": "% de picos del día avisados con ≥ 20 min"
+  },
+  "ejemplo_dia_n20": {
+   "valor": 1,
+   "texto": "1",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§14 Ejemplos",
+   "descripcion": "Picos del día avisados con ≥ 20 min (al menos dos lecturas de antelación)"
+  },
+  "demo_r12_r": {
+   "valor": 12.0,
+   "texto": "12,00 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Valor del deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r12_n20": {
+   "valor": 37,
+   "texto": "37 picos",
+   "unidad": "picos",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Picos avisados con ≥ 20 min · deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r12_p20": {
+   "valor": 44.047619,
+   "texto": "44,0 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "% de picos avisados con ≥ 20 min · deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r12_avisos_dia": {
+   "valor": 3.431179,
+   "texto": "3,43 avisos/día",
+   "unidad": "avisos/día",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Avisos por día · deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r12_min_dia": {
+   "valor": 181.779468,
+   "texto": "182 min/día",
+   "unidad": "min/día",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Minutos al día en rojo · deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r12_falsos": {
+   "valor": 59.574468,
+   "texto": "59,6 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "% de avisos falsos · deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r12_rojo_pct": {
+   "valor": 13.814147,
+   "texto": "13,81 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "% de la calma de prueba en rojo (realizado) · deslizador de rojo en 12,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_r": {
+   "valor": 5.0,
+   "texto": "5,00 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Valor del deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_n20": {
+   "valor": 17,
+   "texto": "17 picos",
+   "unidad": "picos",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Picos avisados con ≥ 20 min · deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_p20": {
+   "valor": 20.238095,
+   "texto": "20,2 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "% de picos avisados con ≥ 20 min · deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_avisos_dia": {
+   "valor": 2.29962,
+   "texto": "2,30 avisos/día",
+   "unidad": "avisos/día",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Avisos por día · deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_min_dia": {
+   "valor": 77.749049,
+   "texto": "78 min/día",
+   "unidad": "min/día",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "Minutos al día en rojo · deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_falsos": {
+   "valor": 65.079365,
+   "texto": "65,1 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "% de avisos falsos · deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
+  },
+  "demo_r05_rojo_pct": {
+   "valor": 5.90846,
+   "texto": "5,91 %",
+   "unidad": "%",
+   "particion": "temporal",
+   "fuente": "§14 Deslizador de la página",
+   "descripcion": "% de la calma de prueba en rojo (realizado) · deslizador de rojo en 5,00 % (cortes de validación, desplegado en prueba)"
   },
   "ejemplo_dia_primer_rojo": {
    "valor": "2016-05-05T08:10:00",
@@ -5600,6 +5984,38 @@
    "particion": "temporal",
    "fuente": "§17 Figuras",
    "descripcion": "Figuras exportadas a 300 dpi"
+  },
+  "fig_poster_g1_ruta": {
+   "valor": "figuras/POSTER_G1.png",
+   "texto": "figuras/POSTER_G1.png",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§17 Figuras",
+   "descripcion": "G1 para el póster: consumo del 5-may-2016, picos sombreados, tira del semáforo y antelación de cada pico; sin título ni leyenda"
+  },
+  "fig_poster_g2_ruta": {
+   "valor": "figuras/POSTER_G2.png",
+   "texto": "figuras/POSTER_G2.png",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§17 Figuras",
+   "descripcion": "G2 para el póster: % de los 84 picos con ≥ 10, ≥ 20 y ≥ 30 min de antelación, G0 desplegado frente a la regla de nivel con el mismo rojo, IC 95 % y azar"
+  },
+  "fig_poster_g3_ruta": {
+   "valor": "figuras/POSTER_G3.png",
+   "texto": "figuras/POSTER_G3.png",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§17 Figuras",
+   "descripcion": "G3 para el póster: acierto de cada color (de cada 100 lecturas, cuántas precedieron un pico) frente a la tasa base del mes"
+  },
+  "fig_poster_g5_ruta": {
+   "valor": "figuras/POSTER_G5.png",
+   "texto": "figuras/POSTER_G5.png",
+   "unidad": "",
+   "particion": "temporal",
+   "fuente": "§17 Figuras",
+   "descripcion": "G5 para el póster: consumo y franja del semáforo del caso 1 (13-may-2016) y del caso 2 (4-may-2016) con su anotación; sin el panel del puntaje"
   }
  },
  "heredadas": {

@@ -34,6 +34,9 @@ input[type=range]{width:100%;padding:0;accent-color:var(--rojo)}
 #s-am{accent-color:var(--ambar)}
 button{cursor:pointer}
 button:hover{border-color:var(--mut)}
+button:disabled{opacity:.45;cursor:default}
+button.reset{font-size:12.5px;padding:2px 8px;margin:4px 0 0}
+.sim button.on{border-color:var(--ambar);background:#2a2010}
 .momentos button{display:block;width:100%;text-align:left;margin:0 0 5px;font-size:13.5px}
 .momentos button.on{border-color:var(--azul);background:#17243b}
 .luz{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line)}
@@ -79,6 +82,7 @@ footer{padding:4px 20px 30px;color:var(--mut);font-size:13.5px}
 #verif{font-weight:700;color:var(--tx)}
 body.solo header,body.solo footer,body.solo .card{display:none}
 body.solo .card.on{display:block}
+body.informe #t2 details,body.informe #t2 .sim,body.informe button.reset{display:none}
 @media (max-width:820px){.g2,.ad,.ctrl{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
@@ -114,7 +118,7 @@ body.solo .card.on{display:block}
 <div>
 <div class="luz"><div class="pill" id="t1-pill"></div><div id="t1-cal"></div></div>
 <div class="tol"><label><span>¿Cuánto rojo tolera?</span><input type="range" id="s-rojo1" min="1" max="25" step="0.01"></label>
-<div class="ext"><span>← menos avisos</span><span>más avisos →</span></div><p class="nota" id="t1-rojo" style="margin:2px 0 0"></p></div>
+<div class="ext"><span>← menos avisos</span><span>más avisos →</span></div><button class="reset">Restablecer el valor por defecto</button><p class="nota" id="t1-rojo" style="margin:2px 0 0"></p></div>
 <div class="bloque"><h3>Por qué</h3><div id="t1-porque"></div></div>
 <div class="bloque"><h3>Qué propone Shiro</h3><div id="t1-accion"></div></div>
 <div class="bloque"><h3>Consumo esperado en 10 min (pronóstico, no es el semáforo)</h3><svg id="t1-barra" viewBox="0 0 420 56" width="100%"></svg><div id="t1-pron"></div></div>
@@ -130,6 +134,7 @@ body.solo .card.on{display:block}
 <label><span>Ámbar en abril: <b id="o-am"></b></span><input type="range" id="s-am" min="0" max="25" step="0.01"></label>
 <label>Día para la tira<select id="s-dia"></select></label>
 </div>
+<button class="reset">Restablecer rojo y ámbar por defecto</button>
 <p class="nota" id="ctrl-nota"></p>
 <div class="kpis" id="kpis"></div>
 <p class="nota" id="ic-nota"></p>
@@ -140,7 +145,7 @@ body.solo .card.on{display:block}
 <div><h3>Antes</h3><p>El hogar se entera por la factura o cuando el pico ya empezó.</p><p class="nota" id="antes-nota"></p></div>
 <div><h3>Después, con Guardian</h3><p id="despues"></p><p id="energia"></p>
 <div class="sim"><span class="tag">SIMULADO</span> <span class="nota">Supuestos que usted elige; en 0 lo simulado no se mezcla con lo medido.</span><br>
-<button data-s="10">Supuesto bajo</button><button data-s="30">Supuesto medio</button><button data-s="50">Supuesto alto</button>
+<span id="escenarios"></span>
 <label><span>De esa energía, cuánto se podía correr de hora: <b id="o-ev"></b></span><input type="range" id="s-ev" min="0" max="100" step="5" value="0"></label>
 <label><span>De las propuestas, cuántas acepta la persona: <b id="o-ac"></b></span><input type="range" id="s-ac" min="0" max="100" step="5" value="0"></label>
 <p id="simulado" style="margin:4px 0 0"></p></div></div>
@@ -148,7 +153,6 @@ body.solo .card.on{display:block}
 <details open><summary>Comparación con la regla de nivel y con el azar (mismo tiempo en rojo)</summary>
 <div class="scroll"><table id="tabla"></table></div><p class="nota" id="tabla-nota"></p></details>
 </section>
-<!-- Tarjetas 3 (impacto simulado) y 4 (propuestas) se añaden aquí, con la misma clase .card y anclas #t3 y #t4. -->
 </main>
 <footer><p id="verif">Verificación: pendiente</p><p id="fuente"></p><pre id="diag" hidden></pre></footer>
 <script>
@@ -163,7 +167,7 @@ const st = { r: D.r_defecto, a: D.r_defecto, ev: 0, ac: 0, dia: D.dia_antes_desp
 const NOMBRE = { verde: 'VERDE', amarillo: 'ÁMBAR', rojo: 'ROJO', curso: 'ROJO · EN CURSO' };
 const ESP = { verde: 'verde', amarillo: 'amarillo', rojo: 'rojo', curso: 'rojo en curso' };
 const TONO = { verde: '#188038', amarillo: '#e8710a', rojo: '#d93025', curso: 'url(#rayas)' };
-let C, COL, M, MR, T1, ENERGIA;
+let C, COL, M, MR, T1, ENERGIA, AD;
 function num(x, d = 1) {
   const [e, f] = Math.abs(x).toFixed(d).split('.');
   return (x < 0 && Number(x.toFixed(d)) !== 0 ? '−' : '') + e.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (f ? ',' + f : '');
@@ -174,6 +178,7 @@ const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'o
 const fechaCorta = s => { const [y, m, d] = s.slice(0, 10).split('-'); return Number(d) + '-' + MESES[m - 1] + '-' + y; };
 const VDE = fechaCorta(D.validacion_calma.desde), VHA = fechaCorta(D.validacion_calma.hasta);
 const esDefecto = () => Math.abs(st.r - D.r_defecto) < 1e-12;
+const ESC = D.escenarios_simulados.escenarios;
 function cuantil(v, q) {   // igual que numpy.quantile, método lineal
   const h = (v.length - 1) * q, lo = Math.floor(h), g = h - lo, a = v[lo], b = v[Math.min(lo + 1, v.length - 1)];
   return g >= 0.5 ? b - (b - a) * (1 - g) : a + (b - a) * g;
@@ -304,9 +309,11 @@ function antesDespues() {
   $('ad-tit').textContent = `Antes y después · día del ejemplo: ${fechaCorta(DA.dia)}`;
   $('antes-nota').textContent = `El ${fechaCorta(DA.dia)} hubo ${del.length} picos (${kwh(del.reduce((s, d) => s + d.q.energia_wh, 0))} kWh en total); sin semáforo, la persona solo los ve cuando el medidor ya marca más de ${num(UM, 0)} Wh.`;
   let txt = `Con estos ajustes el semáforo no se adelantó al pico de las ${hhmm(pf.inicio)}.`;
+  AD = null;
   if (a) {
     let j = pk.indice_inicio - a / 10; while (j > 0 && COL[j - 1] === 'rojo') j--;
     const desde = (pk.indice_inicio - j) * 10;
+    AD = { inicio_rojo: S.fecha[j], desde };
     txt = `El ${fechaCorta(pf.inicio)} el semáforo estaba en rojo desde las <b>${hhmm(S.fecha[j])}</b>, <b>${desde} min antes</b> del pico de las ${hhmm(pf.inicio)} (${kwh(pk.energia_wh)} kWh)`
       + (desde > a ? `; las cifras del mes cuentan como máximo ${a} min` : '') + `. Shiro propuso no encender cargas grandes; la persona decide.`;
   }
@@ -316,6 +323,8 @@ function antesDespues() {
 }
 function render2() {
   calcular();
+  document.querySelectorAll('button.reset').forEach(b => { b.disabled = esDefecto() && st.a === D.r_defecto; });
+  document.querySelectorAll('#escenarios button').forEach((b, k) => b.classList.toggle('on', st.ev === ESC[k].evitable_pct && st.ac === ESC[k].aceptadas_pct));
   $('o-rojo').textContent = `${num(st.r * 100, 2)} % de los momentos tranquilos`; $('o-am').textContent = `${num(st.a * 100, 2)} % más`;
   $('s-rojo').value = $('s-rojo1').value = st.r * 100;
   $('caso').textContent = `Pico = el consumo de los aparatos pasa de ${num(UM, 0)} Wh en 10 min (varios aparatos grandes a la vez); lecturas altas separadas por menos de 30 min cuentan como un solo pico. En el mes de prueba, con el semáforo en rojo ${num(M.min_dia, 0)} min al día, Guardian avisó ${M.n20} de ${M.picos} picos con al menos 20 min de margen; el ${num(M.falsos, 1)} % de los avisos no tuvo pico detrás.`;
@@ -339,9 +348,10 @@ function render2() {
   $('tira-nota').innerHTML = `Barras: consumo cada 10 min (claras dentro de un pico). Franja: color de Guardian<span class="sq" style="background:#188038"></span>verde<span class="sq" style="background:#e8710a"></span>ámbar<span class="sq" style="background:#d93025"></span>rojo anticipado<span class="sq" style="background:repeating-linear-gradient(45deg,#d93025 0 3px,#80201a 3px 6px)"></span>rojo en curso (medidor). Sobre cada pico: con cuánta antelación pasó a rojo (se cuenta hasta 30 min).`;
   antesDespues();
   const total = PICOS.reduce((s, p) => s + p.exceso_wh, 0) / 1000;
-  $('energia').innerHTML = `<b>Medido:</b> en el mes, los ${M.n20} picos avisados con al menos 20 min tuvieron <b>${num(ENERGIA, 1)} kWh</b> por encima de ${num(UM, 0)} Wh, de ${num(total, 1)} kWh de exceso en todo el mes (${num(ENERGIA / total * 100, 1)} %). No es ahorro: es la energía que estaba en juego. El resto llegó sin aviso o con menos de 20 min de margen.`;
+  $('energia').innerHTML = `<b>Medido:</b> en el mes, los ${M.n20} picos avisados con al menos 20 min tuvieron <b>${num(ENERGIA, 2)} kWh</b> por encima de ${num(UM, 0)} Wh, de ${num(total, 1)} kWh de exceso en todo el mes (${num(ENERGIA / total * 100, 1)} %). No es ahorro: es la energía que estaba en juego. El resto llegó sin aviso o con menos de 20 min de margen.`;
   $('o-ev').textContent = `${st.ev} %`; $('o-ac').textContent = `${st.ac} %`; $('s-ev').value = st.ev; $('s-ac').value = st.ac;
-  $('simulado').innerHTML = st.ev && st.ac ? `Energía que se habría corrido fuera de los picos: <b>${num(ENERGIA * st.ev * st.ac / 1e4, 2)} kWh</b> en el mes (${num(ENERGIA, 1)} kWh × ${st.ev} % × ${st.ac} %). <b>SIMULADO</b>.`
+  const esc = ESC.find(e => st.ev === e.evitable_pct && st.ac === e.aceptadas_pct);
+  $('simulado').innerHTML = st.ev && st.ac ? `Energía que se habría corrido fuera de los picos: <b>${num(ENERGIA * st.ev * st.ac / 1e4, 2)} kWh</b> en el mes (${num(ENERGIA, 2)} kWh × ${st.ev} % × ${st.ac} %${esc ? ', escenario ' + esc.escenario : ''}). <b>SIMULADO</b>: los dos porcentajes son supuestos, no mediciones.`
     : 'Con algún supuesto en 0 no hay energía simulada: mueva ambos deslizadores o elija un supuesto.';
   render1();
 }
@@ -361,14 +371,19 @@ function verificar() {
   });
   if (!cerca(ENERGIA, E.exceso_anticipado_kwh)) dif.push('energía avisada');
   const pf = D.dia_antes_despues.pico_frase; if (M.ant[PICOS.findIndex(p => p.inicio === pf.inicio)] !== pf.antelacion_min) dif.push('antes/después');
+  if (!AD || AD.inicio_rojo !== E.antes_despues_inicio_rojo || AD.desde !== E.antes_despues_min_desde_inicio_rojo)
+    dif.push(`antes/después: rojo desde ${AD ? hhmm(AD.inicio_rojo) + ', ' + AD.desde + ' min' : '—'} ≠ ${hhmm(E.antes_despues_inicio_rojo)}, ${E.antes_despues_min_desde_inicio_rojo} min`);
+  const htmlAD = $('despues').innerHTML;
+  if (!htmlAD.includes(`<b>${hhmm(E.antes_despues_inicio_rojo)}</b>`) || !htmlAD.includes(`<b>${E.antes_despues_min_desde_inicio_rojo} min antes</b>`)) dif.push('frase del antes/después');
+  ESC.forEach(e => { if (!cerca(ENERGIA * e.evitable_pct * e.aceptadas_pct / 1e4, e.kwh)) dif.push(`escenario simulado ${e.escenario}`); });
   if (ERRORES.length) dif.push('errores de JS: ' + ERRORES.join(' | '));
-  $('verif').textContent = 'Verificación: ' + (dif.length ? 'DIFIERE (' + dif.join('; ') + ')' : 'OK') + ' — compara con el cuaderno los cortes, las métricas de la tarjeta 2, el azar, la energía y, en los 5 momentos reales, color, puntaje, calibración, regla del explicador y pronóstico.';
+  $('verif').textContent = 'Verificación: ' + (dif.length ? 'DIFIERE (' + dif.join('; ') + ')' : 'OK') + ' — compara con el cuaderno los cortes, las métricas de la tarjeta 2, el azar, la energía medida, los escenarios simulados, la frase del antes y después (inicio real del rojo y minutos) y, en los 5 momentos reales, color, puntaje, calibración, regla del explicador y pronóstico.';
   $('diag').textContent = JSON.stringify({ puntajes_tarjeta1: pts, errores: ERRORES });
 }
-function vista() {   // #t1 y #t2 muestran solo esa tarjeta (capturas); la navegación de la página solo desplaza
-  const h = location.hash.slice(1), solo = h === 't1' || h === 't2';
-  document.body.classList.toggle('solo', solo);
-  document.querySelectorAll('.card').forEach(c => c.classList.toggle('on', c.id === h));
+function vista() {   // #t1 y #t2 muestran solo esa tarjeta (capturas); #t2-informe, la tarjeta 2 sin la comparación ni lo simulado
+  const h = location.hash.slice(1), inf = h === 't2-informe', id = inf ? 't2' : h, solo = id === 't1' || id === 't2';
+  document.body.classList.toggle('solo', solo); document.body.classList.toggle('informe', inf);
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('on', c.id === id));
 }
 const DT = D.datos;
 $('maqueta').textContent = `Maqueta con datos históricos de una sola vivienda (${DT.nombre}; ${fechaCorta(DT.desde)} a ${fechaCorta(DT.hasta)}): no hay medidor conectado. El mes de prueba tiene ${PICOS.length} picos; las cifras describen ese mes, no prometen el siguiente.`;
@@ -383,7 +398,8 @@ $('s-rojo').oninput = $('s-rojo1').oninput = e => { st.r = e.target.value / 100;
 $('s-am').oninput = e => { st.a = e.target.value / 100; render2(); };
 $('s-ev').oninput = e => { st.ev = +e.target.value; render2(); };
 $('s-ac').oninput = e => { st.ac = +e.target.value; render2(); };
-document.querySelectorAll('.sim button').forEach(b => b.onclick = () => { st.ev = st.ac = +b.dataset.s; render2(); });
+ESC.forEach(e => { const b = document.createElement('button'); b.textContent = `Escenario ${e.escenario} (${e.evitable_pct} % · ${e.aceptadas_pct} %)`; b.onclick = () => { st.ev = e.evitable_pct; st.ac = e.aceptadas_pct; render2(); }; $('escenarios').appendChild(b); });
+document.querySelectorAll('button.reset').forEach(b => b.onclick = () => { st.r = st.a = D.r_defecto; render2(); });
 document.querySelectorAll('#t1 fieldset input, #t1 fieldset select').forEach(el => el.addEventListener('input', () => { st.mom = -1; render1(); }));
 document.querySelectorAll('nav a[data-ir]').forEach(a => a.onclick = e => { e.preventDefault(); $(a.dataset.ir).scrollIntoView({ behavior: 'smooth' }); });
 render2(); verificar(); cargar(1); vista();
