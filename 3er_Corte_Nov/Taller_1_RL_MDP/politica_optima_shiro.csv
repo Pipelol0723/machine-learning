@@ -1,0 +1,41 @@
+Estado (s),Descripción,Acción óptima (a),Acción codiciosa,V*(s),Q(No actuar),Q(Aplazar),Q(Ejecutar)
+0-0-0-0,normal · madrugada · bajo,No actuar,No actuar,-14.8885,-14.8885,,
+0-0-0-1,normal · madrugada · bajo · con carga pendiente,Ejecutar,Ejecutar,-14.8885,-14.9122,,-14.8885
+0-0-1-0,normal · madrugada · medio,No actuar,No actuar,-15.3698,-15.3698,,
+0-0-1-1,normal · madrugada · medio · con carga pendiente,Ejecutar,Ejecutar,-15.3698,-15.3953,,-15.3698
+0-1-0-0,normal · mañana · bajo,No actuar,No actuar,-17.468,-17.468,,
+0-1-0-1,normal · mañana · bajo · con carga pendiente,No actuar,No actuar,-17.5858,-17.5858,,-17.6232
+0-1-1-0,normal · mañana · medio,No actuar,No actuar,-18.7972,-18.7972,,
+0-1-1-1,normal · mañana · medio · con carga pendiente,No actuar,No actuar,-18.9199,-18.9199,,-18.9524
+0-1-2-0,normal · mañana · alto,Aplazar,Aplazar,-22.8006,-22.8187,-22.8006,
+0-1-2-1,normal · mañana · alto · con carga pendiente,No actuar,No actuar,-22.9558,-22.9558,,-22.9738
+0-2-0-0,normal · tarde · bajo,No actuar,No actuar,-15.8291,-15.8291,,
+0-2-0-1,normal · tarde · bajo · con carga pendiente,No actuar,No actuar,-15.9262,-15.9262,,-15.9842
+0-2-1-0,normal · tarde · medio,No actuar,No actuar,-17.298,-17.298,,
+0-2-1-1,normal · tarde · medio · con carga pendiente,No actuar,No actuar,-17.4057,-17.4057,,-17.4531
+0-2-2-0,normal · tarde · alto,Aplazar,Aplazar,-19.6702,-19.7167,-19.6702,
+0-2-2-1,normal · tarde · alto · con carga pendiente,No actuar,No actuar,-19.8253,-19.8253,,-19.8718
+0-3-0-0,normal · noche · bajo,No actuar,No actuar,-14.4092,-14.4092,,
+0-3-0-1,normal · noche · bajo · con carga pendiente,No actuar,No actuar,-14.4226,-14.4226,,-14.5643
+0-3-1-0,normal · noche · medio,No actuar,No actuar,-15.6706,-15.6706,,
+0-3-1-1,normal · noche · medio · con carga pendiente,No actuar,No actuar,-15.7088,-15.7088,,-15.8257
+0-3-2-0,normal · noche · alto,Aplazar,Aplazar,-18.0769,-18.1537,-18.0769,
+0-3-2-1,normal · noche · alto · con carga pendiente,No actuar,No actuar,-18.2321,-18.2321,,-18.3088
+1-1-0-0,carga alta · mañana · bajo,No actuar,No actuar,-17.2544,-17.2544,,
+1-1-0-1,carga alta · mañana · bajo · con carga pendiente,No actuar,No actuar,-17.3735,-17.3735,,-17.4095
+1-1-1-0,carga alta · mañana · medio,No actuar,No actuar,-20.5376,-20.5376,,
+1-1-1-1,carga alta · mañana · medio · con carga pendiente,No actuar,No actuar,-20.6727,-20.6727,,-20.6927
+1-1-2-0,carga alta · mañana · alto,Aplazar,Aplazar,-23.7934,-23.805,-23.7934,
+1-1-2-1,carga alta · mañana · alto · con carga pendiente,No actuar,No actuar,-23.9485,-23.9485,,-23.9601
+1-2-0-0,carga alta · tarde · bajo,No actuar,No actuar,-19.066,-19.066,,
+1-2-0-1,carga alta · tarde · bajo · con carga pendiente,No actuar,No actuar,-19.1938,-19.1938,,-19.2212
+1-2-1-0,carga alta · tarde · medio,No actuar,No actuar,-19.7354,-19.7354,,
+1-2-1-1,carga alta · tarde · medio · con carga pendiente,No actuar,No actuar,-19.8615,-19.8615,,-19.8905
+1-2-2-0,carga alta · tarde · alto,Aplazar,Aplazar,-22.2839,-22.3042,-22.2839,
+1-2-2-1,carga alta · tarde · alto · con carga pendiente,No actuar,No actuar,-22.4391,-22.4391,,-22.4593
+1-3-0-0,carga alta · noche · bajo,No actuar,No actuar,-14.5394,-14.5394,,
+1-3-0-1,carga alta · noche · bajo · con carga pendiente,No actuar,No actuar,-14.5487,-14.5487,,-14.6946
+1-3-1-0,carga alta · noche · medio,No actuar,No actuar,-15.7706,-15.7706,,
+1-3-1-1,carga alta · noche · medio · con carga pendiente,No actuar,No actuar,-15.8086,-15.8086,,-15.9258
+1-3-2-0,carga alta · noche · alto,Aplazar,Aplazar,-17.9803,-18.082,-17.9803,
+1-3-2-1,carga alta · noche · alto · con carga pendiente,No actuar,No actuar,-18.1354,-18.1354,,-18.2371

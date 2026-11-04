@@ -93,6 +93,8 @@ machine learning/
 │  └─ Parcial_2_Aprendizaje_Supervisado/      (Shiro Guardian: plan, cuaderno, mockup, informe, póster,
 │                                              presentación, guion; todo regenerable desde generadores/)
 └─ 3er_Corte_Nov/
+   └─ Taller_1_RL_MDP/                        (MDP de Shiro Twin: Documentacion/ del profesor +
+                                               PLAN_TALLER1_C3.md; ver §12)
 ```
 
 Convención: cada taller vive en su propia carpeta bajo el corte que le corresponde, junto con el
@@ -455,6 +457,28 @@ RF + retardos queda como referencia histórica de "reconocer un pico en curso".
     50,9 kWh) ocurre en picos avisados con ≥ 20 min. El resto exige saber qué aparato se enciende
     (hallazgo 4).
 
+*Hallazgos del C3-T1 (2026-11-04) — MDP tabular, cifras en `3er_Corte_Nov/Taller_1_RL_MDP/cifras.json`:*
+
+32. **Con descuento, aplazar un costo parece ahorrarlo.** Si la energía aplazada se cobra completa al ejecutarla, el
+    agente aplaza aunque la tarifa sea plana y **nunca ejecuta** (la carga espera 23,4 h/día en mayo). Hay que cobrar al
+    aplazar la parte a precio de valle y al ejecutar solo el sobrecosto: con tarifa plana aplazan 0 estados. → El
+    entorno de Q-learning conserva la **contabilidad corregida** y el estado **carga pendiente** (sin ella, aplazar
+    borraría consumo: el ahorro ficticio del hallazgo 3).
+33. **Con una persona paciente (λ = 0,005) π\* = codiciosa = regla fija en los 40 estados**: aplaza todo pico en punta
+    y ejecuta en la madrugada. En mayo eso ahorra el **0,59 %** del costo con 7,2 h/día de espera y no se distingue de no
+    actuar (−0,078 kWh-eq/día, IC −0,173 a 0,019). → Aplazar por tarifa no es donde está el ahorro de este hogar
+    (refuerza los hallazgos 4 y 31).
+34. **λ decide la política.** Con λ = 0,02, π\* difiere de la codiciosa en 14 de 40 estados:
+    - no aplaza en la mañana (valle a 15,8 h);
+    - en la tarde de un día de carga alta guarda el cupo (otro pico antes del valle 87 % frente a 67 %);
+    - rescata la carga pendiente.
+
+    Cambia ahorro por espera (0,59 → 0,50 %; 7,2 → 4,5 h/día). Le gana a la codiciosa en enero–abril y no se
+    distingue en mayo. → **λ es un control de la persona** y la política se recalcula para cada valor.
+35. **Las decisiones de la tarde se juegan por milésimas** (ΔQ +0,003 en día normal frente a −0,007 en carga alta): se
+    muestran como dudosas (margen = confianza, como en el hallazgo 22). Un nivel alto en la tarde delata la hora (valle
+    más cerca) → en Q-learning probar bloques de 3 h si la cobertura alcanza.
+
 ---
 
 ## 8. Dos advertencias técnicas que deben sobrevivir a los cortes
@@ -620,7 +644,8 @@ Plan completo: `2do_Corte_Oct/Plan_Talleres_Corte2.md`. Decisiones tomadas con e
   - Para cambiar cualquier pieza se edita su generador y se regenera; nunca se edita el .docx/.pptx a mano.
 
 **Pendientes que siguen abiertos:**
-- **Formalizar el MDP por escrito** y construir el entorno de simulación con la función de
+- *(MDP tabular formalizado y resuelto en el C3-T1, hallazgos 32–35; §12.)* Falta construir el entorno de simulación
+  continuo para Q-learning con la función de
   transición ya decidida (lineal + retardos) e incertidumbre por **franja × tipo de día**. El estado
   incluye el tipo de día estimado con su confianza (margen) y la bandera «día desconocido», y la
   **probabilidad calibrada de pico en 30 min de G0 con su rango** (hallazgos 27 y 29).
@@ -670,3 +695,30 @@ Q-learning entrenado y evaluado ⬜ · informe final y demostración del entorno
 - Word está disponible por COM (conversión docx → PDF para revisar). Capturas de páginas HTML:
   Edge headless (`msedge.exe --headless=new --screenshot`). `pdftotext` viene con Git.
 - ⚠ El notebook del Taller 2 (`Taller2_Arboles_KNN.ipynb`) **no tiene salidas guardadas**.
+
+---
+
+## 12. 3.er corte — en curso (desde 2026-11-04)
+
+- **C3 Taller 1 — RL / MDP — TERMINADO (2026-11-04); falta que Pipe lo suba a Classroom (vence ese día, 5 puntos).**
+  Carpeta `3er_Corte_Nov/Taller_1_RL_MDP/`. Tarea de Classroom «C3 Taller1» (curso 26-2 Machine Learning); los 4 adjuntos
+  se descargaron con Chrome a `Documentacion/`: enunciado `ML_TALLER 1 CORTE 3 - RL.pdf` (diseño en 5 preguntas, adaptar
+  el código de las fresas, «batalla de las políticas» con 2–3 reglas de oro), código `RL_MDP.ipynb`, diapositivas
+  `RL_MDP 26.pdf` y `Ejemplo MDP.pdf` (otro grupo; marca el formato, no se copia). Plan: `PLAN_TALLER1_C3.md`.
+  - **Entregables (todo se regenera desde `generadores/`):**
+    - `construir_cuaderno.py` → `Taller1_C3_MDP_Shiro.ipynb` (32 celdas, ≈ 40–70 s, determinista), que escribe
+      `cifras.json` (fuente única), `politica_optima_shiro.csv`, `reglas_de_oro_lambda_0p02.csv` y `figuras/` R1–R8.
+    - `generar_documento.py` → `Taller1_C3_Diseno_MDP_RESUELTO.docx/.pdf` (9 pp.).
+    - `generar_presentacion.py` → `Taller1_C3_presentacion.pptx/.pdf` (11 diapositivas con notas).
+    - `verificar.py` (cuaderno sin errores, residuos, todo decimal sale de `cifras.json` o es parámetro declarado,
+      cordura) **debe terminar con código 0**.
+  - ⚠ **En el código del profesor P(s'|s) no depende de la acción → π\* = argmax R = política codiciosa**; su «dilema»
+    no puede ocurrir con ese código. Para Shiro la acción debe cambiar el futuro: de ahí el estado «carga pendiente».
+  - **Diseño final:**
+    - Paso de 1 h. s = (tipo de día estimado con K-Means k=2 ajustado en 110 días y asignado sobre la curva parcial;
+      franja; nivel <60/60–200/>200 Wh; carga pendiente) → **40 estados** (20 de 24 combinaciones exógenas vistas).
+    - A = {no actuar, aplazar (nivel alto y cupo libre), ejecutar lo pendiente}; ΔE = 40 % del exceso = **310 Wh**.
+    - Tarifa valle 1,0 / punta 1,5; r = −tarifa·E − λ·espera, con **contabilidad corregida**.
+    - P = conteo `shift(-1)` hasta el 30-abr × efecto determinista de la acción; γ = 0,95, θ = 1e-6.
+  - Resultados → hallazgos 32–35. La diapositiva 30 del profesor anuncia **Q-learning como Taller 2** del corte, sobre
+    este entorno.
