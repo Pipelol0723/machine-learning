@@ -700,7 +700,11 @@ Q-learning entrenado y evaluado ⬜ · informe final y demostración del entorno
 
 ## 12. 3.er corte — en curso (desde 2026-11-04)
 
-- **C3 Taller 1 — RL / MDP — TERMINADO (2026-11-04); falta que Pipe lo suba a Classroom (vence ese día, 5 puntos).**
+- **C3 Taller 1 — RL / MDP — ENTREGADO en Classroom el 2026-11-04 a las 12:28 (a tiempo; 5 puntos).** Se entregaron
+  3 adjuntos: `Taller1_C3_Diseno_MDP_RESUELTO.pdf`, `Taller1_C3_presentacion.pdf` y `Taller1_C3_MDP_Shiro.ipynb`, desde
+  la carpeta de Drive `Mi unidad/Machine Learning C3 Taller1`. Para entregar en Classroom: copiar a `G:\Mi unidad\…`
+  (Google Drive para escritorio, cuenta pipelol0723) y elegirlos en el selector, porque el selector de archivos es un
+  iframe sin input accesible.
   Carpeta `3er_Corte_Nov/Taller_1_RL_MDP/`. Tarea de Classroom «C3 Taller1» (curso 26-2 Machine Learning); los 4 adjuntos
   se descargaron con Chrome a `Documentacion/`: enunciado `ML_TALLER 1 CORTE 3 - RL.pdf` (diseño en 5 preguntas, adaptar
   el código de las fresas, «batalla de las políticas» con 2–3 reglas de oro), código `RL_MDP.ipynb`, diapositivas
