@@ -1,0 +1,1347 @@
+{
+ "meta": {
+  "generado": "2026-11-11 01:20",
+  "parametros": {
+   "ALPHA": 0.1,
+   "ALPHA_REC": "1/N^0.6",
+   "GAMMA": 0.95,
+   "EPS0": 1.0,
+   "EPS_MIN": 0.01,
+   "DECAY": 0.999,
+   "N_EP": 5000,
+   "N_EP_REC": 15000,
+   "SEMILLAS": [
+    42,
+    43,
+    44,
+    45,
+    46
+   ],
+   "LAMBDA": 0.005,
+   "R_PUNTA": 1.5,
+   "F_DESPL": 0.4
+  }
+ },
+ "cifras": {
+  "n_dias_tr": {
+   "valor": 110,
+   "texto": "110"
+  },
+  "n_dias_te": {
+   "valor": 26,
+   "texto": "26"
+  },
+  "DE_umbral": {
+   "valor": 310.2777777777778,
+   "texto": "310 Wh"
+  },
+  "pct_alto_umbral": {
+   "valor": 10.909090909090908,
+   "texto": "10,9 %"
+  },
+  "DE_qcut": {
+   "valor": 123.2882882882883,
+   "texto": "123 Wh"
+  },
+  "pct_alto_qcut": {
+   "valor": 33.63636363636363,
+   "texto": "33,6 %"
+  },
+  "DE_kmeans": {
+   "valor": 401.87428571428575,
+   "texto": "402 Wh"
+  },
+  "pct_alto_kmeans": {
+   "valor": 6.628787878787879,
+   "texto": "6,6 %"
+  },
+  "corte_q1": {
+   "valor": 51.666666666666664,
+   "texto": "52 Wh"
+  },
+  "corte_q2": {
+   "valor": 90.0,
+   "texto": "90 Wh"
+  },
+  "corte_k1": {
+   "valor": 114.34150245891853,
+   "texto": "114 Wh"
+  },
+  "corte_k2": {
+   "valor": 258.1588865096359,
+   "texto": "258 Wh"
+  },
+  "n_estados_umbral": {
+   "valor": 40,
+   "texto": "40"
+  },
+  "n_decision_umbral": {
+   "valor": 26,
+   "texto": "26"
+  },
+  "vi_aplaza_umbral": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "vi_iter": {
+   "valor": 268,
+   "texto": "268"
+  },
+  "n_estados_qcut": {
+   "valor": 24,
+   "texto": "24"
+  },
+  "n_decision_qcut": {
+   "valor": 16,
+   "texto": "16"
+  },
+  "vi_aplaza_qcut": {
+   "valor": 1,
+   "texto": "1"
+  },
+  "n_estados_kmeans": {
+   "valor": 40,
+   "texto": "40"
+  },
+  "n_decision_kmeans": {
+   "valor": 26,
+   "texto": "26"
+  },
+  "vi_aplaza_kmeans": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "brecha_med": {
+   "valor": 0.036666804602434766,
+   "texto": "0,037 kWh-eq"
+  },
+  "brecha_min": {
+   "valor": 0.011583327821490741,
+   "texto": "0,012 kWh-eq"
+  },
+  "brecha_max": {
+   "valor": 0.14585292578932574,
+   "texto": "0,146 kWh-eq"
+  },
+  "vi_aplaza_g0p5": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "vi_aplaza_g0p9": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "vi_aplaza_g0p99": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "n_anclas": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "vi_ahorro_te": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "vi_espera_te": {
+   "valor": 7.153846153846154,
+   "texto": "7,2 h/día"
+  },
+  "vi_aplaz_te": {
+   "valor": 0.7692307692307693,
+   "texto": "0,77"
+  },
+  "prof_modelo_acierto": {
+   "valor": 54.61538461538462,
+   "texto": "54,6 %"
+  },
+  "prof_modelo_acierto_w": {
+   "valor": 58.644034988219644,
+   "texto": "58,6 %"
+  },
+  "prof_modelo_acierto_w_min": {
+   "valor": 49.612258959240805,
+   "texto": "50 %"
+  },
+  "prof_modelo_acierto_w_max": {
+   "valor": 66.54941977110254,
+   "texto": "67 %"
+  },
+  "prof_modelo_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "prof_modelo_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "prof_modelo_ahorro": {
+   "valor": 0.1936698099488865,
+   "texto": "0,19 %"
+  },
+  "prof_modelo_espera": {
+   "valor": 2.776923076923077,
+   "texto": "2,8 h/día"
+  },
+  "prof_modelo_aplaz": {
+   "valor": 1.0615384615384615,
+   "texto": "1,06"
+  },
+  "prof_modelo_objetivo": {
+   "valor": 19.078813034188034,
+   "texto": "19,079 kWh-eq/día"
+  },
+  "prof_modelo_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "prof_modelo_ahorro_max": {
+   "valor": 0.4685559918118254,
+   "texto": "0,47 %"
+  },
+  "prof_modelo_captura": {
+   "valor": 32.63157894736966,
+   "texto": "33 %"
+  },
+  "prof_acierto": {
+   "valor": 54.615384615384606,
+   "texto": "54,6 %"
+  },
+  "prof_acierto_w": {
+   "valor": 67.34057535701706,
+   "texto": "67,3 %"
+  },
+  "prof_acierto_w_min": {
+   "valor": 49.5866755801373,
+   "texto": "50 %"
+  },
+  "prof_acierto_w_max": {
+   "valor": 74.19112032726926,
+   "texto": "74 %"
+  },
+  "prof_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "prof_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "prof_ahorro": {
+   "valor": 0.23115428929383564,
+   "texto": "0,23 %"
+  },
+  "prof_espera": {
+   "valor": 2.746153846153846,
+   "texto": "2,7 h/día"
+  },
+  "prof_aplaz": {
+   "valor": 0.7846153846153846,
+   "texto": "0,78"
+  },
+  "prof_objetivo": {
+   "valor": 19.071498931623932,
+   "texto": "19,071 kWh-eq/día"
+  },
+  "prof_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "prof_ahorro_max": {
+   "valor": 0.4685559918118254,
+   "texto": "0,47 %"
+  },
+  "prof_captura": {
+   "valor": 38.947368421054676,
+   "texto": "39 %"
+  },
+  "rec_modelo_acierto": {
+   "valor": 66.92307692307693,
+   "texto": "66,9 %"
+  },
+  "rec_modelo_acierto_w": {
+   "valor": 73.72227479409472,
+   "texto": "73,7 %"
+  },
+  "rec_modelo_acierto_w_min": {
+   "valor": 54.24329458738081,
+   "texto": "54 %"
+  },
+  "rec_modelo_acierto_w_max": {
+   "valor": 92.09009167406158,
+   "texto": "92 %"
+  },
+  "rec_modelo_alcanzan": {
+   "valor": 1,
+   "texto": "1 de 5"
+  },
+  "rec_modelo_dias90": {
+   "valor": 14600.0,
+   "texto": "1 de 5 semillas (mediana 14.600 días)"
+  },
+  "rec_modelo_ahorro": {
+   "valor": 0.19991722317304284,
+   "texto": "0,20 %"
+  },
+  "rec_modelo_espera": {
+   "valor": 5.907692307692308,
+   "texto": "5,9 h/día"
+  },
+  "rec_modelo_aplaz": {
+   "valor": 0.8461538461538461,
+   "texto": "0,85"
+  },
+  "rec_modelo_objetivo": {
+   "valor": 19.093273504273505,
+   "texto": "19,093 kWh-eq/día"
+  },
+  "rec_modelo_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "rec_modelo_ahorro_max": {
+   "valor": 0.5622671901741816,
+   "texto": "0,56 %"
+  },
+  "rec_modelo_captura": {
+   "valor": 33.68421052631685,
+   "texto": "34 %"
+  },
+  "base_acierto": {
+   "valor": 73.07692307692307,
+   "texto": "73,1 %"
+  },
+  "base_acierto_w": {
+   "valor": 84.74972796381552,
+   "texto": "84,7 %"
+  },
+  "base_acierto_w_min": {
+   "valor": 81.79280146411267,
+   "texto": "82 %"
+  },
+  "base_acierto_w_max": {
+   "valor": 88.22113776225781,
+   "texto": "88 %"
+  },
+  "base_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "base_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "base_ahorro": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "base_espera": {
+   "valor": 5.546153846153846,
+   "texto": "5,5 h/día"
+  },
+  "base_aplaz": {
+   "valor": 0.8,
+   "texto": "0,80"
+  },
+  "base_objetivo": {
+   "valor": 19.02821688034188,
+   "texto": "19,028 kWh-eq/día"
+  },
+  "base_ahorro_min": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "base_ahorro_max": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "base_captura": {
+   "valor": 89.47368421052809,
+   "texto": "89 %"
+  },
+  "prof_errq": {
+   "valor": 0.5125464455262237,
+   "texto": "0,51 kWh-eq"
+  },
+  "prof_sesgoq": {
+   "valor": -0.015645777484751457,
+   "texto": "−0,02 kWh-eq"
+  },
+  "base_errq": {
+   "valor": 0.3235776257096876,
+   "texto": "0,32 kWh-eq"
+  },
+  "base_sesgoq": {
+   "valor": 0.2505885467606861,
+   "texto": "0,25 kWh-eq"
+  },
+  "base_n_difs": {
+   "valor": 7,
+   "texto": "7"
+  },
+  "ventana": {
+   "valor": 100,
+   "texto": "100"
+  },
+  "n_ep": {
+   "valor": 5000,
+   "texto": "5.000"
+  },
+  "n_ep_rec": {
+   "valor": 15000,
+   "texto": "15.000"
+  },
+  "n_semillas": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "dias_ep": {
+   "valor": 110,
+   "texto": "110"
+  },
+  "anos_rec": {
+   "valor": 41.0958904109589,
+   "texto": "41 años"
+  },
+  "anos_prof": {
+   "valor": 13.698630136986301,
+   "texto": "14 años"
+  },
+  "pers_alto_A": {
+   "valor": 10.909090909090908,
+   "texto": "10,9 %"
+  },
+  "pers_calto_A": {
+   "valor": 50.90909090909091,
+   "texto": "50,9 %"
+  },
+  "pers_kwh_A": {
+   "valor": 14.175636363636364,
+   "texto": "14,2 kWh/día"
+  },
+  "pers_valle_tarde_A": {
+   "valor": 11.994149597978241,
+   "texto": "12,0 h"
+  },
+  "pers_valle_noche_A": {
+   "valor": 5.087793465434553,
+   "texto": "5,1 h"
+  },
+  "pers_estados_A": {
+   "valor": 40,
+   "texto": "40"
+  },
+  "pers_alto_B": {
+   "valor": 8.333333333333332,
+   "texto": "8,3 %"
+  },
+  "pers_calto_B": {
+   "valor": 57.692307692307686,
+   "texto": "57,7 %"
+  },
+  "pers_kwh_B": {
+   "valor": 13.388076923076923,
+   "texto": "13,4 kWh/día"
+  },
+  "pers_valle_tarde_B": {
+   "valor": 11.709139681638698,
+   "texto": "11,7 h"
+  },
+  "pers_valle_noche_B": {
+   "valor": 5.351213824391443,
+   "texto": "5,4 h"
+  },
+  "pers_estados_B": {
+   "valor": 38,
+   "texto": "38"
+  },
+  "p1_decision_comunes": {
+   "valor": 25,
+   "texto": "25"
+  },
+  "p1_iguales_vi": {
+   "valor": 25,
+   "texto": "25"
+  },
+  "p1_iguales_ql": {
+   "valor": 16,
+   "texto": "16"
+  },
+  "tr_vi_inv_tr": {
+   "valor": 0.6023466845178516,
+   "texto": "0,60 %"
+  },
+  "tre_vi_inv_tr": {
+   "valor": 8.563636363636364,
+   "texto": "8,6 h/día"
+  },
+  "tr_vi_inv_te": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "tre_vi_inv_te": {
+   "valor": 7.153846153846154,
+   "texto": "7,2 h/día"
+  },
+  "tr_vi_mayo_tr": {
+   "valor": 0.6023466845178516,
+   "texto": "0,60 %"
+  },
+  "tre_vi_mayo_tr": {
+   "valor": 8.563636363636364,
+   "texto": "8,6 h/día"
+  },
+  "tr_vi_mayo_te": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "tre_vi_mayo_te": {
+   "valor": 7.153846153846154,
+   "texto": "7,2 h/día"
+  },
+  "tr_ql_inv_tr": {
+   "valor": 0.5331114334238607,
+   "texto": "0,53 %"
+  },
+  "tre_ql_inv_tr": {
+   "valor": 6.136363636363637,
+   "texto": "6,1 h/día"
+  },
+  "tr_ql_inv_te": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "tre_ql_inv_te": {
+   "valor": 5.5,
+   "texto": "5,5 h/día"
+  },
+  "tr_ql_mayo_tr": {
+   "valor": 2.220446049250313e-14,
+   "texto": "0,00 %"
+  },
+  "tre_ql_mayo_tr": {
+   "valor": 12.827272727272728,
+   "texto": "12,8 h/día"
+  },
+  "tr_ql_mayo_te": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "tre_ql_mayo_te": {
+   "valor": 14.076923076923077,
+   "texto": "14,1 h/día"
+  },
+  "p1_B_acierto": {
+   "valor": 72.8,
+   "texto": "72,8 %"
+  },
+  "p1_B_acierto_w": {
+   "valor": 76.16888780148852,
+   "texto": "76,2 %"
+  },
+  "p1_B_acierto_w_min": {
+   "valor": 70.66883024720376,
+   "texto": "71 %"
+  },
+  "p1_B_acierto_w_max": {
+   "valor": 83.99406258809857,
+   "texto": "84 %"
+  },
+  "p1_B_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "p1_B_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "p1_B_ahorro": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p1_B_espera": {
+   "valor": 12.3,
+   "texto": "12,3 h/día"
+  },
+  "p1_B_aplaz": {
+   "valor": 0.9076923076923077,
+   "texto": "0,91"
+  },
+  "p1_B_objetivo": {
+   "valor": 19.163423076923074,
+   "texto": "19,163 kWh-eq/día"
+  },
+  "p1_B_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p1_B_ahorro_max": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p1_B_captura": {
+   "valor": 0.0,
+   "texto": "0 %"
+  },
+  "g0p5_acierto": {
+   "valor": 77.69230769230771,
+   "texto": "77,7 %"
+  },
+  "g0p5_acierto_w": {
+   "valor": 77.76476476432285,
+   "texto": "77,8 %"
+  },
+  "g0p5_acierto_w_min": {
+   "valor": 65.00991554000666,
+   "texto": "65 %"
+  },
+  "g0p5_acierto_w_max": {
+   "valor": 91.43192815657207,
+   "texto": "91 %"
+  },
+  "g0p5_alcanzan": {
+   "valor": 1,
+   "texto": "1 de 5"
+  },
+  "g0p5_dias90": {
+   "valor": 13700.0,
+   "texto": "1 de 5 semillas (mediana 13.700 días)"
+  },
+  "g0p5_ahorro": {
+   "valor": 0.5497723637258556,
+   "texto": "0,55 %"
+  },
+  "g0p5_espera": {
+   "valor": 6.384615384615385,
+   "texto": "6,4 h/día"
+  },
+  "g0p5_aplaz": {
+   "valor": 0.8384615384615385,
+   "texto": "0,84"
+  },
+  "g0p5_objetivo": {
+   "valor": 19.028829059829057,
+   "texto": "19,029 kWh-eq/día"
+  },
+  "g0p5_ahorro_min": {
+   "valor": 0.499793057932596,
+   "texto": "0,50 %"
+  },
+  "g0p5_ahorro_max": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "g0p5_captura": {
+   "valor": 92.63157894736929,
+   "texto": "93 %"
+  },
+  "g0p9_acierto": {
+   "valor": 60.0,
+   "texto": "60,0 %"
+  },
+  "g0p9_acierto_w": {
+   "valor": 72.01984989322156,
+   "texto": "72,0 %"
+  },
+  "g0p9_acierto_w_min": {
+   "valor": 66.14441974337717,
+   "texto": "66 %"
+  },
+  "g0p9_acierto_w_max": {
+   "valor": 75.30682768763195,
+   "texto": "75 %"
+  },
+  "g0p9_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "g0p9_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "g0p9_ahorro": {
+   "valor": 0.37484479344945587,
+   "texto": "0,37 %"
+  },
+  "g0p9_espera": {
+   "valor": 3.769230769230769,
+   "texto": "3,8 h/día"
+  },
+  "g0p9_aplaz": {
+   "valor": 0.6461538461538462,
+   "texto": "0,65"
+  },
+  "g0p9_objetivo": {
+   "valor": 19.049166666666668,
+   "texto": "19,049 kWh-eq/día"
+  },
+  "g0p9_ahorro_min": {
+   "valor": 0.1561853306039529,
+   "texto": "0,16 %"
+  },
+  "g0p9_ahorro_max": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "g0p9_captura": {
+   "valor": 63.15789473684419,
+   "texto": "63 %"
+  },
+  "g0p99_acierto": {
+   "valor": 66.15384615384615,
+   "texto": "66,2 %"
+  },
+  "g0p99_acierto_w": {
+   "valor": 81.91201403863656,
+   "texto": "81,9 %"
+  },
+  "g0p99_acierto_w_min": {
+   "valor": 70.14849900777281,
+   "texto": "70 %"
+  },
+  "g0p99_acierto_w_max": {
+   "valor": 91.74805402407978,
+   "texto": "92 %"
+  },
+  "g0p99_alcanzan": {
+   "valor": 1,
+   "texto": "1 de 5"
+  },
+  "g0p99_dias90": {
+   "valor": 15000.0,
+   "texto": "1 de 5 semillas (mediana 15.000 días)"
+  },
+  "g0p99_ahorro": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "g0p99_espera": {
+   "valor": 9.438461538461539,
+   "texto": "9,4 h/día"
+  },
+  "g0p99_aplaz": {
+   "valor": 0.8384615384615385,
+   "texto": "0,84"
+  },
+  "g0p99_objetivo": {
+   "valor": 19.14911538461538,
+   "texto": "19,149 kWh-eq/día"
+  },
+  "g0p99_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "g0p99_ahorro_max": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "g0p99_captura": {
+   "valor": 0.0,
+   "texto": "0 %"
+  },
+  "g0p5_ql_aplaza": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "g0p5_ql_ejecuta": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "g0p5_vi_ejecuta": {
+   "valor": 2,
+   "texto": "2"
+  },
+  "g0p5_qmin": {
+   "valor": -4.980669326241697,
+   "texto": "−5,0"
+  },
+  "g0p95_ql_aplaza": {
+   "valor": 4,
+   "texto": "4"
+  },
+  "g0p95_ql_ejecuta": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "g0p95_vi_ejecuta": {
+   "valor": 2,
+   "texto": "2"
+  },
+  "g0p95_qmin": {
+   "valor": -23.599858640396082,
+   "texto": "−23,6"
+  },
+  "g0p99_ql_aplaza": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "g0p99_ql_ejecuta": {
+   "valor": 4,
+   "texto": "4"
+  },
+  "g0p99_vi_ejecuta": {
+   "valor": 4,
+   "texto": "4"
+  },
+  "g0p99_qmin": {
+   "valor": -54.2374584037938,
+   "texto": "−54,2"
+  },
+  "a0p01_acierto": {
+   "valor": 66.92307692307692,
+   "texto": "66,9 %"
+  },
+  "a0p01_acierto_w": {
+   "valor": 71.03418150469459,
+   "texto": "71,0 %"
+  },
+  "a0p01_acierto_w_min": {
+   "valor": 66.31208535217381,
+   "texto": "66 %"
+  },
+  "a0p01_acierto_w_max": {
+   "valor": 79.49396202583787,
+   "texto": "79 %"
+  },
+  "a0p01_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "a0p01_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "a0p01_ahorro": {
+   "valor": 0.13744309093146612,
+   "texto": "0,14 %"
+  },
+  "a0p01_espera": {
+   "valor": 10.115384615384613,
+   "texto": "10,1 h/día"
+  },
+  "a0p01_aplaz": {
+   "valor": 0.8846153846153845,
+   "texto": "0,88"
+  },
+  "a0p01_objetivo": {
+   "valor": 19.12624572649573,
+   "texto": "19,126 kWh-eq/día"
+  },
+  "a0p01_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "a0p01_ahorro_max": {
+   "valor": 0.4373189256910215,
+   "texto": "0,44 %"
+  },
+  "a0p01_captura": {
+   "valor": 23.157894736842696,
+   "texto": "23 %"
+  },
+  "a0p1_acierto": {
+   "valor": 50.0,
+   "texto": "50,0 %"
+  },
+  "a0p1_acierto_w": {
+   "valor": 65.18522277169062,
+   "texto": "65,2 %"
+  },
+  "a0p1_acierto_w_min": {
+   "valor": 59.222689693908926,
+   "texto": "59 %"
+  },
+  "a0p1_acierto_w_max": {
+   "valor": 68.98957409370922,
+   "texto": "69 %"
+  },
+  "a0p1_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "a0p1_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "a0p1_ahorro": {
+   "valor": 0.06872154546573972,
+   "texto": "0,07 %"
+  },
+  "a0p1_espera": {
+   "valor": 1.4076923076923076,
+   "texto": "1,4 h/día"
+  },
+  "a0p1_aplaz": {
+   "valor": 0.6923076923076923,
+   "texto": "0,69"
+  },
+  "a0p1_objetivo": {
+   "valor": 19.0958344017094,
+   "texto": "19,096 kWh-eq/día"
+  },
+  "a0p1_ahorro_min": {
+   "valor": 0.0312370661207928,
+   "texto": "0,03 %"
+  },
+  "a0p1_ahorro_max": {
+   "valor": 0.1249482644831601,
+   "texto": "0,12 %"
+  },
+  "a0p1_captura": {
+   "valor": 11.57894736842247,
+   "texto": "12 %"
+  },
+  "a0p9_acierto": {
+   "valor": 54.61538461538462,
+   "texto": "54,6 %"
+  },
+  "a0p9_acierto_w": {
+   "valor": 62.20247927275524,
+   "texto": "62,2 %"
+  },
+  "a0p9_acierto_w_min": {
+   "valor": 52.72717627657243,
+   "texto": "53 %"
+  },
+  "a0p9_acierto_w_max": {
+   "valor": 76.83578087791057,
+   "texto": "77 %"
+  },
+  "a0p9_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "a0p9_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "a0p9_ahorro": {
+   "valor": 0.13119567770731422,
+   "texto": "0,13 %"
+  },
+  "a0p9_espera": {
+   "valor": 4.792307692307692,
+   "texto": "4,8 h/día"
+  },
+  "a0p9_aplaz": {
+   "valor": 0.8384615384615385,
+   "texto": "0,84"
+  },
+  "a0p9_objetivo": {
+   "valor": 19.10082371794872,
+   "texto": "19,101 kWh-eq/día"
+  },
+  "a0p9_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "a0p9_ahorro_max": {
+   "valor": 0.4685559918118254,
+   "texto": "0,47 %"
+  },
+  "a0p9_captura": {
+   "valor": 22.105263157896253,
+   "texto": "22 %"
+  },
+  "a0p01_disp": {
+   "valor": 0.018437643409983495,
+   "texto": "0,018 kWh-eq"
+  },
+  "a0p01_salto": {
+   "valor": 10.508556263065731,
+   "texto": "10,5 puntos"
+  },
+  "a0p1_disp": {
+   "valor": 0.010393059085988988,
+   "texto": "0,010 kWh-eq"
+  },
+  "a0p1_salto": {
+   "valor": 1.4323906454070838,
+   "texto": "1,4 puntos"
+  },
+  "a0p9_disp": {
+   "valor": 0.0226568646773271,
+   "texto": "0,023 kWh-eq"
+  },
+  "a0p9_salto": {
+   "valor": 5.549091283988391,
+   "texto": "5,5 puntos"
+  },
+  "arec_disp": {
+   "valor": 0.008996160623153754,
+   "texto": "0,009 kWh-eq"
+  },
+  "arec_salto": {
+   "valor": 2.1859794862417448,
+   "texto": "2,2 puntos"
+  },
+  "p3_qcut_acierto": {
+   "valor": 61.25,
+   "texto": "61,2 %"
+  },
+  "p3_qcut_acierto_w": {
+   "valor": 63.61595627424688,
+   "texto": "63,6 %"
+  },
+  "p3_qcut_acierto_w_min": {
+   "valor": 51.450020384566855,
+   "texto": "51 %"
+  },
+  "p3_qcut_acierto_w_max": {
+   "valor": 75.61855416778617,
+   "texto": "76 %"
+  },
+  "p3_qcut_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "p3_qcut_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "p3_qcut_ahorro": {
+   "valor": 0.04468316096224001,
+   "texto": "0,04 %"
+  },
+  "p3_qcut_espera": {
+   "valor": 13.676923076923078,
+   "texto": "13,7 h/día"
+  },
+  "p3_qcut_aplaz": {
+   "valor": 1.6923076923076927,
+   "texto": "1,69"
+  },
+  "p3_qcut_objetivo": {
+   "valor": 19.161772349272347,
+   "texto": "19,162 kWh-eq/día"
+  },
+  "p3_qcut_ahorro_min": {
+   "valor": 1.1102230246251565e-14,
+   "texto": "0,00 %"
+  },
+  "p3_qcut_ahorro_max": {
+   "valor": 0.22341580481115564,
+   "texto": "0,22 %"
+  },
+  "p3_qcut_captura": {
+   "valor": 15.652173913046456,
+   "texto": "16 %"
+  },
+  "p3_kmeans_acierto": {
+   "valor": 76.92307692307692,
+   "texto": "76,9 %"
+  },
+  "p3_kmeans_acierto_w": {
+   "valor": 83.48322195499424,
+   "texto": "83,5 %"
+  },
+  "p3_kmeans_acierto_w_min": {
+   "valor": 79.3176903126256,
+   "texto": "79 %"
+  },
+  "p3_kmeans_acierto_w_max": {
+   "valor": 89.76450575236957,
+   "texto": "90 %"
+  },
+  "p3_kmeans_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "p3_kmeans_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "p3_kmeans_ahorro": {
+   "valor": 0.21847590283471163,
+   "texto": "0,22 %"
+  },
+  "p3_kmeans_espera": {
+   "valor": 2.361538461538461,
+   "texto": "2,4 h/día"
+  },
+  "p3_kmeans_aplaz": {
+   "valor": 0.3384615384615385,
+   "texto": "0,34"
+  },
+  "p3_kmeans_objetivo": {
+   "valor": 19.071997670329672,
+   "texto": "19,072 kWh-eq/día"
+  },
+  "p3_kmeans_ahorro_min": {
+   "valor": 0.16183400209979215,
+   "texto": "0,16 %"
+  },
+  "p3_kmeans_ahorro_max": {
+   "valor": 0.2832095036746196,
+   "texto": "0,28 %"
+  },
+  "p3_kmeans_captura": {
+   "valor": 54.00000000000252,
+   "texto": "54 %"
+  },
+  "p3vi_qcut_ahorro": {
+   "valor": 0.28547575059203467,
+   "texto": "0,29 %"
+  },
+  "p3vi_qcut_espera": {
+   "valor": 5.538461538461538,
+   "texto": "5,5 h/día"
+  },
+  "p3vi_qcut_kwh": {
+   "valor": 0.11380457380457382,
+   "texto": "0,11 kWh/día"
+  },
+  "p3vi_qcut_aplaz": {
+   "valor": 0.9230769230769231,
+   "texto": "0,92"
+  },
+  "p3vi_kmeans_ahorro": {
+   "valor": 0.40458500524944707,
+   "texto": "0,40 %"
+  },
+  "p3vi_kmeans_espera": {
+   "valor": 4.576923076923077,
+   "texto": "4,6 h/día"
+  },
+  "p3vi_kmeans_kwh": {
+   "valor": 0.1700237362637363,
+   "texto": "0,17 kWh/día"
+  },
+  "p3vi_kmeans_aplaz": {
+   "valor": 0.4230769230769231,
+   "texto": "0,42"
+  },
+  "p3vi_umbral_ahorro": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "p3vi_umbral_espera": {
+   "valor": 7.153846153846154,
+   "texto": "7,2 h/día"
+  },
+  "p3vi_umbral_kwh": {
+   "valor": 0.23867521367521374,
+   "texto": "0,24 kWh/día"
+  },
+  "p3vi_umbral_aplaz": {
+   "valor": 0.7692307692307693,
+   "texto": "0,77"
+  },
+  "p3_qcut_sin_exceso": {
+   "valor": 35.585585585585584,
+   "texto": "35,6 %"
+  },
+  "p4_trans_acierto": {
+   "valor": 34.61538461538462,
+   "texto": "34,6 %"
+  },
+  "p4_trans_acierto_w": {
+   "valor": 26.344311357824388,
+   "texto": "26,3 %"
+  },
+  "p4_trans_acierto_w_min": {
+   "valor": 23.008563277484757,
+   "texto": "23 %"
+  },
+  "p4_trans_acierto_w_max": {
+   "valor": 30.28398801836528,
+   "texto": "30 %"
+  },
+  "p4_trans_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "p4_trans_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "p4_trans_ahorro": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_trans_espera": {
+   "valor": 1.3846153846153846,
+   "texto": "1,4 h/día"
+  },
+  "p4_trans_aplaz": {
+   "valor": 1.3846153846153846,
+   "texto": "1,38"
+  },
+  "p4_trans_objetivo": {
+   "valor": 19.108846153846155,
+   "texto": "19,109 kWh-eq/día"
+  },
+  "p4_trans_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_trans_ahorro_max": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_trans_captura": {
+   "valor": 0.0,
+   "texto": "0 %"
+  },
+  "p4_miedo_acierto": {
+   "valor": 10.0,
+   "texto": "10,0 %"
+  },
+  "p4_miedo_acierto_w": {
+   "valor": 8.3718158281707,
+   "texto": "8,4 %"
+  },
+  "p4_miedo_acierto_w_min": {
+   "valor": 1.6829944593320225,
+   "texto": "2 %"
+  },
+  "p4_miedo_acierto_w_max": {
+   "valor": 14.347341226187712,
+   "texto": "14 %"
+  },
+  "p4_miedo_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "p4_miedo_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "p4_miedo_ahorro": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_miedo_espera": {
+   "valor": 0.0,
+   "texto": "0,0 h/día"
+  },
+  "p4_miedo_aplaz": {
+   "valor": 0.0,
+   "texto": "0,00"
+  },
+  "p4_miedo_objetivo": {
+   "valor": 19.10192307692308,
+   "texto": "19,102 kWh-eq/día"
+  },
+  "p4_miedo_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_miedo_ahorro_max": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_miedo_captura": {
+   "valor": 0.0,
+   "texto": "0 %"
+  },
+  "p4_ing_acierto": {
+   "valor": 72.3076923076923,
+   "texto": "72,3 %"
+  },
+  "p4_ing_acierto_w": {
+   "valor": 82.61560550119184,
+   "texto": "82,6 %"
+  },
+  "p4_ing_acierto_w_min": {
+   "valor": 79.26315374629563,
+   "texto": "79 %"
+  },
+  "p4_ing_acierto_w_max": {
+   "valor": 84.42175794177524,
+   "texto": "84 %"
+  },
+  "p4_ing_alcanzan": {
+   "valor": 0,
+   "texto": "0 de 5"
+  },
+  "p4_ing_dias90": {
+   "valor": null,
+   "texto": "ninguna semilla"
+  },
+  "p4_ing_ahorro": {
+   "valor": 0.32486548765619183,
+   "texto": "0,32 %"
+  },
+  "p4_ing_espera": {
+   "valor": 7.523076923076923,
+   "texto": "7,5 h/día"
+  },
+  "p4_ing_aplaz": {
+   "valor": 0.8230769230769232,
+   "texto": "0,82"
+  },
+  "p4_ing_objetivo": {
+   "valor": 19.077482905982908,
+   "texto": "19,077 kWh-eq/día"
+  },
+  "p4_ing_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "p4_ing_ahorro_max": {
+   "valor": 0.5622671901741816,
+   "texto": "0,56 %"
+  },
+  "p4_ing_captura": {
+   "valor": 54.736842105264415,
+   "texto": "55 %"
+  },
+  "p4_trans_aplaza_est": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "p4_trans_ejecuta_est": {
+   "valor": 18,
+   "texto": "18"
+  },
+  "p4_miedo_aplaza_est": {
+   "valor": 0,
+   "texto": "0"
+  },
+  "p4_miedo_ejecuta_est": {
+   "valor": 19,
+   "texto": "19"
+  },
+  "p4_ing_aplaza_est": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "p4_ing_ejecuta_est": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "base_aplaza_est": {
+   "valor": 4,
+   "texto": "4"
+  },
+  "base_ejecuta_est": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "ql_cons_ahorro": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "ql_cons_espera": {
+   "valor": 5.5,
+   "texto": "5,5 h/día"
+  },
+  "boot_ql_pi": {
+   "valor": 0.00366452991453018,
+   "texto": "0,004 kWh-eq/día (IC −0,050 a 0,061)"
+  },
+  "boot_ql_pi_sig": {
+   "valor": "no",
+   "texto": "no"
+  },
+  "boot_ql_no": {
+   "valor": -0.07393696581196543,
+   "texto": "−0,074 kWh-eq/día (IC −0,178 a 0,033)"
+  },
+  "boot_ql_no_sig": {
+   "valor": "no",
+   "texto": "no"
+  }
+ }
+}

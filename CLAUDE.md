@@ -93,8 +93,11 @@ machine learning/
 │  └─ Parcial_2_Aprendizaje_Supervisado/      (Shiro Guardian: plan, cuaderno, mockup, informe, póster,
 │                                              presentación, guion; todo regenerable desde generadores/)
 └─ 3er_Corte_Nov/
-   └─ Taller_1_RL_MDP/                        (MDP de Shiro Twin: Documentacion/ del profesor +
-                                               PLAN_TALLER1_C3.md; ver §12)
+   ├─ HOJA_DE_RUTA_C3.md                      ← fechas y cadena T1 → T2 → T3 → Parcial
+   ├─ Taller_1_RL_MDP/                        (MDP de Shiro Twin, entregado; ver §12)
+   ├─ Taller_2_QLearning/                     (Q-learning: Documentacion/ + PLAN_TALLER2_C3.md)
+   ├─ Taller_3_DQN/                           (DQN: Documentacion/; entrega en video)
+   └─ Parcial_3/                              (prototipo 3 aprendizajes + artículo IEEE: Documentacion/)
 ```
 
 Convención: cada taller vive en su propia carpeta bajo el corte que le corresponde, junto con el
@@ -479,6 +482,34 @@ RF + retardos queda como referencia histórica de "reconocer un pico en curso".
     muestran como dudosas (margen = confianza, como en el hallazgo 22). Un nivel alto en la tarde delata la hora (valle
     más cerca) → en Q-learning probar bloques de 3 h si la cobertura alcanza.
 
+*Hallazgos del C3-T2 (2026-11-11) — Q-learning, cifras en `3er_Corte_Nov/Taller_2_QLearning/cifras.json`:*
+
+36. **El arranque en frío de Shiro Home es inviable.** El agente recomendado no llega al 90 % de acierto ponderado en
+    ninguna de 5 semillas ni con 15.000 días simulados (≈ 41 años de experiencia real). → El agente **se pre-entrena en el
+    gemelo y en la casa solo se ajusta**: el orden Twin → Home pasa de preferencia a necesidad medida.
+37. **Con α fijo Q-learning no converge en este problema.** Las brechas entre acciones de π\* son pequeñas (mediana
+    0,037 kWh-eq, de 0,012 a 0,146) frente a un error de los Q de 0,51 con α = 0,1. Resultados:
+    - el agente con los hiperparámetros del profesor (5.000 días) captura el 39 % del ahorro de π\*, y entrenar más días
+      con α fijo no mejora;
+    - con **α decreciente 1/N^0,6** (15.000 días) acierta el 84,7 % ponderado, captura el 89 % del ahorro y en mayo no se
+      distingue de π\* (IC −0,050 a 0,061 kWh-eq/día);
+    - le queda un sesgo de sobreestimación de +0,25 kWh-eq (el máximo de valores con ruido).
+38. **γ cambia cuánto cuesta aprender, no la estrategia.** π\*(0,5) aplaza igual que π\*(0,95), porque la contabilidad
+    corregida cobra el beneficio de aplazar en el momento. El agente miope aprende mejor (Q mínimo −5 y captura el 93 %); el
+    paciente (γ = 0,99, Q −54) se ahoga en ruido y en mayo no ahorra. → Horizonte corto para el agente tabular; γ alto solo
+    con una red que generalice (C3-T3).
+39. **El estado del proyecto le gana a cuantiles y a K-Means.** Ahorro de π\* en mayo: qcut 0,29 %, K-Means 0,41 % y
+    umbral de 200 Wh 0,59 %. El tercil «alto» arranca en 90 Wh y el 35,6 % de sus horas no tiene nada que aplazar;
+    K-Means (cortes en 114 y 258 Wh) solo llama alto al 6,6 % de las horas. → La definición de estado se ancla en lo que la
+    acción puede mover, no en un algoritmo de agrupamiento solo.
+40. **Recompensas prohibidas en el entorno de Q-learning/DQN:**
+    - +1 por acción da el «Shiro nervioso»: 1,38 aplazamientos al día, ejecutados a la hora siguiente, con 0 % de ahorro;
+    - el castigo de −1000 por cualquier paso con pérdida da el «Shiro miedoso», que nunca aplaza;
+    - la contabilidad ingenua sube la espera de 5,5 a 7,5 h/día.
+
+    Además, **la π\* óptima es la misma en invierno y en mayo** (25 de 25 decisiones). Una política de invierno se
+    transfiere a mayo sin perder ahorro, mientras que aprender desde cero con 26 días no ahorra nada.
+
 ---
 
 ## 8. Dos advertencias técnicas que deben sobrevivir a los cortes
@@ -726,3 +757,42 @@ Q-learning entrenado y evaluado ⬜ · informe final y demostración del entorno
     - P = conteo `shift(-1)` hasta el 30-abr × efecto determinista de la acción; γ = 0,95, θ = 1e-6.
   - Resultados → hallazgos 32–35. La diapositiva 30 del profesor anuncia **Q-learning como Taller 2** del corte, sobre
     este entorno.
+
+- **Revisión de Classroom (2026-11-11): tres tareas nuevas publicadas el 6-nov.** Material descargado con Chrome y
+  organizado; fechas y dependencias en `3er_Corte_Nov/HOJA_DE_RUTA_C3.md`.
+  - **C3 Taller2 — Q-learning — ENTREGADO en Classroom el 2026-11-11 a la 01:28 (a tiempo; 5 puntos).** Adjuntos:
+    `Taller2_C3_QLearning_RESUELTO.pdf` (13 pp.), `Taller2_C3_presentacion.pdf` (11 diapositivas) y
+    `Taller2_C3_QLearning_Shiro.ipynb`, desde Drive `Mi unidad/Machine Learning C3 Taller2`.
+    `3er_Corte_Nov/Taller_2_QLearning/`: enunciado (4 partes), código `RL_QLEARNING.ipynb`, diapositivas, plan
+    `PLAN_TALLER2_C3.md`.
+    - **Todo se regenera desde `generadores/`:**
+      - `construir_cuaderno.py` → cuaderno (27 celdas, ≈ 7 min), `cifras.json` (330 cifras) y figuras Q1–Q14.
+      - `generar_documento.py`, `generar_presentacion.py` y `verificar.py`; este último comprueba las 6 anclas con el
+        C3-T1, residuos, los decimales y que las afirmaciones centrales coincidan con `cifras.json`, y **debe terminar con
+        código 0**.
+    - **Decisiones del usuario:**
+      - Problema B = **mayo frente a enero–abril** (otra estación del mismo hogar; UCI #235 sigue pendiente).
+      - Entregables: cuaderno + documento + presentación; Claude entrega.
+      - Alcance completo con 5 semillas.
+      - Base γ = 0,95 y λ = 0,005 del C3-T1, con una sección que explica por qué se usan nuestros datos y nuestra π\* y
+        no el ejemplo del profesor.
+    - ⚠ **Código del profesor:**
+      - la «acción» es la cubeta del precio observado, que el agente no controla;
+      - cada episodio es un solo paso;
+      - el −100 castiga lo que no se vio, no lo que es malo;
+      - la curva de aprendizaje sigue sobre todo a ε.
+
+      Para Shiro: las acciones del C3-T1, episodios de un día **sin reiniciar a medianoche**, y la π\* del C3-T1 como
+      respuesta correcta.
+    - ⚠ **Errores de diseño encontrados y corregidos antes de reportar:**
+      - Reiniciar el entorno a las 00:00 dejaba Q = 0 en «madrugada con carga pendiente»; el agente aprendió a ejecutar en
+        punta, con ahorro nulo.
+      - La curva de recompensa cruda está dominada por cuánto consume la casa ese día: se grafica la recompensa del día
+        menos la de no actuar ese mismo día.
+      - El «% de coincidencia» simple engaña: se pondera por la brecha de π\* y se mide el % del ahorro de π\* capturado.
+    - Resultados → hallazgos 36–40.
+  - **C3 Taller3 — DQN — vence el 13-nov; entrega en VIDEO.** Investigación 30 % · aplicación al sector 30 % ·
+    prototipo 40 % («evolucionar el prototipo de los talleres 1 y 2»).
+  - **C3 Parcial — vence el 18-nov.** Prototipo con los 3 aprendizajes (3,0) + artículo IEEE de todo el semestre (2,0).
+    Ejemplos: `Articulo_IEEE_Semestre_ML.pdf`, `EJEMPLO SAVI_v2_ParcialFinal.html` y un Space de Hugging Face citado en
+    la tarea.

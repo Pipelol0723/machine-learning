@@ -1,0 +1,26 @@
+Estado,π* invierno,π* mayo,Q-learning invierno,Q-learning mayo
+normal · madrugada · bajo · pendiente,Ejecutar,Ejecutar,Ejecutar,No actuar
+normal · madrugada · medio · pendiente,Ejecutar,Ejecutar,No actuar,No actuar
+normal · mañana · bajo · pendiente,No actuar,No actuar,No actuar,No actuar
+normal · mañana · medio · pendiente,No actuar,No actuar,Ejecutar,No actuar
+normal · mañana · alto,Aplazar,Aplazar,No actuar,Aplazar
+normal · mañana · alto · pendiente,No actuar,No actuar,No actuar,No actuar
+normal · tarde · bajo · pendiente,No actuar,No actuar,Ejecutar,No actuar
+normal · tarde · medio · pendiente,No actuar,No actuar,Ejecutar,Ejecutar
+normal · tarde · alto,Aplazar,Aplazar,Aplazar,Aplazar
+normal · tarde · alto · pendiente,No actuar,No actuar,No actuar,Ejecutar
+normal · noche · bajo · pendiente,No actuar,No actuar,No actuar,No actuar
+normal · noche · medio · pendiente,No actuar,No actuar,No actuar,No actuar
+normal · noche · alto,Aplazar,Aplazar,Aplazar,Aplazar
+normal · noche · alto · pendiente,No actuar,No actuar,No actuar,Ejecutar
+carga alta · mañana · bajo · pendiente,No actuar,No actuar,Ejecutar,No actuar
+carga alta · mañana · medio · pendiente,No actuar,No actuar,No actuar,No actuar
+carga alta · mañana · alto,Aplazar,Aplazar,No actuar,Aplazar
+carga alta · mañana · alto · pendiente,No actuar,No actuar,No actuar,No actuar
+carga alta · tarde · medio · pendiente,No actuar,No actuar,No actuar,Ejecutar
+carga alta · tarde · alto,Aplazar,Aplazar,Aplazar,Aplazar
+carga alta · tarde · alto · pendiente,No actuar,No actuar,No actuar,No actuar
+carga alta · noche · bajo · pendiente,No actuar,No actuar,No actuar,No actuar
+carga alta · noche · medio · pendiente,No actuar,No actuar,No actuar,No actuar
+carga alta · noche · alto,Aplazar,Aplazar,Aplazar,Aplazar
+carga alta · noche · alto · pendiente,No actuar,No actuar,No actuar,No actuar

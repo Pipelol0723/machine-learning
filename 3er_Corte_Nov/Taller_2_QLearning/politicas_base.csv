@@ -1,0 +1,41 @@
+Estado,Descripción,Q-learning recomendado (consenso),π* (iteración de valor),Brecha de π* (kWh-eq)
+0-0-0-0,normal · madrugada · bajo,No actuar,No actuar,0.0
+0-0-0-1,normal · madrugada · bajo · pendiente,Ejecutar,Ejecutar,0.023699319559792542
+0-0-1-0,normal · madrugada · medio,No actuar,No actuar,0.0
+0-0-1-1,normal · madrugada · medio · pendiente,No actuar,Ejecutar,0.02544945950899269
+0-1-0-0,normal · mañana · bajo,No actuar,No actuar,0.0
+0-1-0-1,normal · mañana · bajo · pendiente,No actuar,No actuar,0.037358952021058656
+0-1-1-0,normal · mañana · medio,No actuar,No actuar,0.0
+0-1-1-1,normal · mañana · medio · pendiente,Ejecutar,No actuar,0.032481827114651196
+0-1-2-0,normal · mañana · alto,No actuar,Aplazar,0.01805469817218963
+0-1-2-1,normal · mañana · alto · pendiente,No actuar,No actuar,0.01805469817218963
+0-2-0-0,normal · tarde · bajo,No actuar,No actuar,0.0
+0-2-0-1,normal · tarde · bajo · pendiente,Ejecutar,No actuar,0.05805858144769438
+0-2-1-0,normal · tarde · medio,No actuar,No actuar,0.0
+0-2-1-1,normal · tarde · medio · pendiente,Ejecutar,No actuar,0.047379896232673246
+0-2-2-0,normal · tarde · alto,Aplazar,Aplazar,0.046526214755694184
+0-2-2-1,normal · tarde · alto · pendiente,No actuar,No actuar,0.04652621475569063
+0-3-0-0,normal · noche · bajo,No actuar,No actuar,0.0
+0-3-0-1,normal · noche · bajo · pendiente,No actuar,No actuar,0.1416960445423321
+0-3-1-0,normal · noche · medio,No actuar,No actuar,0.0
+0-3-1-1,normal · noche · medio · pendiente,No actuar,No actuar,0.11692629835498813
+0-3-2-0,normal · noche · alto,Aplazar,Aplazar,0.07675215221099307
+0-3-2-1,normal · noche · alto · pendiente,No actuar,No actuar,0.07675215221099307
+1-1-0-0,carga alta · mañana · bajo,No actuar,No actuar,0.0
+1-1-0-1,carga alta · mañana · bajo · pendiente,Ejecutar,No actuar,0.035974657183810876
+1-1-1-0,carga alta · mañana · medio,No actuar,No actuar,0.0
+1-1-1-1,carga alta · mañana · medio · pendiente,No actuar,No actuar,0.02002275151178523
+1-1-2-0,carga alta · mañana · alto,No actuar,Aplazar,0.011583327821490741
+1-1-2-1,carga alta · mañana · alto · pendiente,No actuar,No actuar,0.011583327821490741
+1-2-0-0,carga alta · tarde · bajo,No actuar,No actuar,0.0
+1-2-0-1,carga alta · tarde · bajo · pendiente,No actuar,No actuar,0.027404740246876003
+1-2-1-0,carga alta · tarde · medio,No actuar,No actuar,0.0
+1-2-1-1,carga alta · tarde · medio · pendiente,No actuar,No actuar,0.028995556372784392
+1-2-2-0,carga alta · tarde · alto,Aplazar,Aplazar,0.020237785810017783
+1-2-2-1,carga alta · tarde · alto · pendiente,No actuar,No actuar,0.020237785810017783
+1-3-0-0,carga alta · noche · bajo,No actuar,No actuar,0.0
+1-3-0-1,carga alta · noche · bajo · pendiente,No actuar,No actuar,0.14585292578932574
+1-3-1-0,carga alta · noche · medio,No actuar,No actuar,0.0
+1-3-1-1,carga alta · noche · medio · pendiente,No actuar,No actuar,0.11716385684515629
+1-3-2-0,carga alta · noche · alto,Aplazar,Aplazar,0.10169531244702057
+1-3-2-1,carga alta · noche · alto · pendiente,No actuar,No actuar,0.10169531244701702
