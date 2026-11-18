@@ -1,0 +1,1 @@
+Tercer experimento: quitamos los trucos. Sin la memoria de experiencias, la red baja al 86 % y se vuelve inestable entre semillas. Sin la red objetivo, al 94 %. Y sin ninguno de los dos, al 79 %, con semillas que no ahorran nada y una espera de 10,1 h/día. A la derecha se ve por qué: el valor Q oscila mucho más. Los dos trucos no son adornos: son lo que hace que la red aprenda.

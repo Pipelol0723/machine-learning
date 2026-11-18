@@ -4,8 +4,8 @@
 |---|---|---|---|---|
 | C3 Taller1 · MDP | 30-oct | 4-nov | **Entregada** (4-nov, 12:28) | `Taller_1_RL_MDP/` |
 | C3 Taller2 · Q-learning | 6-nov | 11-nov | **Entregada** (11-nov, 01:28) | `Taller_2_QLearning/` |
-| C3 Taller3 · De Q-learning a DQN | 6-nov | 13-nov | Material descargado | `Taller_3_DQN/` |
-| C3 Parcial | 6-nov (editado el 10-nov) | 18-nov | Material descargado | `Parcial_3/` |
+| C3 Taller3 · De Q-learning a DQN | 6-nov | 13-nov, 23:59 | **Entregada** (13-nov, 13:20; video 9:22 con voz sintética en las diapositivas 3–5 porque Sofía no grabó) | `Taller_3_DQN/` → `PLAN_TALLER3_C3.md` |
+| C3 Parcial | 6-nov (editado el 10-nov) | 18-nov, 23:59 | **Entregada** (17-nov, 23:55; `Consola_Shiro.html` como archivo + `Articulo_IEEE_Shiro_Twin.pdf`) | `Parcial_3/` → `PLAN_PARCIAL3.md` |
 
 Las tres piezas forman una sola cadena de Shiro:
 

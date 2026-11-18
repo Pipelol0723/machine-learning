@@ -1,0 +1,605 @@
+{
+ "meta": {
+  "generado": "2026-11-17T20:42:32",
+  "script": "generadores/exportar_c2.py",
+  "convencion": "136 días completos × 24 medias horarias (Wh), sin estandarizar; K-Means n_init=10, random_state=42",
+  "cuadernos": {
+   "T2": "2do_Corte_Oct/Taller_2_KMeans/Taller2_KMeans.ipynb",
+   "T3": "2do_Corte_Oct/Taller_3_Jerarquico/Taller3_Jerarquico.ipynb",
+   "T4": "2do_Corte_Oct/Taller_4_DBSCAN/Taller4_DBSCAN.ipynb"
+  },
+  "anclas": [
+   {
+    "clave": "km_silueta",
+    "recalculado": 0.3922,
+    "guardado": 0.3922,
+    "fuente": "Taller2_KMeans.ipynb c.10"
+   },
+   {
+    "clave": "km_silueta_k3",
+    "recalculado": 0.2253,
+    "guardado": 0.2253,
+    "fuente": "Taller2_KMeans.ipynb c.10"
+   },
+   {
+    "clave": "km_dunn",
+    "recalculado": 0.2598,
+    "guardado": 0.2598,
+    "fuente": "Taller2_KMeans.ipynb c.10"
+   },
+   {
+    "clave": "km_inercia_k2",
+    "recalculado": 11755080.0,
+    "guardado": 11755080.0,
+    "fuente": "Taller2_KMeans.ipynb c.10"
+   },
+   {
+    "clave": "km_n_normal",
+    "recalculado": 108.0,
+    "guardado": 108.0,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_n_alta",
+    "recalculado": 28.0,
+    "guardado": 28.0,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_kwh_normal",
+    "recalculado": 12.23,
+    "guardado": 12.23,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_kwh_alta",
+    "recalculado": 20.94,
+    "guardado": 20.94,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_cramer_finde",
+    "recalculado": 0.0,
+    "guardado": 0.0,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_p_mes",
+    "recalculado": 0.655,
+    "guardado": 0.655,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_cramer_mes",
+    "recalculado": 0.134,
+    "guardado": 0.134,
+    "fuente": "Taller2_KMeans.ipynb c.19"
+   },
+   {
+    "clave": "km_arbol_h13",
+    "recalculado": 96.3,
+    "guardado": 96.3,
+    "fuente": "Taller2_KMeans.ipynb c.21"
+   },
+   {
+    "clave": "km_obs_8h",
+    "recalculado": 79.4,
+    "guardado": 79.4,
+    "fuente": "Taller2_KMeans.ipynb c.34"
+   },
+   {
+    "clave": "km_obs_8h_acierto",
+    "recalculado": 72.1,
+    "guardado": 72.1,
+    "fuente": "Taller2_KMeans.ipynb c.34"
+   },
+   {
+    "clave": "km_obs_12h",
+    "recalculado": 89.3,
+    "guardado": 89.3,
+    "fuente": "Taller2_KMeans.ipynb c.34"
+   },
+   {
+    "clave": "km_obs_12h_acierto",
+    "recalculado": 90.4,
+    "guardado": 90.4,
+    "fuente": "Taller2_KMeans.ipynb c.34"
+   },
+   {
+    "clave": "km_obs_17h",
+    "recalculado": 100.0,
+    "guardado": 100.0,
+    "fuente": "Taller2_KMeans.ipynb c.34"
+   },
+   {
+    "clave": "km_alta_tr",
+    "recalculado": 22.7,
+    "guardado": 22.7,
+    "fuente": "Taller2_KMeans.ipynb c.31"
+   },
+   {
+    "clave": "km_alta_te",
+    "recalculado": 11.5,
+    "guardado": 11.5,
+    "fuente": "Taller2_KMeans.ipynb c.31"
+   },
+   {
+    "clave": "km_mayo_fuera_p95",
+    "recalculado": 0.0,
+    "guardado": 0.0,
+    "fuente": "Taller2_KMeans.ipynb c.31"
+   },
+   {
+    "clave": "ward_ari_kmeans",
+    "recalculado": 0.736,
+    "guardado": 0.736,
+    "fuente": "Taller3_Jerarquico.ipynb c.38"
+   },
+   {
+    "clave": "ward_complete_ari",
+    "recalculado": 0.855,
+    "guardado": 0.855,
+    "fuente": "Taller3_Jerarquico.ipynb c.25"
+   },
+   {
+    "clave": "ward_complete_coinciden",
+    "recalculado": 132.0,
+    "guardado": 132.0,
+    "fuente": "Taller3_Jerarquico.ipynb c.25"
+   },
+   {
+    "clave": "ward_cambian_kmeans",
+    "recalculado": 8.0,
+    "guardado": 8.0,
+    "fuente": "Taller3_Jerarquico.ipynb c.38"
+   },
+   {
+    "clave": "complete_ari_kmeans",
+    "recalculado": 0.736,
+    "guardado": 0.736,
+    "fuente": "Taller3_Jerarquico.ipynb c.38"
+   },
+   {
+    "clave": "avg_silueta",
+    "recalculado": 0.423,
+    "guardado": 0.423,
+    "fuente": "Taller3_Jerarquico.ipynb c.10"
+   },
+   {
+    "clave": "avg_dunn",
+    "recalculado": 0.475,
+    "guardado": 0.475,
+    "fuente": "Taller3_Jerarquico.ipynb c.10"
+   },
+   {
+    "clave": "ward_silueta",
+    "recalculado": 0.4,
+    "guardado": 0.4,
+    "fuente": "Taller3_Jerarquico.ipynb c.10"
+   },
+   {
+    "clave": "estab_ari_kmeans",
+    "recalculado": 1.0,
+    "guardado": 1.0,
+    "fuente": "Taller3_Jerarquico.ipynb c.42"
+   },
+   {
+    "clave": "estab_ari_ward",
+    "recalculado": 0.359,
+    "guardado": 0.359,
+    "fuente": "Taller3_Jerarquico.ipynb c.42"
+   },
+   {
+    "clave": "estab_ari_complete",
+    "recalculado": 0.401,
+    "guardado": 0.401,
+    "fuente": "Taller3_Jerarquico.ipynb c.42"
+   },
+   {
+    "clave": "db_eps_normal",
+    "recalculado": 208.2,
+    "guardado": 208.2,
+    "fuente": "Taller4_DBSCAN.ipynb c.10"
+   },
+   {
+    "clave": "db_eps_alta",
+    "recalculado": 452.3,
+    "guardado": 452.3,
+    "fuente": "Taller4_DBSCAN.ipynb c.10"
+   },
+   {
+    "clave": "db_ratio_eps",
+    "recalculado": 2.2,
+    "guardado": 2.2,
+    "fuente": "Taller4_DBSCAN.ipynb c.10"
+   },
+   {
+    "clave": "db_atipicos",
+    "recalculado": 22.0,
+    "guardado": 22.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.17"
+   },
+   {
+    "clave": "db_atipicos_enero",
+    "recalculado": 8.0,
+    "guardado": 8.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.17"
+   },
+   {
+    "clave": "db_atipicos_enero_dias",
+    "recalculado": 20.0,
+    "guardado": 20.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.17"
+   },
+   {
+    "clave": "db_mayo_desconocidos",
+    "recalculado": 2.0,
+    "guardado": 2.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.21"
+   },
+   {
+    "clave": "db_madrugada_bajo200",
+    "recalculado": 86.4,
+    "guardado": 86.4,
+    "fuente": "Taller4_DBSCAN.ipynb c.34"
+   },
+   {
+    "clave": "db_madrugada_cubre",
+    "recalculado": 100.0,
+    "guardado": 100.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.34"
+   },
+   {
+    "clave": "db_tarde_marca",
+    "recalculado": 5.5,
+    "guardado": 5.5,
+    "fuente": "Taller4_DBSCAN.ipynb c.34"
+   },
+   {
+    "clave": "db_mayo_caida",
+    "recalculado": -33.0,
+    "guardado": -33.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.39"
+   },
+   {
+    "clave": "umbral_mayo_caida",
+    "recalculado": -25.0,
+    "guardado": -25.0,
+    "fuente": "Taller4_DBSCAN.ipynb c.39"
+   },
+   {
+    "clave": "db_total_ta",
+    "recalculado": 3.1,
+    "guardado": 3.1,
+    "fuente": "Taller4_DBSCAN.ipynb c.39"
+   },
+   {
+    "clave": "db_total_mayo",
+    "recalculado": 2.1,
+    "guardado": 2.1,
+    "fuente": "Taller4_DBSCAN.ipynb c.39"
+   },
+   {
+    "clave": "umbral_total_ta",
+    "recalculado": 10.2,
+    "guardado": 10.2,
+    "fuente": "Taller4_DBSCAN.ipynb c.39"
+   },
+   {
+    "clave": "umbral_total_mayo",
+    "recalculado": 7.6,
+    "guardado": 7.6,
+    "fuente": "Taller4_DBSCAN.ipynb c.39"
+   }
+  ],
+  "n_cifras": 51
+ },
+ "cifras": {
+  "km_silueta": {
+   "valor": 0.392220371954447,
+   "texto": "0,392",
+   "fuente": "Taller2_KMeans.ipynb c.10",
+   "descripcion": "Silueta de K-Means k=2 sobre los 136 días (curva en Wh sin estandarizar)"
+  },
+  "km_silueta_k3": {
+   "valor": 0.2253250980310541,
+   "texto": "0,225",
+   "fuente": "Taller2_KMeans.ipynb c.10",
+   "descripcion": "Silueta de K-Means k=3"
+  },
+  "km_dunn": {
+   "valor": 0.25980028442946584,
+   "texto": "0,260",
+   "fuente": "Taller2_KMeans.ipynb c.10",
+   "descripcion": "Índice de Dunn de K-Means k=2 (máximo del barrido)"
+  },
+  "km_caida_inercia": {
+   "valor": 27.759085610373713,
+   "texto": "28 %",
+   "fuente": "Taller2_KMeans.ipynb c.10",
+   "descripcion": "Caída de la inercia al pasar de k=1 a k=2 (el codo)"
+  },
+  "km_n_normal": {
+   "valor": 108,
+   "texto": "108 días",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "Días del tipo «día normal» (k=2)"
+  },
+  "km_n_alta": {
+   "valor": 28,
+   "texto": "28 días",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "Días del tipo «día de carga alta» (k=2)"
+  },
+  "km_kwh_normal": {
+   "valor": 12.231574074074071,
+   "texto": "12,2 kWh",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "Consumo medio del día normal"
+  },
+  "km_kwh_alta": {
+   "valor": 20.942857142857143,
+   "texto": "20,9 kWh",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "Consumo medio del día de carga alta"
+  },
+  "km_cramer_finde": {
+   "valor": 0.0,
+   "texto": "0,000",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "V de Cramér entre tipo de día y fin de semana (29 % de los de carga alta frente a 28 % de los normales son fin de semana)"
+  },
+  "km_p_mes": {
+   "valor": 0.6546318052677558,
+   "texto": "0,655",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "Valor p de la asociación entre tipo de día y mes (V de Cramér)"
+  },
+  "km_cramer_mes": {
+   "valor": 0.13406340054072002,
+   "texto": "0,134",
+   "fuente": "Taller2_KMeans.ipynb c.19",
+   "descripcion": "V de Cramér entre tipo de día y mes"
+  },
+  "km_arbol_h13": {
+   "valor": 96.32352941176471,
+   "texto": "96,3 %",
+   "fuente": "Taller2_KMeans.ipynb c.21",
+   "descripcion": "Un árbol de profundidad 2 (raíz h13 ≤ 199 Wh) reproduce el clúster de carga alta en este % de los días"
+  },
+  "km_obs_8h": {
+   "valor": 79.41176470588235,
+   "texto": "79,4 %",
+   "fuente": "Taller2_KMeans.ipynb c.34",
+   "descripcion": "Línea base «decir siempre día normal» (79,4 %), que es el listón que la asignación con la curva observada hasta las 8 h no supera: esa asignación acierta 72,1 %"
+  },
+  "km_obs_8h_acierto": {
+   "valor": 72.05882352941177,
+   "texto": "72,1 %",
+   "fuente": "Taller2_KMeans.ipynb c.34",
+   "descripcion": "Días bien asignados con la curva observada hasta las 8 h (peor que la línea base)"
+  },
+  "km_obs_12h": {
+   "valor": 89.28571428571429,
+   "texto": "89,3 %",
+   "fuente": "Taller2_KMeans.ipynb c.34",
+   "descripcion": "Días de carga alta reconocidos con la curva observada hasta las 12 h (aciertos totales 90,4 %)"
+  },
+  "km_obs_12h_acierto": {
+   "valor": 90.44117647058823,
+   "texto": "90,4 %",
+   "fuente": "Taller2_KMeans.ipynb c.34",
+   "descripcion": "Días bien asignados (ambos tipos) con la curva observada hasta las 12 h"
+  },
+  "km_obs_17h": {
+   "valor": 100.0,
+   "texto": "100,0 %",
+   "fuente": "Taller2_KMeans.ipynb c.34",
+   "descripcion": "Días de carga alta reconocidos con la curva observada hasta las 17 h"
+  },
+  "km_alta_tr": {
+   "valor": 22.727272727272727,
+   "texto": "22,7 %",
+   "fuente": "Taller2_KMeans.ipynb c.31",
+   "descripcion": "Proporción de días de carga alta en enero–abril (K-Means ajustado con 110 días)"
+  },
+  "km_alta_te": {
+   "valor": 11.538461538461538,
+   "texto": "11,5 %",
+   "fuente": "Taller2_KMeans.ipynb c.31",
+   "descripcion": "Proporción de días de carga alta en mayo (26 días)"
+  },
+  "km_mayo_fuera_p95": {
+   "valor": 0,
+   "texto": "0 de 26",
+   "fuente": "Taller2_KMeans.ipynb c.31",
+   "descripcion": "Días de mayo más lejos que el p95 del entrenamiento (ningún tipo nuevo)"
+  },
+  "ward_ari_kmeans": {
+   "valor": 0.7360600657423917,
+   "texto": "0,736",
+   "fuente": "Taller3_Jerarquico.ipynb c.38",
+   "descripcion": "ARI entre Ward (k=2) y K-Means (k=2)"
+  },
+  "complete_ari_kmeans": {
+   "valor": 0.7360600657423917,
+   "texto": "0,736",
+   "fuente": "Taller3_Jerarquico.ipynb c.38",
+   "descripcion": "ARI entre complete (k=2) y K-Means (k=2)"
+  },
+  "ward_complete_ari": {
+   "valor": 0.8551684967815222,
+   "texto": "0,855",
+   "fuente": "Taller3_Jerarquico.ipynb c.25",
+   "descripcion": "ARI entre Ward y complete (k=2; mismos tamaños 114 / 22)"
+  },
+  "ward_coinciden": {
+   "valor": 128,
+   "texto": "128 de 136",
+   "fuente": "Taller3_Jerarquico.ipynb c.38",
+   "descripcion": "Días en que Ward y K-Means asignan el mismo tipo"
+  },
+  "complete_coinciden": {
+   "valor": 128,
+   "texto": "128 de 136",
+   "fuente": "Taller3_Jerarquico.ipynb c.38",
+   "descripcion": "Días en que complete y K-Means asignan el mismo tipo"
+  },
+  "ward_complete_coinciden": {
+   "valor": 132,
+   "texto": "132 de 136",
+   "fuente": "Taller3_Jerarquico.ipynb c.25",
+   "descripcion": "Días en que Ward y complete asignan el mismo tipo"
+  },
+  "ward_cambian_kmeans": {
+   "valor": 8,
+   "texto": "8 días",
+   "fuente": "Taller3_Jerarquico.ipynb c.38",
+   "descripcion": "Días en que Ward y K-Means discrepan; todos en el 20 % de días más cercanos a la frontera"
+  },
+  "avg_silueta": {
+   "valor": 0.42290306657895765,
+   "texto": "0,423",
+   "fuente": "Taller3_Jerarquico.ipynb c.10",
+   "descripcion": "Silueta de average con k=2: la mejor, pero aísla 1 solo día (tamaños 135 / 1)"
+  },
+  "avg_dunn": {
+   "valor": 0.4746071677004695,
+   "texto": "0,475",
+   "fuente": "Taller3_Jerarquico.ipynb c.10",
+   "descripcion": "Dunn de average con k=2 (partición de 135 / 1)"
+  },
+  "avg_tam_menor": {
+   "valor": 1,
+   "texto": "1 día",
+   "fuente": "Taller3_Jerarquico.ipynb c.10",
+   "descripcion": "Tamaño del clúster más pequeño de average con k=2"
+  },
+  "estab_ari_kmeans": {
+   "valor": 1.0,
+   "texto": "1,000",
+   "fuente": "Taller3_Jerarquico.ipynb c.42",
+   "descripcion": "ARI de K-Means ajustado con 110 días frente a 136 días (sobre los mismos 110)"
+  },
+  "estab_ari_ward": {
+   "valor": 0.358596149569336,
+   "texto": "0,359",
+   "fuente": "Taller3_Jerarquico.ipynb c.42",
+   "descripcion": "ARI de Ward ajustado con 110 días frente a 136 días"
+  },
+  "estab_ari_complete": {
+   "valor": 0.4010745735135414,
+   "texto": "0,401",
+   "fuente": "Taller3_Jerarquico.ipynb c.42",
+   "descripcion": "ARI de complete ajustado con 110 días frente a 136 días"
+  },
+  "db_eps_normal": {
+   "valor": 208.15325550607585,
+   "texto": "208 Wh",
+   "fuente": "Taller4_DBSCAN.ipynb c.10",
+   "descripcion": "eps (codo de la k-distancia, min_samples=5) del día normal"
+  },
+  "db_eps_alta": {
+   "valor": 452.2536161639096,
+   "texto": "452 Wh",
+   "fuente": "Taller4_DBSCAN.ipynb c.10",
+   "descripcion": "eps del día de carga alta"
+  },
+  "db_ratio_eps": {
+   "valor": 2.172695378049029,
+   "texto": "2,2×",
+   "fuente": "Taller4_DBSCAN.ipynb c.10",
+   "descripcion": "Cuántas veces más dispersos son los días de carga alta que los normales"
+  },
+  "db_atipicos": {
+   "valor": 22,
+   "texto": "22 días",
+   "fuente": "Taller4_DBSCAN.ipynb c.17",
+   "descripcion": "Días de ruido en al menos el 80 % de 25 configuraciones de DBSCAN por tipo"
+  },
+  "db_atipicos_pct": {
+   "valor": 16.176470588235293,
+   "texto": "16 %",
+   "fuente": "Taller4_DBSCAN.ipynb c.17",
+   "descripcion": "Atípicos robustos como porcentaje de los 136 días"
+  },
+  "db_atipicos_enero": {
+   "valor": 8,
+   "texto": "8 de 20",
+   "fuente": "Taller4_DBSCAN.ipynb c.17",
+   "descripcion": "Atípicos robustos que caen en enero (de sus días completos)"
+  },
+  "db_mayo_desconocidos": {
+   "valor": 2,
+   "texto": "2 de 26",
+   "fuente": "Taller4_DBSCAN.ipynb c.21",
+   "descripcion": "Días de mayo sin ningún punto núcleo de su tipo a menos de eps (modelo ajustado con enero–abril)"
+  },
+  "db_madrugada_bajo200": {
+   "valor": 86.41975308641975,
+   "texto": "86 %",
+   "fuente": "Taller4_DBSCAN.ipynb c.34",
+   "descripcion": "De madrugada, % del ruido de DBSCAN que está por debajo del umbral de 200 Wh"
+  },
+  "db_madrugada_cubre": {
+   "valor": 100.0,
+   "texto": "100 %",
+   "fuente": "Taller4_DBSCAN.ipynb c.34",
+   "descripcion": "De madrugada, % de las lecturas sobre el umbral que DBSCAN marca como ruido"
+  },
+  "db_tarde_marca": {
+   "valor": 5.5306427503736915,
+   "texto": "6 %",
+   "fuente": "Taller4_DBSCAN.ipynb c.34",
+   "descripcion": "En la tarde, % de las lecturas sobre el umbral que DBSCAN marca como ruido (el resto lo trata como rutina)"
+  },
+  "db_mayo_caida": {
+   "valor": -32.864755318018645,
+   "texto": "−33 %",
+   "fuente": "Taller4_DBSCAN.ipynb c.39",
+   "descripcion": "Cambio relativo de la fracción de lecturas marcadas por DBSCAN en mayo (3,1 % → 2,1 %)"
+  },
+  "umbral_mayo_caida": {
+   "valor": -25.314109811785336,
+   "texto": "−25 %",
+   "fuente": "Taller4_DBSCAN.ipynb c.39",
+   "descripcion": "Cambio relativo de la fracción de lecturas sobre el umbral fijo en mayo (10,2 % → 7,6 %)"
+  },
+  "db_umbral_wh": {
+   "valor": 200.0,
+   "texto": "200 Wh",
+   "fuente": "recalculado (convención §4.3)",
+   "descripcion": "Umbral de anomalía: p90 del entrenamiento de la partición aleatoria"
+  },
+  "db_rejilla_2cl": {
+   "valor": 6,
+   "texto": "6 de 147",
+   "fuente": "Taller4_DBSCAN.ipynb c.14 (leído de la salida guardada)",
+   "descripcion": "Configuraciones de la rejilla (eps × min_samples) con 2 o más clústers; el máximo es 4"
+  },
+  "db_30cols_semanas": {
+   "valor": 26,
+   "texto": "26 de 30",
+   "fuente": "Taller4_DBSCAN.ipynb c.26 (leído de la salida guardada)",
+   "descripcion": "Con las 30 columnas, clústers que caben en una ventana de 7 días o menos (DBSCAN agrupa semanas)"
+  },
+  "db_capas_10wh": {
+   "valor": 6,
+   "texto": "6 de 14",
+   "fuente": "Taller4_DBSCAN.ipynb c.30 (leído de la salida guardada)",
+   "descripcion": "Sin dithering, clústers que contienen un único valor de consumo (Appliances es 100 % múltiplo de 10 Wh)"
+  },
+  "db_mayo_atipicos": {
+   "valor": 0,
+   "texto": "0 de 26",
+   "fuente": "recalculado (ruido de DBSCAN por tipo sobre los 136 días, c.10 de T4)",
+   "descripcion": "Días de mayo que son ruido del DBSCAN por tipo (eps 208/452 Wh) sin ser «desconocidos»"
+  },
+  "db_mayo_en_grupo": {
+   "valor": 24,
+   "texto": "24 de 26",
+   "fuente": "recalculado",
+   "descripcion": "Días de mayo dentro de un clúster de su tipo"
+  }
+ }
+}

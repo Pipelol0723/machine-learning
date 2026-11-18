@@ -510,6 +510,24 @@ RF + retardos queda como referencia histórica de "reconocer un pico en curso".
     Además, **la π\* óptima es la misma en invierno y en mayo** (25 de 25 decisiones). Una política de invierno se
     transfiere a mayo sin perder ahorro, mientras que aprender desde cero con 26 días no ahorra nada.
 
+*Hallazgos del C3-T3 (2026-11-12) — DQN en NumPy, cifras en `3er_Corte_Nov/Taller_3_DQN/cifras.json`:*
+
+41. **El arranque en frío del T2 era ruido de la recompensa, no la tabla (corrige el hallazgo 36).** La **recompensa
+    centrada** quita −tarifa·energía de la casa (no depende de la acción → misma π\*) y deja solo lo que la acción cambia:
+    aplazar `(tarifa−1)·ΔE − λ`, ejecutar `−(tarifa−1)·ΔE`, no actuar `−λ·pendiente`. Con ella el mismo Q-learning de tabla
+    captura ≥ 80 % del ahorro de π\* desde el **día 100** (5 de 5 semillas) y termina en el 100 %; el del T2 necesitaba
+    15.000 días y la red 750. → El arranque en frío de Shiro Home es de meses, no de décadas; pre-entrenar en el gemelo
+    sigue siendo útil pero deja de ser necesidad. **La recompensa centrada es obligatoria en todo agente de Shiro.**
+42. **La red alcanza a π\*, pero con 40 estados basta la tabla.** DQN (9 rasgos → 64 → 64 → 3, 1.500 días) captura el 97 %
+    del ahorro de π\*; su semilla mediana decide igual que π\* en todo mayo (IC 0 a 0). Double DQN no mejora (88 %, peor
+    semilla 74 %). La red se justifica por el estado que viene (hora exacta, probabilidad de G0, clima, otras casas).
+43. **Los dos trucos son imprescindibles:** sin memoria de experiencias 86 % (peor semilla 0,22 % de ahorro), sin red objetivo
+    94 % con Q oscilando el doble, sin ninguno 79 %, semillas que no ahorran nada y 10,1 h/día de espera (oscilación ×4,7).
+44. **La hora exacta sí cambia la decisión de la persona exigente:** con λ = 0,02 la red aplaza solo desde las **17:00**, la
+    primera hora entera tras el equilibrio teórico (sobrecosto 0,155 kWh-eq / λ = 7,76 h antes del valle → 16:15), y con
+    carga pendiente ejecuta también en la mañana. La tabla veía la tarde (12–17 h) como una casilla. De madrugada nunca hubo
+    picos: ahí la red extrapola y la consola debe marcarlo.
+
 ---
 
 ## 8. Dos advertencias técnicas que deben sobrevivir a los cortes
@@ -688,14 +706,14 @@ Plan completo: `2do_Corte_Oct/Plan_Talleres_Corte2.md`. Decisiones tomadas con e
 - **Probar el detector RF sin temperaturas interiores** (hallazgo 18): en regresión quitarlas elimina
   el sesgo estacional. *Avance del Parcial 2 (hallazgo 28):* sin ellas, la deriva del rojo en mayo baja
   (G1 40,72 → 18,2 %, G4 34,40 → 14,1 %); falta medir su anticipación con el mismo presupuesto (§4.6).
-- **Agente de Q-learning** entrenado y evaluado dentro del gemelo, con métricas de ahorro simulado
-  frente a una política base.
+- *(Hecho en el C3: agente de Q-learning (T2) y DQN (T3) entrenados y evaluados en el entorno de réplica contra π\* y
+  contra no actuar; ver hallazgos 36–44.)*
 - *(Hecho en el parcial: variables de retardo.)*
 
 **Criterios de cierre del proyecto** (de `05_Propuesta_Proyecto_Shiro_Twin.docx`): dataset
 documentado ✅ · al menos un regresor y un clasificador entrenados ✅ · al menos dos técnicas de
 clustering comparadas ✅ (K-Means, jerárquico con tres enlaces y DBSCAN, C2-T2 a C2-T4) · MDP formalizado y agente de
-Q-learning entrenado y evaluado ⬜ · informe final y demostración del entorno funcionando ⬜.
+Q-learning entrenado y evaluado ✅ (C3-T1 a C3-T3) · informe final y demostración del entorno funcionando ⬜ (Parcial 3).
 
 ---
 
@@ -791,8 +809,56 @@ Q-learning entrenado y evaluado ⬜ · informe final y demostración del entorno
         menos la de no actuar ese mismo día.
       - El «% de coincidencia» simple engaña: se pondera por la brecha de π\* y se mide el % del ahorro de π\* capturado.
     - Resultados → hallazgos 36–40.
-  - **C3 Taller3 — DQN — vence el 13-nov; entrega en VIDEO.** Investigación 30 % · aplicación al sector 30 % ·
-    prototipo 40 % («evolucionar el prototipo de los talleres 1 y 2»).
-  - **C3 Parcial — vence el 18-nov.** Prototipo con los 3 aprendizajes (3,0) + artículo IEEE de todo el semestre (2,0).
-    Ejemplos: `Articulo_IEEE_Semestre_ML.pdf`, `EJEMPLO SAVI_v2_ParcialFinal.html` y un Space de Hugging Face citado en
-    la tarea.
+  - **C3 Taller3 — DQN — ENTREGADO en Classroom el 2026-11-13 a las 13:20 (a tiempo; 5 puntos).** Adjuntos desde Drive `Mi unidad/Machine Learning C3 Taller3`: `Taller3_C3_Shiro_DQN.mp4` (v2 del Asesor, 9:22, 1080p; Sofía no grabó → diapositivas 3–5 con la voz Sabina de Windows, por decisión de Pipe de «hacerlo con lo que tenemos»), `Taller3_C3_DQN_RESUELTO.pdf` y el cuaderno. Hecho: cuaderno
+    `Taller3_C3_DQN_Shiro.ipynb` (22 celdas, ≈ 12 min, determinista, 6 anclas), `cifras.json`, `dqn_pesos.json` (red de la
+    semilla mediana para la consola del Parcial), figuras T0–T5, `Taller3_C3_DQN_RESUELTO.docx/.pdf`,
+    `Taller3_C3_video_diapositivas.pptx/.pdf` (13 diapositivas, narración en notas), `Guion_Video_Taller3_C3.docx/.pdf` y
+    `video/` (PNG por diapositiva, textos por narrador, `guion.json`); todo desde `generadores/` (`generar_documento.py`,
+    `generar_video.py`, `verificar.py` con código 0). Decisiones de Pipe: el grupo narra (Jose 1–2, Sofía 3–5, Alex 6–7 y 13,
+    Andrés 8–12), 8–10 min, el video lo monta la sesión **Asesor de redes** (diapositivas en imagen + voces reales +
+    subtítulos; insumos en `D:\videos\universidad\taller3_dqn\fuente`, audios `NN_nombre` en `...\audio`, una toma por
+    diapositiva) y Claude entrega en Classroom (video + PDF + cuaderno). Resultados → hallazgos 41–44.
+    - Enunciado: investigación 30 % · aplicación al sector 30 % · prototipo 40 % («evolucionar el prototipo de los talleres
+      1 y 2»). No hay cuaderno del profesor: los dos adjuntos son ejemplos de otros grupos, sin resultados propios. Plan:
+      `Taller_3_DQN/PLAN_TALLER3_C3.md`.
+    - Estado de 9 rasgos (hora seno/coseno, log Wh actual y anterior estandarizados con enero–abril, margen de K-Means,
+      punta, pendiente, horas de espera/24, nivel alto) sobre el entorno de réplica del T2; red 9 → 64 → 64 → 3 en NumPy
+      (Huber, Adam 1e-3, recorte 10, replay 20.000, lote 64, red objetivo cada 500, ε 1 → 0,05 en la primera mitad, 5 semillas).
+    - Experimentos: E1 batalla contra π\* y Q-learning · E2 arranque en frío (+ Q-learning con recompensa centrada como
+      control) · E3 ablación · E4 mapa horario paciente/exigente. γ = 0,99 con red **no** se probó (declarado).
+    - Herramientas en el portátil: no hay torch, ffmpeg ni LaTeX; sí la voz Sabina (es-MX) de Windows. El ffmpeg 7.0.2
+      está en el escritorio (homelab).
+  - **C3 Parcial — ENTREGADO en Classroom el 2026-11-17 a las 23:55 (a tiempo; vencía el 18-nov a las 23:59; 5 puntos).**
+    Adjuntos, desde Drive `Mi unidad/Machine Learning C3 Parcial`: `Articulo_IEEE_Shiro_Twin.pdf` y `Consola_Shiro.html`
+    **como archivo** (por decisión de Pipe; el enlace del Artifact no se adjuntó). Prototipo con los 3
+    aprendizajes (3,0) + artículo IEEE de todo el semestre (2,0). Hecho en esta sesión con subagentes (Sonnet: cifras C2 y
+    revisiones; Opus: artículo; Fable: consola), cada pieza con revisión independiente y correcciones aplicadas. Plan:
+    `Parcial_3/PLAN_PARCIAL3.md`.
+    - **Todo se regenera desde `Parcial_3/generadores/`:** `comun.py` (cifras con prefijos p2/t1/t2/t3/c2/p3; `F("{t3:clave}")`)
+      → `exportar_c2.py` (`datos/cifras_c2.json`, 51 cifras, 47 anclas; `datos/dbscan_mayo.json`) → `exportar_datos.py`
+      (`datos/consola.json` 535 KB y `cifras_p3.json`; 6 anclas: π\* = T1, K-Means, VI, Q-learning, red, serie de mayo) →
+      `construir_consola.py` (plantilla `consola_plantilla.html` con `[[prefijo:clave]]` → `Consola_Shiro.html` 614 KB y
+      `datos/consola_artifact.html`; capturas `figuras/consola_*.png`) → `generar_articulo.py`
+      (`Articulo_IEEE_Shiro_Twin.docx/.pdf`, 6 pp., 2 columnas, 190 cifras, 16 referencias) → `verificar.py` (**código 0**).
+    - **Consola** (5 pantallas por hash #hoy #tipo #shiro #pregunta #ficha; #prueba = autoprueba): la VI en JS reproduce a
+      Python en 35/35 combinaciones de λ × tarifa (error de Q 2,6e-8), la red DQN (5e-11) y el margen de K-Means (1,7e-5).
+      «Repetir el día» lleva la carga pendiente al día siguiente (con π\* en mayo da 0,59 % y 7,2 h/día = T3). Q-learning y
+      la red solo valen para λ = 0,005 y punta ×1,5 (declarado). Publicada en https://claude.ai/artifact/PoJi5uvoXmtexiLNFNePEt
+      (privada: Pipe la comparte desde «Compartir»).
+    - ⚠ Las cifras del 2.º corte no estaban en ningún `cifras.json`; ahora sí, en `Parcial_3/datos/cifras_c2.json`.
+      `c2:km_obs_8h` (79,4 %) es el LISTÓN de decir siempre «normal»; el acierto con la curva a las 8 h es 72,1 %.
+    - ⚠ El entorno de π\*/Q-learning/DQN es la **réplica por conteo**, no el gemelo lineal (el entorno continuo sigue
+      pendiente): no escribir que el agente «entrena sobre el gemelo». Las cifras del hallazgo 18 (71,9 %, 20,2 → 23,4 °C) no
+      se pudieron reproducir con una definición simple (sin T6 sale 20,2 → 23,5 °C y 73,7 %): el artículo lo dice sin número.
+    - Los `parcial3*` de Descargas (12-nov) son de **Big Data** (aerolínea, Kinesis), no de esta materia.
+    - El ejemplo del profesor (Space de Hugging Face «SAVI», revisado en Chrome) es una consola oscura con chat
+      determinista, caso, mercado y una ficha del modelo con la política VI/QL/DQN, IC del bootstrap y límites honestos.
+    - Propuesta: `Consola_Shiro.html` autocontenida con 5 pantallas: hoy en casa (simulador + G0), tipo de día (K-Means
+      + DBSCAN), qué haría Shiro (π\*/QL/DQN con deslizadores de λ y tarifa; VI y red en la página), consulta por
+      plantillas y ficha del modelo.
+    - Artículo IEEE en Word a dos columnas, con Shiro como hilo (secciones III–VI = supervisado, no supervisado, Guardian
+      y refuerzo).
+    - Decisiones tomadas: P1 HTML adjunto como archivo (el Artifact queda publicado pero privado y no se adjuntó) · P2 Word
+      a dos columnas → PDF · P3 preguntas sugeridas por plantilla · P4 los cuatro autores en el orden del C2 · P6 entregó
+      Claude con el visto bueno de Pipe · P7 el artículo se hizo en esta misma sesión (subagente Opus). Abierta: P5
+      sustentación (confirmar por el grupo de WhatsApp).

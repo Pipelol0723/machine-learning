@@ -1,0 +1,49 @@
+{
+ "meta": {
+  "generado": "2026-11-17 20:41",
+  "fuentes": [
+   "C3-T3 cuaderno (celdas 1, 3, 5, 7)",
+   "C3-T2 politicas_base.csv",
+   "C3-T3 dqn_pesos.json",
+   "Parcial 2 mockup/datos_mockup.json"
+  ]
+ },
+ "cifras": {
+  "sim6_mae_mayo": {
+   "valor": 28.85302554562689,
+   "texto": "28,85 Wh",
+   "fuente": "exportar_datos.py",
+   "descripcion": "MAE del simulador lineal de 6 variables (G3c) en las lecturas de mayo"
+  },
+  "n_dias_mayo": {
+   "valor": 26,
+   "texto": "26",
+   "fuente": "exportar_datos.py",
+   "descripcion": "días completos de mayo en la consola"
+  },
+  "n_horas_mayo": {
+   "valor": 624,
+   "texto": "624",
+   "fuente": "exportar_datos.py",
+   "descripcion": "horas de mayo que recorre el agente"
+  },
+  "n_lecturas_mayo": {
+   "valor": 3946,
+   "texto": "3.946",
+   "fuente": "exportar_datos.py",
+   "descripcion": "lecturas de 10 min de mayo con G0 y simulador"
+  },
+  "n_rejilla_vi": {
+   "valor": 35,
+   "texto": "35",
+   "fuente": "exportar_datos.py",
+   "descripcion": "combinaciones (λ, tarifa) con política de referencia para verificar la VI en la página"
+  },
+  "n_anclas_exportador": {
+   "valor": 6,
+   "texto": "6",
+   "fuente": "exportar_datos.py",
+   "descripcion": "anclas superadas por exportar_datos.py"
+  }
+ }
+}

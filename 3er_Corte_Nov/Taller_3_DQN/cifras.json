@@ -1,0 +1,364 @@
+{
+ "meta": {
+  "generado": "2026-11-12 21:25"
+ },
+ "cifras": {
+  "n_dias_tr": {
+   "valor": 110,
+   "texto": "110"
+  },
+  "n_dias_te": {
+   "valor": 26,
+   "texto": "26"
+  },
+  "n_rasgos": {
+   "valor": 9,
+   "texto": "9"
+  },
+  "vi_ahorro_te": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "vi_espera_te": {
+   "valor": 7.153846153846154,
+   "texto": "7,2 h/día"
+  },
+  "DE": {
+   "valor": 310.2777777777778,
+   "texto": "310 Wh"
+  },
+  "n_estados": {
+   "valor": 40,
+   "texto": "40"
+  },
+  "vi_ex_ahorro_te": {
+   "valor": 0.499793057932596,
+   "texto": "0,50 %"
+  },
+  "vi_ex_espera_te": {
+   "valor": 4.5,
+   "texto": "4,5 h/día"
+  },
+  "n_anclas": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "ql_ahorro": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "ql_captura": {
+   "valor": 89.47368421052809,
+   "texto": "89 %"
+  },
+  "ql_espera": {
+   "valor": 5.546153846153846,
+   "texto": "5,5 h/día"
+  },
+  "ql_aplaz": {
+   "valor": 0.8,
+   "texto": "0,80"
+  },
+  "ql_ahorro_min": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "ql_ahorro_max": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "dqn_ahorro": {
+   "valor": 0.5747620166224987,
+   "texto": "0,57 %"
+  },
+  "dqn_captura": {
+   "valor": 96.84210526316105,
+   "texto": "97 %"
+  },
+  "dqn_espera": {
+   "valor": 6.692307692307692,
+   "texto": "6,7 h/día"
+  },
+  "dqn_aplaz": {
+   "valor": 0.8384615384615385,
+   "texto": "0,84"
+  },
+  "dqn_ahorro_min": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "dqn_ahorro_max": {
+   "valor": 0.5935042562949744,
+   "texto": "0,59 %"
+  },
+  "ddqn_ahorro": {
+   "valor": 0.5247827108292413,
+   "texto": "0,52 %"
+  },
+  "ddqn_captura": {
+   "valor": 88.4210526315824,
+   "texto": "88 %"
+  },
+  "ddqn_espera": {
+   "valor": 5.907692307692307,
+   "texto": "5,9 h/día"
+  },
+  "ddqn_aplaz": {
+   "valor": 0.7846153846153846,
+   "texto": "0,78"
+  },
+  "ddqn_ahorro_min": {
+   "valor": 0.4373189256910326,
+   "texto": "0,44 %"
+  },
+  "ddqn_ahorro_max": {
+   "valor": 0.5935042562949744,
+   "texto": "0,59 %"
+  },
+  "n_ep_dqn": {
+   "valor": 1500,
+   "texto": "1.500"
+  },
+  "n_ep_ql": {
+   "valor": 15000,
+   "texto": "15.000"
+  },
+  "n_semillas": {
+   "valor": 5,
+   "texto": "5"
+  },
+  "boot_dqn_pi": {
+   "valor": -2.049642507000289e-16,
+   "texto": "0,000 kWh-eq/día (IC 0,000 a 0,000)"
+  },
+  "boot_dqn_pi_sig": {
+   "valor": "no",
+   "texto": "no"
+  },
+  "boot_dqn_ql": {
+   "valor": -0.000779914529914891,
+   "texto": "−0,001 kWh-eq/día (IC −0,056 a 0,053)"
+  },
+  "boot_dqn_ql_sig": {
+   "valor": "no",
+   "texto": "no"
+  },
+  "qlc_ahorro": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "qlc_captura": {
+   "valor": 100.0,
+   "texto": "100 %"
+  },
+  "qlc_espera": {
+   "valor": 7.153846153846155,
+   "texto": "7,2 h/día"
+  },
+  "qlc_aplaz": {
+   "valor": 0.7692307692307693,
+   "texto": "0,77"
+  },
+  "qlc_ahorro_min": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "qlc_ahorro_max": {
+   "valor": 0.5935042562949522,
+   "texto": "0,59 %"
+  },
+  "ql_dias80": {
+   "valor": 15000,
+   "texto": "15.000 días"
+  },
+  "qlc_dias80": {
+   "valor": 100,
+   "texto": "100 días"
+  },
+  "dqn_dias80": {
+   "valor": 750,
+   "texto": "750 días"
+  },
+  "ddqn_dias80": {
+   "valor": null,
+   "texto": "no lo alcanza"
+  },
+  "sinr_ahorro": {
+   "valor": 0.5122878843809242,
+   "texto": "0,51 %"
+  },
+  "sinr_captura": {
+   "valor": 86.31578947368726,
+   "texto": "86 %"
+  },
+  "sinr_espera": {
+   "valor": 5.984615384615386,
+   "texto": "6,0 h/día"
+  },
+  "sinr_aplaz": {
+   "valor": 0.676923076923077,
+   "texto": "0,68"
+  },
+  "sinr_ahorro_min": {
+   "valor": 0.2186594628455163,
+   "texto": "0,22 %"
+  },
+  "sinr_ahorro_max": {
+   "valor": 0.5935042562949744,
+   "texto": "0,59 %"
+  },
+  "sint_ahorro": {
+   "valor": 0.5560197769500252,
+   "texto": "0,56 %"
+  },
+  "sint_captura": {
+   "valor": 93.68421052631872,
+   "texto": "94 %"
+  },
+  "sint_espera": {
+   "valor": 6.507692307692308,
+   "texto": "6,5 h/día"
+  },
+  "sint_aplaz": {
+   "valor": 0.7846153846153846,
+   "texto": "0,78"
+  },
+  "sint_ahorro_min": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "sint_ahorro_max": {
+   "valor": 0.5935042562949744,
+   "texto": "0,59 %"
+  },
+  "sina_ahorro": {
+   "valor": 0.46855599181182095,
+   "texto": "0,47 %"
+  },
+  "sina_captura": {
+   "valor": 78.94736842105543,
+   "texto": "79 %"
+  },
+  "sina_espera": {
+   "valor": 10.115384615384615,
+   "texto": "10,1 h/día"
+  },
+  "sina_aplaz": {
+   "valor": 0.6538461538461539,
+   "texto": "0,65"
+  },
+  "sina_ahorro_min": {
+   "valor": 0.0,
+   "texto": "0,00 %"
+  },
+  "sina_ahorro_max": {
+   "valor": 0.5935042562949744,
+   "texto": "0,59 %"
+  },
+  "osc_dqn": {
+   "valor": 0.0022791178824639966,
+   "texto": "0,0023"
+  },
+  "osc_sinr": {
+   "valor": 0.004098639261053316,
+   "texto": "0,0041"
+  },
+  "osc_sint": {
+   "valor": 0.004560117318206483,
+   "texto": "0,0046"
+  },
+  "osc_sina": {
+   "valor": 0.010773749919878037,
+   "texto": "0,0108"
+  },
+  "dqnx_ahorro": {
+   "valor": 0.47480340503597507,
+   "texto": "0,47 %"
+  },
+  "dqnx_captura": {
+   "valor": 95.00000000000178,
+   "texto": "95 %"
+  },
+  "dqnx_espera": {
+   "valor": 4.138461538461539,
+   "texto": "4,1 h/día"
+  },
+  "dqnx_aplaz": {
+   "valor": 0.6384615384615384,
+   "texto": "0,64"
+  },
+  "dqnx_ahorro_min": {
+   "valor": 0.4060818595702287,
+   "texto": "0,41 %"
+  },
+  "dqnx_ahorro_max": {
+   "valor": 0.5310301240533888,
+   "texto": "0,53 %"
+  },
+  "e4_pac_punta_aplaza": {
+   "valor": 18,
+   "texto": "18"
+  },
+  "e4_pac_desde": {
+   "valor": 6,
+   "texto": "6:00"
+  },
+  "e4_pac_ejec_horas": {
+   "valor": 6,
+   "texto": "6"
+  },
+  "e4_pac_ejec_rango": {
+   "valor": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "texto": "0:00–5:59"
+  },
+  "e4_ex_punta_aplaza": {
+   "valor": 7,
+   "texto": "7"
+  },
+  "e4_ex_desde": {
+   "valor": 17,
+   "texto": "17:00"
+  },
+  "e4_ex_ejec_horas": {
+   "valor": 13,
+   "texto": "13"
+  },
+  "e4_ex_ejec_rango": {
+   "valor": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "texto": "0:00–5:59 y 9:00–15:59"
+  },
+  "sobrecosto_kwh": {
+   "valor": 0.1551388888888889,
+   "texto": "0,155 kWh-eq"
+  },
+  "e4_ex_umbral_h": {
+   "valor": 7.7569444444444455,
+   "texto": "7,76 h"
+  },
+  "e4_ex_hora_teorica": {
+   "valor": 16.243055555555554,
+   "texto": "16:15"
+  }
+ }
+}

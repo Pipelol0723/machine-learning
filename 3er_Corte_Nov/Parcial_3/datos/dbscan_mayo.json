@@ -1,0 +1,262 @@
+[
+ {
+  "fecha": "2016-05-01",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 14.09,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.2,
+  "dist_a_nucleo_Wh": 185.1,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-02",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 12.33,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 97.2,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-03",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 10.04,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 60.3,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-04",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 11.37,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 97.4,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-05",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 12.1,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.12,
+  "dist_a_nucleo_Wh": 181.4,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-06",
+  "tipo_kmeans": "normal",
+  "dbscan": "desconocido",
+  "kwh_dia": 14.51,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.72,
+  "dist_a_nucleo_Wh": 254.6,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-07",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 13.99,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.04,
+  "dist_a_nucleo_Wh": 162.4,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-08",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 9.87,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 122.6,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-09",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 12.25,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 113.8,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-10",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 9.5,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 78.1,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-11",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 10.67,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 111.6,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-12",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 10.4,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 70.9,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-13",
+  "tipo_kmeans": "carga alta",
+  "dbscan": "en grupo",
+  "kwh_dia": 24.28,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.28,
+  "dist_a_nucleo_Wh": 407.4,
+  "eps_modelo_Wh": 462.1
+ },
+ {
+  "fecha": "2016-05-14",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 14.34,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 159.2,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-15",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 14.98,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.36,
+  "dist_a_nucleo_Wh": 198.4,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-16",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 14.42,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.12,
+  "dist_a_nucleo_Wh": 201.9,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-17",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 9.51,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 71.3,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-18",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 11.84,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 104.2,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-19",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 10.08,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 61.4,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-20",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 9.32,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 101.6,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-21",
+  "tipo_kmeans": "carga alta",
+  "dbscan": "en grupo",
+  "kwh_dia": 23.28,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.36,
+  "dist_a_nucleo_Wh": 330.2,
+  "eps_modelo_Wh": 462.1
+ },
+ {
+  "fecha": "2016-05-22",
+  "tipo_kmeans": "normal",
+  "dbscan": "desconocido",
+  "kwh_dia": 15.86,
+  "atipico_robusto": true,
+  "frac_ruido_25_config": 0.92,
+  "dist_a_nucleo_Wh": 263.2,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-23",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 11.96,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 147.1,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-24",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 13.85,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 161.5,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-25",
+  "tipo_kmeans": "normal",
+  "dbscan": "en grupo",
+  "kwh_dia": 12.08,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.0,
+  "dist_a_nucleo_Wh": 168.9,
+  "eps_modelo_Wh": 223.8
+ },
+ {
+  "fecha": "2016-05-26",
+  "tipo_kmeans": "carga alta",
+  "dbscan": "en grupo",
+  "kwh_dia": 21.17,
+  "atipico_robusto": false,
+  "frac_ruido_25_config": 0.24,
+  "dist_a_nucleo_Wh": 380.6,
+  "eps_modelo_Wh": 462.1
+ }
+]

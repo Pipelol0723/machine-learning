@@ -1,0 +1,883 @@
+<title>Consola de Shiro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+/* Concepto: tablero de un medidor de hogar. Una regleta de 24 horas (tarifa valle/punta + nivel de consumo) gobierna cinco pantallas. */
+:root{
+  --bg:#edf0f3; --panel:#fafbfc; --panel2:#e3e8ed; --ink:#15202b; --ink2:#4b5b6b; --line:#c6d0d9;
+  --accent:#1857b8; --accent-ink:#ffffff; --valle:#2a7789; --punta:#b5611a;
+  --verde:#2c8a4b; --ambar:#b97f00; --rojo:#c4352b; --normal:#2a7789; --alta:#ad3f74; --apagado:#cfd7df;
+  --f-texto:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-rotulo:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",system-ui,sans-serif;
+  --f-cifra:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f151b; --panel:#17202a; --panel2:#202c38; --ink:#e6edf3; --ink2:#a0b1c1; --line:#31404e;
+    --accent:#7fb2ff; --accent-ink:#0b1420; --valle:#5bb8cc; --punta:#e79a4e;
+    --verde:#4fbf72; --ambar:#e8b33a; --rojo:#f0685c; --normal:#5bb8cc; --alta:#e07fb0; --apagado:#3a4856;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --panel:#17202a; --panel2:#202c38; --ink:#e6edf3; --ink2:#a0b1c1; --line:#31404e;
+  --accent:#7fb2ff; --accent-ink:#0b1420; --valle:#5bb8cc; --punta:#e79a4e;
+  --verde:#4fbf72; --ambar:#e8b33a; --rojo:#f0685c; --normal:#5bb8cc; --alta:#e07fb0; --apagado:#3a4856;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-texto);font-size:15px;line-height:1.5;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.marco{max-width:1240px;margin:0 auto;padding-block:14px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+h1,h2,h3,p{margin:0}
+h1{font-family:var(--f-rotulo);font-weight:600;font-size:22px;letter-spacing:.01em}
+h2{font-family:var(--f-rotulo);font-weight:600;font-size:21px;text-wrap:balance}
+h3{font-family:var(--f-rotulo);font-weight:600;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.num,td.n,th.n,output{font-family:var(--f-cifra);font-variant-numeric:tabular-nums}
+.tenue{color:var(--ink2)}
+.pq{font-size:13px;color:var(--ink2)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* cabecera y contexto */
+.cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.cab .sub{color:var(--ink2);font-size:13px}
+.contexto{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.ctx-fila{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.ctx-grupo{display:flex;align-items:center;gap:6px;min-width:0}
+.ctx-grupo label,.ctx-grupo .rot{font-family:var(--f-rotulo);font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.bt{background:var(--panel2);border:1px solid var(--line);border-radius:3px;min-width:34px;height:34px;padding:0 9px;cursor:pointer}
+.bt:hover{border-color:var(--accent)}
+.bt.pral{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600;padding:0 14px}
+select{background:var(--panel2);border:1px solid var(--line);border-radius:3px;height:34px;padding:0 6px;max-width:100%}
+#hora-txt{min-width:62px;text-align:center;font-size:17px;font-weight:500}
+.ctx-resumen{font-size:13px;color:var(--ink2);min-width:0}
+.regleta{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:2px}
+.regleta button{appearance:none;border:0;padding:0;background:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.regleta .tar{height:5px;background:var(--punta)}
+.regleta .tar.v{background:var(--valle)}
+.regleta .niv{height:30px;background:var(--panel2);display:flex;align-items:flex-end}
+.regleta .niv i{display:block;width:100%;background:var(--ink2);opacity:.55}
+.regleta .niv.n2 i{background:var(--rojo);opacity:1}
+.regleta .hh{font-family:var(--f-cifra);font-size:10px;color:var(--ink2);height:14px;text-align:center;overflow:hidden}
+.regleta button[aria-current="true"] .niv{outline:2px solid var(--accent);outline-offset:1px}
+.regleta button[aria-current="true"] .hh{color:var(--ink);font-weight:500}
+.regleta button.futuro .niv i{opacity:.18}
+.leyenda{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--ink2)}
+.leyenda span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px;background:var(--c,var(--ink2))}
+.leyenda .linea::before{height:3px;vertical-align:3px;width:16px}
+
+/* pestañas */
+.pest{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line)}
+.pest a{flex:0 0 auto;padding:9px 13px;text-decoration:none;color:var(--ink2);font-family:var(--f-rotulo);font-weight:500;font-size:15px;border-bottom:3px solid transparent}
+.pest a small{display:block;font-family:var(--f-texto);font-weight:400;font-size:11px;letter-spacing:.02em}
+.pest a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.pest a:hover{color:var(--ink)}
+
+/* pantallas */
+.pantalla{display:flex;flex-direction:column;gap:14px}
+.intro{max-width:72ch;color:var(--ink2)}
+.rej{display:grid;gap:14px;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.rej.mitad{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rej.tres{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.rej,.rej.mitad,.rej.tres{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.graf{width:100%;min-width:0}
+.graf svg{display:block;width:100%;height:auto}
+.graf text{font-family:var(--f-cifra);font-size:11px;fill:var(--ink2)}
+.graf .rotf{font-family:var(--f-rotulo);letter-spacing:.08em;text-transform:uppercase;font-size:10.5px}
+.dato{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:6px;font-size:14px}
+.dato b{font-family:var(--f-cifra);font-weight:500;text-align:right}
+.grande{font-family:var(--f-cifra);font-size:30px;font-weight:500;line-height:1.1}
+.nota{border-left:3px solid var(--ambar);padding:2px 0 2px 10px;font-size:13px;color:var(--ink2)}
+
+/* semáforo */
+.semaforo{display:flex;gap:8px;align-items:center}
+.semaforo i{width:26px;height:26px;border-radius:50%;background:var(--apagado);border:1px solid var(--line)}
+.semaforo[data-c="0"] i:nth-child(1){background:var(--verde)}
+.semaforo[data-c="1"] i:nth-child(2){background:var(--ambar)}
+.semaforo[data-c="2"] i:nth-child(3){background:var(--rojo)}
+.semaforo b{font-family:var(--f-rotulo);font-size:20px;margin-left:6px}
+
+/* deslizadores */
+.desl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center}
+.desl label{font-size:14px}
+.desl input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.desl output{font-size:15px;font-weight:500}
+
+/* margen */
+.margen{position:relative;height:18px;background:linear-gradient(90deg,var(--normal) 0 50%,var(--alta) 50% 100%);border-radius:2px;opacity:.9}
+.margen::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--ink)}
+.margen i{position:absolute;top:-5px;bottom:-5px;width:6px;margin-left:-3px;background:var(--ink);border:1px solid var(--panel)}
+.margen-pie{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2)}
+.chip{display:inline-block;font-family:var(--f-rotulo);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border:1px solid currentColor;border-radius:2px;white-space:nowrap}
+.chip.ok{color:var(--verde)} .chip.duda{color:var(--ambar)} .chip.fuera{color:var(--rojo)} .chip.info{color:var(--ink2)}
+
+/* agentes */
+.agente h4{margin:0;font-family:var(--f-rotulo);font-size:19px;font-weight:600}
+.agente .acc{font-size:19px;font-weight:600}
+.agente .acc[data-a="1"]{color:var(--punta)} .agente .acc[data-a="2"]{color:var(--valle)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.propuesta{border:1px solid var(--accent);border-left-width:5px}
+.propuesta .acc{font-family:var(--f-rotulo);font-size:26px;font-weight:600;line-height:1.15}
+.botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tabla{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--f-rotulo);font-weight:500;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+th.n{font-family:var(--f-rotulo)}
+.chip.lit{text-transform:none;letter-spacing:.02em}
+tr.fuerte td{font-weight:600}
+.tira{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:1px;min-width:190px}
+.tira i{height:16px;background:var(--panel2);animation:aparece .5s both;animation-delay:calc(var(--k)*28ms)}
+.tira i.e{background:var(--apagado)} .tira i.a{background:var(--punta)} .tira i.x{background:var(--valle)}
+@keyframes aparece{from{opacity:.15}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.tira i{animation:none}}
+
+/* preguntas */
+.pregs{display:flex;flex-direction:column;gap:6px}
+.pregs button{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:8px 11px;cursor:pointer}
+.pregs button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}
+.resp p{max-width:68ch}
+.resp p+p{margin-top:9px}
+.resp .q{font-family:var(--f-rotulo);font-size:20px;font-weight:600}
+ul.lim{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+ul.lim a{color:var(--accent)}
+pre{font-family:var(--f-cifra);font-size:13px;background:var(--panel);border:1px solid var(--line);padding:12px;overflow-x:auto;margin:0}
+.pie{border-top:1px solid var(--line);padding-top:10px;font-size:13px;color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 18px}
+#verif{font-family:var(--f-cifra)}
+#verif.ok{color:var(--verde)} #verif.mal{color:var(--rojo)}
+</style>
+<!--CUERPO-->
+<div class="marco">
+  <div class="cab" role="banner">
+    <h1>Consola de Shiro</h1>
+    <p class="sub">Un hogar real, lecturas cada 10 minutos. Shiro predice, avisa, reconoce el tipo de día y propone. Tú decides.</p>
+  </div>
+
+  <section class="contexto" aria-label="Día y hora que se muestran">
+    <div class="ctx-fila">
+      <div class="ctx-grupo">
+        <label for="sel-dia">Día</label>
+        <button class="bt" id="dia-ant" type="button" aria-label="Día anterior">◀</button>
+        <select id="sel-dia"></select>
+        <button class="bt" id="dia-sig" type="button" aria-label="Día siguiente">▶</button>
+      </div>
+      <div class="ctx-grupo">
+        <span class="rot">Hora</span>
+        <button class="bt" id="hora-ant" type="button" aria-label="Hora anterior">◀</button>
+        <span class="num" id="hora-txt">—</span>
+        <button class="bt" id="hora-sig" type="button" aria-label="Hora siguiente">▶</button>
+      </div>
+      <p class="ctx-resumen" id="ctx-resumen"></p>
+    </div>
+    <div class="regleta" id="regleta" role="group" aria-label="Las 24 horas del día: elige una"></div>
+    <div class="leyenda">
+      <span style="--c:var(--valle)">tarifa de valle (0 a 6 h)</span>
+      <span style="--c:var(--punta)">tarifa de punta</span>
+      <span style="--c:var(--rojo)">hora con pico (media de la hora sobre 200 Wh)</span>
+      <span>altura: consumo medio de la hora</span>
+    </div>
+  </section>
+
+  <nav class="pest" aria-label="Pantallas">
+    <a href="#hoy" data-v="hoy">Hoy en casa<small>supervisado</small></a>
+    <a href="#tipo" data-v="tipo">¿Qué tipo de día es?<small>no supervisado</small></a>
+    <a href="#shiro" data-v="shiro">¿Qué haría Shiro?<small>refuerzo</small></a>
+    <a href="#pregunta" data-v="pregunta">Pregúntale a Shiro<small>los tres juntos</small></a>
+    <a href="#ficha" data-v="ficha">Ficha del modelo<small>cifras y límites</small></a>
+  </nav>
+
+  <!-- 1 · HOY EN CASA -->
+  <section class="pantalla" id="v-hoy" data-vista="hoy">
+    <p class="intro">El gemelo necesita saber cuánto consumirá la casa en la próxima lectura, y Guardian necesita avisar antes de que empiece un pico. Aquí están los dos funcionando sobre el día elegido.</p>
+    <div class="rej">
+      <div class="panel">
+        <h3>Consumo del día hasta esta hora</h3>
+        <div class="graf" id="g-hoy"></div>
+        <div class="leyenda">
+          <span class="linea" style="--c:var(--ink)">consumo real</span>
+          <span class="linea" style="--c:var(--accent)">predicción del gemelo, una lectura antes</span>
+          <span style="--c:var(--verde)">verde</span><span style="--c:var(--ambar)">ámbar</span><span style="--c:var(--rojo)">rojo</span>
+          <span style="--c:var(--ink2)">pico en curso</span>
+        </div>
+        <p class="pq">La franja de colores bajo la curva es el semáforo de Guardian en cada lectura. La línea punteada marca los 200 Wh a partir de los cuales una lectura cuenta como pico.</p>
+      </div>
+      <div class="panel">
+        <h3>Guardian: la próxima media hora</h3>
+        <div class="semaforo" id="semaforo" data-c="0"><i></i><i></i><i></i><b id="sem-nombre">—</b></div>
+        <p id="sem-texto"></p>
+        <div class="dato"><span>Lectura actual</span><b id="sem-wh">—</b></div>
+        <div class="dato"><span>Qué pasó en los 30 min siguientes</span><b id="sem-despues">—</b></div>
+        <p class="pq">Presupuesto del rojo: [[p2:titular_min_dia]] y [[p2:titular_avisos_dia]]. Con ese presupuesto Guardian avisó con al menos dos lecturas de antelación (20 min nominales) en [[p2:titular_n20|n]] de [[p2:def_picos_prueba]] ([[p2:titular_p20]]; rango plausible <span id="sem-ic">—</span>). El [[p2:titular_falsos]] de sus avisos no precede un pico.</p>
+        <p class="pq">Qué vale cada color, medido en mayo: en rojo, el [[p2:g0_desp_acierto_rojo]] de las lecturas precede un pico; en ámbar, el [[p2:g0_desp_acierto_amarillo]]; en verde, el [[p2:g0_desp_acierto_verde]].</p>
+      </div>
+    </div>
+    <div class="rej">
+      <div class="panel">
+        <h3>¿Y si…? La próxima lectura según el gemelo</h3>
+        <p class="pq">El gemelo es una regresión lineal de seis variables: hora, luces, temperatura y humedad de la sala, temperatura exterior y el consumo de la lectura actual. Mueve dos de ellas y mira cómo cambia su predicción.</p>
+        <div class="rej mitad">
+          <div class="desl">
+            <label for="d-luces">Luces encendidas</label><output id="o-luces" for="d-luces">—</output>
+            <input type="range" id="d-luces" min="0" max="50" step="10" value="0">
+          </div>
+          <div class="desl">
+            <label for="d-tout">Temperatura exterior</label><output id="o-tout" for="d-tout">—</output>
+            <input type="range" id="d-tout" min="-5" max="30" step="0.5" value="10">
+          </div>
+        </div>
+        <div class="botones"><button class="bt" id="ysi-reset" type="button">Volver a los valores medidos</button></div>
+      </div>
+      <div class="panel">
+        <h3>Predicción para dentro de 10 min</h3>
+        <p class="grande" id="ysi-pred">—</p>
+        <p id="ysi-delta" class="pq"></p>
+        <div class="dato"><span>Lo que se midió después</span><b id="ysi-real">—</b></div>
+        <div class="dato"><span>Se equivoca en promedio, en esta franja (en mayo)</span><b id="ysi-mae">—</b></div>
+        <p class="nota" id="ysi-nota"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · TIPO DE DÍA -->
+  <section class="pantalla" id="v-tipo" data-vista="tipo" hidden>
+    <p class="intro">El agente necesita contexto: no es lo mismo un día normal que un día de carga alta. Ese tipo no lo da el calendario, se reconoce por la forma de la curva a medida que avanza el día.</p>
+    <div class="rej">
+      <div class="panel">
+        <h3>La curva de hoy frente a los dos tipos de día</h3>
+        <div class="graf" id="g-tipo"></div>
+        <div class="leyenda">
+          <span class="linea" style="--c:var(--normal)">día normal ([[c2:km_n_normal]], [[c2:km_kwh_normal]])</span>
+          <span class="linea" style="--c:var(--alta)">día de carga alta ([[c2:km_n_alta]], [[c2:km_kwh_alta]])</span>
+          <span class="linea" style="--c:var(--ink)">hoy, horas ya vistas</span>
+          <span class="linea" style="--c:var(--ink2)">hoy, lo que aún no se ve</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Tipo estimado a esta hora</h3>
+        <p class="grande" id="tipo-nombre" style="font-family:var(--f-rotulo)">—</p>
+        <div class="margen" id="tipo-barra"><i style="left:50%"></i></div>
+        <div class="margen-pie"><span>claramente normal</span><span>frontera</span><span>claramente carga alta</span></div>
+        <div class="dato"><span>Margen (confianza)</span><b id="tipo-margen">—</b></div>
+        <div class="dato"><span>Horas completas vistas</span><b id="tipo-horas">—</b></div>
+        <div class="dato"><span>Tipo con el día completo</span><b id="tipo-final">—</b></div>
+        <p class="pq" id="tipo-texto"></p>
+      </div>
+    </div>
+    <div class="rej mitad">
+      <div class="panel">
+        <h3>¿Se parece a algún día conocido? (DBSCAN)</h3>
+        <div class="chips"><span class="chip info" id="db-chip">—</span></div>
+        <p id="db-texto"></p>
+        <div class="dato"><span>Distancia al día conocido más cercano de su tipo</span><b id="db-dist">—</b></div>
+        <div class="dato"><span>Radio dentro del cual un día cuenta como conocido</span><b id="db-eps">—</b></div>
+        <p class="pq">En mayo, [[c2:db_mayo_en_grupo]] días caen dentro de un grupo de su tipo y [[c2:db_mayo_desconocidos]] no tienen días parecidos en la historia. Un día así se marca, no se borra, y Shiro debería ser prudente con él.</p>
+      </div>
+      <div class="panel">
+        <h3>Cuándo se puede saber</h3>
+        <p>Antes de media mañana la estimación es débil. Decir siempre «normal» acierta el [[c2:km_obs_8h]] de los días; con la curva vista hasta las 8 h se acierta el [[c2:km_obs_8h_acierto]], menos que eso. Hasta las 12 h ya se reconoce el [[c2:km_obs_12h]] de los días de carga alta.</p>
+        <p class="pq">Por eso el tipo de día entra al agente como una estimación que se actualiza cada hora, con su margen, y no como una etiqueta fija. Los días de carga alta pasaron del [[c2:km_alta_tr]] en enero–abril al [[c2:km_alta_te]] en mayo: la definición se revisa cada mes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · QUÉ HARÍA SHIRO -->
+  <section class="pantalla" id="v-shiro" data-vista="shiro" hidden>
+    <p class="intro">Shiro puede aplazar parte de un pico ([[t3:DE]]) hasta la tarifa de valle, y solo cuando la media de la hora pasa de 200 Wh. Aplazar ahorra dinero y cuesta espera. Aquí propone tres agentes distintos para la misma hora; nada se ejecuta sin que lo apruebes.</p>
+    <div class="rej">
+      <div class="panel propuesta">
+        <h3>Shiro propone</h3>
+        <p class="acc" id="prop-acc">—</p>
+        <p id="prop-estado"></p>
+        <div class="chips" id="prop-chips"></div>
+        <div class="botones">
+          <button class="bt pral" id="prop-si" type="button">Aprobar</button>
+          <button class="bt" id="prop-no" type="button">Ahora no</button>
+          <span class="pq" id="prop-registro" role="status">Shiro espera tu decisión.</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Lo que tú controlas</h3>
+        <div class="desl">
+          <label for="d-lam">Cuánto te cuesta esperar (λ, por hora de espera)</label><output id="o-lam" for="d-lam">—</output>
+          <input type="range" id="d-lam" min="0" max="0.05" step="0.001" value="0.005">
+        </div>
+        <div class="desl">
+          <label for="d-punta">Tarifa de punta (la de valle vale 1,0)</label><output id="o-punta" for="d-punta">—</output>
+          <input type="range" id="d-punta" min="1" max="3" step="0.1" value="1.5">
+        </div>
+        <div class="ctx-grupo">
+          <label for="sel-pend">Carga esperando</label>
+          <select id="sel-pend">
+            <option value="0">no hay nada aplazado</option>
+            <option value="1">desde hace 1 h</option>
+            <option value="3">desde hace 3 h</option>
+            <option value="6">desde hace 6 h</option>
+          </select>
+        </div>
+        <p class="pq" id="vi-info"></p>
+      </div>
+    </div>
+    <div class="rej tres" id="agentes"></div>
+    <div class="panel">
+      <div class="botones">
+        <h3>El día completo con cada agente</h3>
+        <button class="bt" id="repetir" type="button">Repetir el día</button>
+        <span class="pq" id="rep-info" role="status"></span>
+      </div>
+      <div class="tabla"><table id="rep-tabla"></table></div>
+      <div class="leyenda">
+        <span style="--c:var(--punta)">hora en que aplaza</span>
+        <span style="--c:var(--apagado)">carga esperando</span>
+        <span style="--c:var(--valle)">hora en que ejecuta</span>
+      </div>
+      <p class="pq">Simplificación declarada: cada día empieza sin carga esperando. Si al acabar el día queda una, el mismo agente decide a qué hora del día siguiente la ejecuta, y esa espera también se cuenta; en el último día de los datos se cobra a la tarifa de la última hora. Los costos están en kWh-eq: kWh a precio de valle. Q-learning y la red se entrenaron con λ = 0,005 y tarifa de punta 1,5; solo la política exacta se recalcula al mover los controles.</p>
+    </div>
+  </section>
+
+  <!-- 4 · PREGÚNTALE A SHIRO -->
+  <section class="pantalla" id="v-pregunta" data-vista="pregunta" hidden>
+    <p class="intro">Respuestas armadas con plantillas que leen el día, la hora y los controles actuales. No hay un modelo de lenguaje detrás: la misma pregunta con el mismo estado da siempre la misma respuesta.</p>
+    <div class="rej" style="grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)">
+      <div class="pregs" id="pregs"></div>
+      <div class="panel resp" id="resp" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 5 · FICHA -->
+  <section class="pantalla" id="v-ficha" data-vista="ficha" hidden>
+    <p class="intro">Qué hay detrás de cada pantalla, con qué datos se midió y dónde deja de ser fiable. Los modelos se entrenaron con enero–abril y todo lo que ves en la consola es mayo, un mes que no vieron.</p>
+
+    <div class="panel">
+      <h3>Supervisado · cuánto consume la casa</h3>
+      <p class="pq">Cada modelo se mide dos veces. Partición aleatoria: lecturas mezcladas, la del material del curso. Partición temporal: se entrena hasta abril y se prueba en mayo. Las decisiones de Shiro se toman con la temporal.</p>
+      <div class="tabla"><table>
+        <thead><tr><th>Regresor</th><th class="n">R² aleatoria</th><th class="n">R² temporal</th><th class="n">R² temporal con retardos</th></tr></thead>
+        <tbody>
+          <tr><td>Regresión lineal</td><td class="n">[[p2:her_reg_lineal_aleatoria_r2]]</td><td class="n">[[p2:her_reg_lineal_temporal_r2]]</td><td class="n">[[p2:her_bo_lineal_retardos_r2]]</td></tr>
+          <tr><td>Árbol de decisión</td><td class="n">[[p2:her_reg_arbol_aleatoria_r2]]</td><td class="n">[[p2:her_reg_arbol_temporal_r2]]</td><td class="n">—</td></tr>
+          <tr><td>KNN</td><td class="n">[[p2:her_reg_knn_aleatoria_r2]]</td><td class="n">[[p2:her_reg_knn_temporal_r2]]</td><td class="n">—</td></tr>
+          <tr><td>Random Forest</td><td class="n">[[p2:her_reg_rf_aleatoria_r2]]</td><td class="n">[[p2:her_reg_rf_temporal_r2]]</td><td class="n">[[p2:her_bo_rf_retardos_r2]]</td></tr>
+          <tr><td>LightGBM</td><td class="n">[[p2:her_bo_lgbm_aleatoria_r2]]</td><td class="n">[[p2:her_bo_lgbm_temporal_r2]]</td><td class="n">[[p2:her_bo_lgbm_retardos_r2]]</td></tr>
+        </tbody>
+      </table></div>
+      <p class="pq">El orden se invierte: el mejor en la aleatoria, LightGBM ([[p2:her_bo_lgbm_aleatoria_r2]]), cae a [[p2:her_bo_lgbm_temporal_r2]] en mayo, y Random Forest es el peor ([[p2:her_reg_rf_temporal_r2]]). La lineal es la única con R² positivo sin retardos ([[p2:her_reg_lineal_temporal_r2]]) y, con el consumo reciente como variable, llega a [[p2:her_bo_lineal_retardos_r2]]. Por eso el gemelo es lineal. Un «—» significa que ese modelo no se entrenó con retardos.</p>
+      <p class="pq">El gemelo completo del proyecto (36 variables, con retardos), frente a repetir la última lectura, pierde en error medio ([[p2:n1b_g3a_total_mae]] frente a [[p2:n1b_persistencia_total_mae]]) y gana en los errores grandes ([[p2:n1b_g3a_total_rmse]] frente a [[p2:n1b_persistencia_total_rmse]]). Esta página ejecuta una versión reducida de seis variables, que en mayo se equivoca en promedio [[p3:sim6_mae_mayo]].</p>
+      <p class="pq">R²: qué parte de la variación del consumo explica el modelo; 1 es perfecto, 0 es lo mismo que decir siempre la media y un valor negativo es peor que eso. F1: resume aciertos y avisos falsos de un clasificador, de 0 a 1.</p>
+      <div class="tabla"><table>
+        <thead><tr><th>Clasificador (lectura sobre 200 Wh)</th><th class="n">F1 aleatoria</th><th class="n">F1 temporal</th></tr></thead>
+        <tbody>
+          <tr><td>Árbol de decisión</td><td class="n">[[p2:her_clf_arbol_aleatoria_f1]]</td><td class="n">[[p2:her_clf_arbol_temporal_f1]]</td></tr>
+          <tr><td>KNN</td><td class="n">[[p2:her_clf_knn_aleatoria_f1]]</td><td class="n">[[p2:her_clf_knn_temporal_f1]]</td></tr>
+          <tr><td>Random Forest</td><td class="n">[[p2:her_clf_rf_aleatoria_f1]]</td><td class="n">[[p2:her_clf_rf_temporal_f1]]</td></tr>
+          <tr><td>SVM (rbf)</td><td class="n">[[p2:her_clf_svm_aleatoria_f1]]</td><td class="n">[[p2:her_clf_svm_temporal_f1]]</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="rej mitad">
+      <div class="panel">
+        <h3>No supervisado · tipos de día</h3>
+        <div class="tabla"><table>
+          <tbody>
+            <tr><td>K-Means con dos grupos: silueta</td><td class="n">[[c2:km_silueta]]</td></tr>
+            <tr><td>Con tres grupos la silueta baja a</td><td class="n">[[c2:km_silueta_k3]]</td></tr>
+            <tr><td>Días normales y de carga alta</td><td class="n">[[c2:km_n_normal]] / [[c2:km_n_alta]]</td></tr>
+            <tr><td>Relación con el fin de semana (V de Cramér)</td><td class="n">[[c2:km_cramer_finde]]</td></tr>
+            <tr><td>Jerárquico (Ward) coincide con K-Means en</td><td class="n">[[c2:ward_coinciden]]</td></tr>
+            <tr><td>Acuerdo Ward – K-Means (ARI)</td><td class="n">[[c2:ward_ari_kmeans]]</td></tr>
+            <tr><td>Estabilidad al quitar mayo: K-Means / Ward (ARI)</td><td class="n">[[c2:estab_ari_kmeans]] / [[c2:estab_ari_ward]]</td></tr>
+            <tr><td>Enlace <i>average</i>: mejor silueta, grupo menor de</td><td class="n">[[c2:avg_silueta]] · [[c2:avg_tam_menor]]</td></tr>
+            <tr><td>DBSCAN: radio del día normal / de carga alta</td><td class="n">[[c2:db_eps_normal]] / [[c2:db_eps_alta]]</td></tr>
+            <tr><td>Días atípicos robustos</td><td class="n">[[c2:db_atipicos]] ([[c2:db_atipicos_pct]])</td></tr>
+          </tbody>
+        </table></div>
+        <p class="pq">K-Means asigna el tipo porque es el estable; el jerárquico audita cada mes. La mejor métrica no siempre da la mejor partición: <i>average</i> gana en silueta aislando un solo día. El día de carga alta es [[c2:db_ratio_eps]] más disperso que el normal.</p>
+        <p class="pq">Silueta: qué tan separados quedan los grupos, de −1 a 1. ARI: acuerdo entre dos formas de agrupar; 1 es acuerdo total y 0 es el del azar.</p>
+      </div>
+      <div class="panel">
+        <h3>Guardian · avisar antes del pico</h3>
+        <div class="tabla"><table>
+          <thead><tr><th>Señal, mismo tiempo en rojo ([[p2:titular_min_dia]])</th><th class="n">Picos avisados con ≥ 20 min</th></tr></thead>
+          <tbody>
+            <tr class="fuerte"><td>Guardian: consumo actual + frecuencia de picos a esa hora</td><td class="n">[[p2:titular_n20|n]] de [[p2:def_picos_prueba|n]] ([[p2:titular_p20]])</td></tr>
+            <tr><td>Regla del medidor: solo el consumo actual</td><td class="n">[[p2:titular_m20|n]] de [[p2:def_picos_prueba|n]] ([[p2:titular_m20_pct]])</td></tr>
+            <tr><td>Marcar al azar</td><td class="n">[[p2:azar_p20_desplegado]]</td></tr>
+          </tbody>
+        </table></div>
+        <p class="pq">«≥ 20 min» significa al menos dos lecturas de antelación. La ventaja sobre la regla del medidor es de <span id="fi-dregla">—</span> puntos, con un rango plausible de <span id="fi-dregla-ic">—</span> que incluye el cero: no es concluyente. Los cortes del semáforo se fijaron en abril (validación), donde Guardian anticipaba el [[p2:g0_val_p20]]; en mayo, con el mismo presupuesto, el [[p2:g0_prueba_p20]]. La validación es optimista.</p>
+        <p class="pq">Solo el [[p2:energia_exceso_anticipado_pct]] del consumo por encima de 200 Wh ocurre en picos avisados a tiempo: eso acota la parte del consumo que se puede mover.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Refuerzo · quién propone</h3>
+      <div class="tabla"><table>
+        <thead><tr><th>Agente</th><th class="n">Ahorro en mayo</th><th class="n">Del ahorro de la política exacta</th><th class="n">Espera</th><th class="n">Días para aprender el 80 %</th></tr></thead>
+        <tbody>
+          <tr class="fuerte"><td>Política exacta (iteración de valor sobre [[t3:n_estados]] estados)</td><td class="n">[[t3:vi_ahorro_te]]</td><td class="n">referencia</td><td class="n">[[t3:vi_espera_te]]</td><td class="n">no aprende: se calcula</td></tr>
+          <tr><td>Q-learning (Taller 2)</td><td class="n">[[t3:ql_ahorro]]</td><td class="n">[[t3:ql_captura]]</td><td class="n">[[t3:ql_espera]]</td><td class="n">[[t3:ql_dias80]]</td></tr>
+          <tr><td>Q-learning con recompensa centrada</td><td class="n">[[t3:qlc_ahorro]]</td><td class="n">[[t3:qlc_captura]]</td><td class="n">[[t3:qlc_espera]]</td><td class="n">[[t3:qlc_dias80]]</td></tr>
+          <tr><td>DQN (red de [[t3:n_rasgos]] entradas)</td><td class="n">[[t3:dqn_ahorro]]</td><td class="n">[[t3:dqn_captura]]</td><td class="n">[[t3:dqn_espera]]</td><td class="n">[[t3:dqn_dias80]]</td></tr>
+          <tr><td>Double DQN</td><td class="n">[[t3:ddqn_ahorro]]</td><td class="n">[[t3:ddqn_captura]]</td><td class="n">[[t3:ddqn_espera]]</td><td class="n">[[t3:ddqn_dias80]]</td></tr>
+        </tbody>
+      </table></div>
+      <p class="pq">Diferencias con su rango plausible (bootstrap pareado por día): política exacta frente a no actuar, [[t1:boot_no_te]]; la red frente a la política exacta, [[t3:boot_dqn_pi]]; la red frente a Q-learning, [[t3:boot_dqn_ql]]. Cuando el rango incluye el cero, la diferencia no se distingue del azar. Las dos comparaciones de la red son de su semilla mediana, que decide igual que la política exacta; entre las [[t3:n_semillas]] semillas su ahorro va de [[t3:dqn_ahorro_min]] a [[t3:dqn_ahorro_max]]. Sin memoria de experiencias ni red objetivo hay semillas que no ahorran nada ([[t3:sina_ahorro_min]]).</p>
+      <p class="pq">kWh-eq: kWh a precio de valle (un kWh en punta cuenta como la tarifa de punta). λ: cuánto te cuesta, en kWh-eq, cada hora con una carga esperando. IC: rango plausible de una diferencia al repetir el cálculo con otros días.</p>
+      <p class="pq"><b>Recompensa centrada.</b> Lo que la casa consume no depende de la acción, así que se quita de la recompensa y queda solo lo que la acción cambia: aplazar vale (tarifa − 1)·ΔE − λ; ejecutar, −(tarifa − 1)·ΔE; no actuar, −λ por cada hora con carga esperando. La política óptima es la misma y el aprendizaje pasa de [[t3:ql_dias80]] a [[t3:qlc_dias80]].</p>
+    </div>
+
+    <div class="rej mitad">
+      <div class="panel">
+        <h3>Límites que debes conocer</h3>
+        <ul class="lim">
+          <li><b>El ahorro simulado es pequeño.</b> Aplazar por tarifa ahorra el [[t3:vi_ahorro_te]] del costo de mayo y no se distingue de no actuar: en este hogar aplazar por tarifa mueve poco. Un ahorro mayor probablemente exigiría saber qué aparato se enciende.</li>
+          <li><b>Es una sola vivienda</b>, de bajo consumo, entre invierno y primavera. Nada de esto se ha medido en otra casa ni en verano.</li>
+          <li><b>Falta saber qué aparato se enciende.</b> Los sensores ven temperatura, humedad y consumo total. El gemelo se queda corto en los picos: en lecturas sobre 200 Wh, el de seis variables que corre en esta página tiene un sesgo de [[p2:n1b_g3c_altas_sesgo]], y el completo del proyecto (36 variables), de [[p2:n1b_g3a_altas_sesgo]].</li>
+          <li><b>El agente solo se probó en simulación</b> (réplica de días reales), nunca en una casa.</li>
+          <li><b>Guardian se equivoca a menudo.</b> Avisa a tiempo [[p2:titular_n20|n]] de [[p2:def_picos_prueba]], y el [[p2:titular_falsos]] de sus avisos es falso.</li>
+          <li><b>Q-learning y la red se entrenaron solo con λ = 0,005 y punta ×1,5.</b> Con otros controles, solo la política exacta se adapta.</li>
+          <li><b>La validación es optimista.</b> Lo medido en abril no se repite igual en mayo; por eso cada probabilidad se muestra con su rango y se recalibra cada mes.</li>
+          <li><b>La red extrapola.</b> De madrugada nunca hubo picos en sus datos; si aparece uno, la consola lo marca como «fuera de los datos» y manda la política exacta.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Fuentes</h3>
+        <ul class="lim">
+          <li>Datos: <i>Appliances Energy Prediction</i>, repositorio UCI n.º 374 (Candanedo y otros, 2017): [[p2:datos_n_lecturas]] de un hogar en Bélgica, de enero a mayo de 2016.</li>
+          <li>Supervisado: talleres 2 y 3 y parcial del primer corte; taller de boosting del segundo corte.</li>
+          <li>No supervisado: talleres de K-Means, clustering jerárquico y DBSCAN del segundo corte.</li>
+          <li>Guardian: parcial del segundo corte.</li>
+          <li>Refuerzo: talleres 1 (MDP), 2 (Q-learning) y 3 (DQN) del tercer corte.</li>
+          <li>La consola muestra [[p3:n_lecturas_mayo]] lecturas y [[p3:n_horas_mayo]] horas de mayo. La iteración de valor, la red y K-Means se ejecutan en esta página y se comparan con los cálculos originales en la <a href="#prueba">vista de pruebas</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRUEBAS -->
+  <section class="pantalla" id="v-prueba" data-vista="prueba" hidden>
+    <h2>Pruebas de la página contra los cálculos originales</h2>
+    <p class="intro">La página vuelve a resolver la iteración de valor en todas las combinaciones de referencia, ejecuta la red en los estados de prueba y recalcula el margen de K-Means en cada hora de mayo.</p>
+    <pre id="resultado-pruebas">calculando…</pre>
+  </section>
+
+  <footer class="pie">
+    <span id="verif">Verificación: calculando…</span>
+    <span>Modo determinista, sin conexión y sin modelo de lenguaje.</span>
+    <span>Grupo Shiro · Aprendizaje de Máquina · Universidad Sergio Arboleda</span>
+  </footer>
+</div>
+
+<!--DATOS-->
+<script type="application/json" id="cifras-claves">
+["t3:DE","t3:vi_ahorro_te","t3:vi_espera_te","t3:vi_ex_ahorro_te","t3:vi_ex_espera_te","t1:boot_no_te","t3:dqn_captura","t3:qlc_captura","t3:ql_captura","t3:qlc_dias80","t3:dqn_dias80","t3:n_estados","t3:e4_ex_desde","t3:e4_ex_umbral_h","t3:e4_ex_hora_teorica","t3:sobrecosto_kwh","t3:boot_dqn_pi","p2:titular_n20","p2:titular_p20","p2:def_picos_prueba","p2:titular_min_dia","p2:titular_falsos","p2:titular_m20","p2:azar_p20_desplegado","p2:g0_val_p20","p2:g0_prueba_p20","p2:g0_desp_acierto_rojo","p2:g0_desp_acierto_amarillo","p2:g0_desp_acierto_verde","p2:energia_exceso_anticipado_pct","p2:n1b_g3c_altas_sesgo","c2:km_obs_8h","c2:km_obs_8h_acierto","c2:km_obs_12h","c2:ward_coinciden","c2:db_mayo_desconocidos","c2:km_alta_te","t1:ex_n_difs"]
+</script>
+<script>
+(function(){
+"use strict";
+var J=function(id){return JSON.parse(document.getElementById(id).textContent);};
+var D=J("datos"), DB=J("dbscan"), CIF=J("cifras");
+var $=function(id){return document.getElementById(id);};
+function cn(k){ if(!CIF[k]) throw new Error("Falta la cifra "+k); return fmt(CIF[k].valor,0); }
+function min1(t){ return t.charAt(0).toLowerCase()+t.slice(1); }
+function c(k){ if(!CIF[k]) throw new Error("Falta la cifra "+k); return CIF[k].texto; }
+
+/* ---------- formato es-CO ---------- */
+function fmt(x,dec){
+  if(x===null||x===undefined||!isFinite(x)) return "—";
+  var neg=x<0, s=Math.abs(x).toFixed(dec==null?0:dec);
+  if(Number(s)===0) neg=false;
+  var p=s.split("."); p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  return (neg?"−":"")+p[0]+(p[1]?","+p[1]:"");
+}
+function sig(x,dec){ var s=fmt(x,dec); return (x>0&&s.charAt(0)!=="−"&&Number(Math.abs(x).toFixed(dec))!==0?"+":"")+s; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+var DSEM=["dom","lun","mar","mié","jue","vie","sáb"], MES=["ene","feb","mar","abr","may","jun"];
+function fechaTxt(iso){ var a=iso.split("-"), dt=new Date(Date.UTC(+a[0],+a[1]-1,+a[2])); return DSEM[dt.getUTCDay()]+" "+(+a[2])+" "+MES[+a[1]-1]; }
+function hhmm(h,m){ return h+":"+(m<10?"0":"")+(m||0); }
+var FRANJA=["madrugada","mañana","tarde","noche"], NIVEL=["consumo bajo","consumo medio","pico"], ACC=["No actuar","Aplazar","Ejecutar lo pendiente"];
+
+/* ---------- datos derivados ---------- */
+var M=D.mdp, K=D.kmeans, L=D.lecturas, H=D.horas, DE=M.DE_wh, UMBRAL=K.umbral;
+var idx0=D.dias.map(function(f){ return L.t.indexOf(f+"T00:00"); });
+function fila(d,h){ return H[d*24+h]; }
+
+/* ---------- 1. iteración de valor ---------- */
+var cacheVI={};
+function vi(lam,punta){
+  var key=lam+"|"+punta; if(cacheVI[key]) return cacheVI[key];
+  var n=M.X.length, de=DE/1000, g=M.gamma, S=2*n, V=new Float64Array(S), Vn=new Float64Array(S);
+  var R=[],val=[],sp=[],x,p,s,a,q,x2;
+  for(x=0;x<n;x++){ var tar=M.F[x]===0?1:punta, e=M.E[x];
+    for(p=0;p<2;p++){ s=2*x+p;
+      val[s]=[true, M.N[x]===2&&p===0, p===1]; sp[s]=[p,1,0];
+      var co=[tar*e, tar*(e-de)+1.0*de, tar*e+(tar-1)*de];
+      R[s]=[-co[0]-lam*sp[s][0], -co[1]-lam*sp[s][1], -co[2]-lam*sp[s][2]];
+    } }
+  var Q=[],it=0,delta=1,EV=[];
+  while(delta>=M.theta && it<20000){
+    for(x=0;x<n;x++){ EV[x]=[0,0]; for(q=0;q<2;q++){ var acc=0; for(x2=0;x2<n;x2++) acc+=M.P[x][x2]*V[2*x2+q]; EV[x][q]=acc; } }
+    delta=0;
+    for(s=0;s<S;s++){ x=s>>1; var best=-Infinity; Q[s]=[null,null,null];
+      for(a=0;a<3;a++){ if(!val[s][a]) continue; var v=R[s][a]+g*EV[x][sp[s][a]]; Q[s][a]=v; if(v>best) best=v; }
+      Vn[s]=best; var df=Math.abs(best-V[s]); if(df>delta) delta=df; }
+    V.set(Vn); it++;
+  }
+  var pol=[];
+  for(s=0;s<S;s++){ var mx=-Infinity, am=0; for(a=0;a<3;a++){ if(Q[s][a]!==null&&Q[s][a]>mx){mx=Q[s][a];am=a;} }
+    if(Q[s][0]>=mx-1e-12) am=0; pol[s]=am; }
+  return (cacheVI[key]={pol:pol,Q:Q,it:it});
+}
+
+/* ---------- 3. red DQN ---------- */
+var W=D.dqn.capas;
+function capa(v,Wm,b,relu){ var out=new Array(b.length),i,j; for(j=0;j<b.length;j++){ var acc=b[j]; for(i=0;i<v.length;i++) acc+=v[i]*Wm[i][j]; out[j]=relu&&acc<0?0:acc; } return out; }
+function red(v){ return capa(capa(capa(v,W.W1,W.b1,true),W.W2,W.b2,true),W.W3,W.b3,false); }
+function rasgos(r,p,he){ var ang=2*Math.PI*r.h/24;
+  return [Math.sin(ang),Math.cos(ang),(r.logw-D.dqn.mu_logw)/D.dqn.sd_logw,(r.logw_prev-D.dqn.mu_logw)/D.dqn.sd_logw,r.margen,r.franja!==0?1:0,p,he/24,r.nivel===2?1:0]; }
+
+/* ---------- 2 y 3. acción de cada agente ---------- */
+function validas(r,p){ return [true, r.nivel===2&&p===0, p===1]; }
+function mejor(q,val){ var mx=-Infinity,am=0,a; for(a=0;a<3;a++){ if(val[a]&&q[a]!==null&&q[a]>mx){mx=q[a];am=a;} } if(q[0]>=mx-1e-12) am=0; return am; }
+function accion(ag,r,p,he,lam,punta){
+  var val=validas(r,p), xi=M.X.indexOf(r.x), o={a:0,q:null,val:val,visto:xi>=0,fuera:false};
+  if(ag==="pi"){ if(xi>=0){ var sol=vi(lam,punta), s=2*xi+p; o.a=sol.pol[s]; o.q=sol.Q[s]; } }
+  else if(ag==="ql"){ var k=r.x+"-"+p; if(Object.prototype.hasOwnProperty.call(D.ql,k)) o.a=D.ql[k]; else o.visto=false; }
+  else { var q=red(rasgos(r,p,he)); o.q=q.map(function(v,a){return val[a]?v:null;}); o.a=mejor(o.q,val); o.fuera=(xi<0)||(r.franja===0&&r.nivel===2); }
+  if(!val[o.a]) o.a=0;
+  return o;
+}
+function brecha(o){ if(!o.q) return null; var vs=[]; for(var a=0;a<3;a++) if(o.val[a]&&o.q[a]!==null) vs.push(o.q[a]); if(vs.length<2) return null; vs.sort(function(x,y){return y-x;}); return vs[0]-vs[1]; }
+
+/* ---------- 4. repetir el día ---------- */
+function repetir(d,ag,lam,punta){
+  var p=0,he=0,costo=0,base=0,esp=0,apl=0,acts=[],tarU=1;
+  for(var h=0;h<24;h++){ var r=fila(d,h), tar=r.franja===0?1:punta; tarU=tar;
+    var a = ag==="no" ? 0 : accion(ag,r,p,he,lam,punta).a;
+    var e=r.wh+(a===1?-DE:a===2?DE:0);
+    costo+=tar*e/1000; base+=tar*r.wh/1000;
+    he = a===1?1 : a===2?0 : (p===1?he+1:0);
+    p = a===1?1 : a===2?0 : p;
+    esp+=p; if(a===1) apl++; acts.push({a:a,p:p});
+  }
+  var cierre=null;
+  if(p===1){ /* la carga que queda esperando pasa a la madrugada siguiente: el agente decide cuándo ejecutarla */
+    if(d+1<D.dias.length){
+      for(var h2=0;h2<24&&p===1;h2++){ var r2=fila(d+1,h2), t2=r2.franja===0?1:punta, a2=accion(ag,r2,1,he,lam,punta).a;
+        if(a2===2||h2===23){ costo+=t2*DE/1000; p=0; cierre=h2; } else { he++; esp++; } }
+    } else { costo+=tarU*DE/1000; cierre=-1; }
+  }
+  return {costo:costo,base:base,ahorro:base>0?100*(base-costo)/base:0,espera:esp,apl:apl,acts:acts,cierre:cierre};
+}
+function repetirMes(ag,lam,punta){ var c0=0,b0=0,e0=0,a0=0; for(var d=0;d<D.dias.length;d++){ var r=repetir(d,ag,lam,punta); c0+=r.costo;b0+=r.base;e0+=r.espera;a0+=r.apl; } return {ahorro:100*(b0-c0)/b0,espera:e0/D.dias.length,apl:a0}; }
+
+/* ---------- 5. tipo de día con la curva parcial ---------- */
+function tipoParcial(d,h){
+  if(h<K.hora_tipo) return {sabe:false,tipo:0,margen:0};
+  var cur=K.curvas_mayo[d], alto=K.alto, nor=1-alto, dn=0, da=0;
+  for(var i=0;i<h;i++){ var u=K.C[nor][i]-cur[i], w=K.C[alto][i]-cur[i]; dn+=u*u; da+=w*w; }
+  dn=Math.sqrt(dn); da=Math.sqrt(da);
+  return {sabe:true,tipo:da<dn?1:0,margen:(dn+da)>0?(dn-da)/(dn+da):0};
+}
+
+/* ---------- pruebas (#prueba y pie) ---------- */
+function pruebas(){
+  var res={vi_identicas:0,vi_total:0,vi_error_q:0,vi_iteraciones_iguales:0,red_error:0,red_total:D.dqn.pruebas.length,margen_error:0,margen_total:H.length,tipo_iguales:0,ql_estados:Object.keys(D.ql).length,superadas:0,ok:false};
+  Object.keys(D.ref_vi).forEach(function(k){
+    var pr=k.split("|").map(Number), ref=D.ref_vi[k], sol=vi(pr[0],pr[1]), igual=true, s,a;
+    for(s=0;s<ref.pol.length;s++){ if(ref.pol[s]!==sol.pol[s]) igual=false;
+      for(a=0;a<3;a++){ var rq=ref.Q[s][a]; if(rq===null) continue; var e=Math.abs(rq-sol.Q[s][a]); if(!(e<=res.vi_error_q)) res.vi_error_q=e; } }
+    res.vi_total++; if(igual) res.vi_identicas++; if(ref.it===sol.it) res.vi_iteraciones_iguales++;
+  });
+  D.dqn.pruebas.forEach(function(t){ var q=red(t.x); for(var a=0;a<3;a++){ var e=Math.abs(q[a]-t.q[a]); if(!(e<=res.red_error)) res.red_error=e; } });
+  H.forEach(function(r){ var t=tipoParcial(r.d,r.h), e=Math.abs(t.margen-r.margen); if(!(e<=res.margen_error)) res.margen_error=e; if(t.tipo===r.tipo) res.tipo_iguales++; });
+  var okVI=res.vi_identicas===res.vi_total&&res.vi_total>0&&res.vi_error_q<1e-6, okRed=res.red_error<1e-6, okMar=res.margen_error<1e-4&&res.tipo_iguales===H.length;
+  res.superadas=(okVI?res.vi_total:res.vi_identicas)+(okRed?res.red_total:0)+(okMar?res.margen_total:0);
+  res.ok=okVI&&okRed&&okMar;
+  return res;
+}
+
+/* ---------- estado ---------- */
+var E={d:20,h:12,lam:M.lam_def,punta:M.punta_def,pend:0,he:0,luces:null,tout:null,preg:0};
+function ahora(){ var i=idx0[E.d]+E.h*6+5; return {i:i,wh:L.wh[i],color:L.color[i],calma:L.en_calma[i]===1,lights:L.lights[i],T2:L.T2[i],RH_2:L.RH_2[i],T_out:L.T_out[i]}; }
+function predSim(hora,lights,T2,RH2,Tout,lag){ var cf=D.sim.coeficientes; return D.sim.intercepto+cf[0]*hora+cf[1]*lights+cf[2]*T2+cf[3]*RH2+cf[4]*Tout+cf[5]*lag; }
+
+/* ---------- gráficas (SVG propio, a tamaño real) ---------- */
+function ejes(W,Hh,ymax,paso){
+  var m={l:44,r:12,t:20,b:24}, pw=W-m.l-m.r, ph=Hh-m.t-m.b;
+  var X=function(h){return m.l+pw*h/24;}, Y=function(v){return m.t+ph*(1-v/ymax);};
+  var s='', i;
+  for(i=0;i<4;i++){ s+='<rect x="'+X(i*6)+'" y="'+m.t+'" width="'+(pw/4)+'" height="'+ph+'" fill="var(--panel2)" opacity="'+(i%2?0:0.45)+'"/>';
+    s+='<text class="rotf" x="'+(X(i*6)+4)+'" y="'+(m.t-6)+'">'+(W<520&&i===0?"madrug.":FRANJA[i])+'</text>'; }
+  for(var v=0;v<=ymax+1e-9;v+=paso){ s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)" stroke-width="1"/>';
+    s+='<text x="'+(m.l-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+fmt(v,0)+'</text>'; }
+  for(i=0;i<=24;i+=(W<520?6:3)) s+='<text x="'+X(i)+'" y="'+(Hh-7)+'" text-anchor="'+(i===24?"end":i===0?"start":"middle")+'">'+i+' h</text>';
+  s+='<text x="'+(m.l-6)+'" y="'+(m.t-6)+'" text-anchor="end">Wh</text>';
+  return {s:s,X:X,Y:Y,m:m,pw:pw,ph:ph};
+}
+function camino(pts){ return pts.map(function(p,i){return (i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1);}).join(""); }
+function escalaY(mx){ var pasos=[50,100,200,250,500], i; for(i=0;i<pasos.length;i++) if(mx/pasos[i]<=5) break; var paso=pasos[Math.min(i,pasos.length-1)]; return {paso:paso,ymax:Math.ceil(mx/paso)*paso}; }
+function svg(W,Hh,inner,desc){ return '<svg viewBox="0 0 '+W+' '+Hh+'" width="'+W+'" height="'+Hh+'" role="img" aria-label="'+desc+'">'+inner+'</svg>'; }
+
+function grafHoy(){
+  var el=$("g-hoy"), W=Math.max(280,el.clientWidth||700), Hh=W<520?250:300, i0=idx0[E.d], n=E.h*6+6, k;
+  var mx=0; for(k=0;k<144;k++) mx=Math.max(mx,L.wh[i0+k],k<n?L.sim[i0+k]:0);
+  var es=escalaY(Math.max(mx,250)), ax=ejes(W,Hh-16,es.ymax,es.paso), s=ax.s;
+  var xr=function(k){return ax.X((k)/6);};
+  s+='<rect x="'+xr(n-1)+'" y="'+ax.m.t+'" width="'+Math.max(0,ax.X(24)-xr(n-1))+'" height="'+ax.ph+'" fill="var(--bg)" opacity=".7"/>';
+  s+='<line x1="'+ax.m.l+'" x2="'+(W-ax.m.r)+'" y1="'+ax.Y(UMBRAL)+'" y2="'+ax.Y(UMBRAL)+'" stroke="var(--rojo)" stroke-width="1" stroke-dasharray="4 4"/>';
+  s+='<text x="'+(W-ax.m.r-4)+'" y="'+(ax.Y(UMBRAL)-5)+'" text-anchor="end" style="fill:var(--rojo)">pico: más de '+fmt(UMBRAL,0)+' Wh</text>';
+  var real=[],sim=[];
+  for(k=0;k<n;k++){ real.push([xr(k),ax.Y(L.wh[i0+k])]); sim.push([xr(k),ax.Y(Math.max(0,Math.min(es.ymax,L.sim[i0+k])))]); }
+  s+='<path d="'+camino(sim)+'" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/>';
+  s+='<path d="'+camino(real)+'" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/>';
+  var u=real[n-1]; s+='<circle cx="'+u[0]+'" cy="'+u[1]+'" r="4" fill="var(--ink)" stroke="var(--panel)" stroke-width="1.5"/>';
+  var pn=predActual(), yp=ax.Y(Math.max(0,Math.min(es.ymax,pn))), xp=xr(n);
+  s+='<line x1="'+u[0]+'" y1="'+u[1]+'" x2="'+xp+'" y2="'+yp+'" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="3 3"/>';
+  s+='<circle cx="'+xp+'" cy="'+yp+'" r="4.5" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>';
+  var cols=["var(--verde)","var(--ambar)","var(--rojo)"], y0=Hh-12, bw=ax.pw/144;
+  for(k=0;k<n;k++){ var cc=L.en_calma[i0+k]===1?cols[L.color[i0+k]]:"var(--ink2)"; s+='<rect x="'+(ax.m.l+bw*k)+'" y="'+y0+'" width="'+(bw+0.3)+'" height="10" fill="'+cc+'"/>'; }
+  s+='<rect x="'+ax.m.l+'" y="'+y0+'" width="'+ax.pw+'" height="10" fill="none" stroke="var(--line)"/>';
+  el.innerHTML=svg(W,Hh,s,"Consumo real y predicción del gemelo del día elegido, con el semáforo de Guardian por lectura");
+}
+function grafTipo(){
+  var el=$("g-tipo"), W=Math.max(280,el.clientWidth||700), Hh=W<520?240:300, cur=K.curvas_mayo[E.d], alto=K.alto, nor=1-alto, k;
+  var mx=Math.max.apply(null,cur.concat(K.C[0],K.C[1])), es=escalaY(Math.max(mx,200)), ax=ejes(W,Hh,es.ymax,es.paso), s=ax.s;
+  var linea=function(arr,desde,hasta){ var pts=[]; for(var i=desde;i<hasta;i++) pts.push([ax.X(i+0.5),ax.Y(arr[i])]); return camino(pts); };
+  var xh=ax.X(K.hora_tipo);
+  s+='<line x1="'+xh+'" x2="'+xh+'" y1="'+ax.m.t+'" y2="'+(ax.m.t+ax.ph)+'" stroke="var(--ink2)" stroke-dasharray="2 4"/>';
+  s+='<text x="'+(xh+5)+'" y="'+(ax.m.t+13)+'">desde las '+K.hora_tipo+' h se estima</text>';
+  s+='<path d="'+linea(K.C[nor],0,24)+'" fill="none" stroke="var(--normal)" stroke-width="2.2"/>';
+  s+='<path d="'+linea(K.C[alto],0,24)+'" fill="none" stroke="var(--alta)" stroke-width="2.2"/>';
+  if(E.h<24) s+='<path d="'+linea(cur,Math.max(0,E.h-1),24)+'" fill="none" stroke="var(--ink2)" stroke-width="1.2" stroke-dasharray="2 4"/>';
+  if(E.h>0){ s+='<path d="'+linea(cur,0,E.h)+'" fill="none" stroke="var(--ink)" stroke-width="2"/>';
+    for(k=0;k<E.h;k++) s+='<circle cx="'+ax.X(k+0.5)+'" cy="'+ax.Y(cur[k])+'" r="2.6" fill="var(--ink)"/>'; }
+  var xa=ax.X(E.h); s+='<line x1="'+xa+'" x2="'+xa+'" y1="'+ax.m.t+'" y2="'+(ax.m.t+ax.ph)+'" stroke="var(--accent)" stroke-width="1.5"/>';
+  el.innerHTML=svg(W,Hh,s,"Curvas tipo de día normal y de carga alta, y consumo medio por hora del día elegido");
+}
+
+/* ---------- contexto ---------- */
+function pintaContexto(){
+  $("sel-dia").value=String(E.d); $("hora-txt").textContent=hhmm(E.h,0);
+  var r=fila(E.d,E.h), g=$("regleta"), s='', mx=0, h;
+  for(h=0;h<24;h++) mx=Math.max(mx,fila(E.d,h).media);
+  for(h=0;h<24;h++){ var f=fila(E.d,h);
+    s+='<button type="button" data-h="'+h+'" class="'+(h>E.h?"futuro":"")+'"'+(h===E.h?' aria-current="true"':'')+' aria-label="'+h+' horas, '+fmt(f.media,0)+' Wh de media, '+NIVEL[f.nivel]+'">'
+      +'<span class="tar'+(f.franja===0?" v":"")+'"></span><span class="niv n'+f.nivel+'"><i style="height:'+Math.max(6,Math.round(100*f.media/mx))+'%"></i></span><span class="hh">'+(h%6===0||h===E.h?h:"")+'</span></button>'; }
+  g.innerHTML=s;
+  $("ctx-resumen").textContent=fechaTxt(D.dias[E.d])+" de 2016, de "+hhmm(E.h,0)+" a "+hhmm(E.h,59)+" · "+FRANJA[r.franja]+" · "+fmt(r.media,0)+" Wh de media por lectura · "+fmt(r.wh/1000,2)+" kWh en la hora";
+}
+
+/* ---------- pantalla 1 ---------- */
+function predActual(){ var a=ahora(); return predSim(E.h, E.luces===null?a.lights:E.luces, a.T2, a.RH_2, E.tout===null?a.T_out:E.tout, a.wh); }
+var SEM=[["Verde","Es poco probable un pico en la próxima media hora ("+c("p2:g0_desp_acierto_verde")+" de las veces)."],["Ámbar","Hay algo más de riesgo que de costumbre: en momentos como este empieza un pico el "+c("p2:g0_desp_acierto_amarillo")+" de las veces."],["Rojo","En momentos como este empieza un pico más a menudo que de costumbre (alrededor de 1 de cada 5 veces, "+c("p2:g0_desp_acierto_rojo")+")."]];
+function pintaHoy(){
+  var a=ahora(), i=a.i, sem=$("semaforo");
+  if(a.calma){ sem.dataset.c=String(a.color); $("sem-nombre").textContent=SEM[a.color][0]; $("sem-texto").textContent=SEM[a.color][1]; }
+  else { sem.dataset.c="x"; $("sem-nombre").textContent="Pico en curso"; $("sem-texto").textContent="El pico ya llegó: Guardian no anticipa nada mientras dura. Su trabajo es avisar antes, en la calma."; }
+  $("sem-wh").textContent=fmt(a.wh,0)+" Wh a las "+hhmm(E.h,50);
+  var mxd=0,kd=0,k; for(k=1;k<=3&&i+k<L.wh.length;k++){ if(L.wh[i+k]>mxd){mxd=L.wh[i+k];kd=k;} }
+  $("sem-despues").textContent = i+1>=L.wh.length ? "sin datos" : (a.calma ? (mxd>UMBRAL ? "empezó un pico: "+fmt(mxd,0)+" Wh a los "+(kd*10)+" min" : "no hubo pico (máximo "+fmt(mxd,0)+" Wh)") : (mxd>UMBRAL?"el pico siguió ("+fmt(mxd,0)+" Wh)":"el pico terminó ("+fmt(mxd,0)+" Wh)"));
+  var ic=D.g0.incertidumbre.p20_ic; $("sem-ic").textContent="de "+fmt(ic[0],1)+" % a "+fmt(ic[1],1)+" %";
+  var lu=E.luces===null?a.lights:E.luces, to=E.tout===null?a.T_out:E.tout;
+  $("d-luces").value=String(Math.round(lu/10)*10); $("d-tout").value=String(Math.round(to*2)/2);
+  $("o-luces").textContent=fmt(lu,0)+" Wh"; $("o-tout").textContent=fmt(to,1)+" °C";
+  var p=predActual(), p0=predSim(E.h,a.lights,a.T2,a.RH_2,a.T_out,a.wh);
+  $("ysi-pred").textContent=fmt(Math.max(0,p),0)+" Wh";
+  var cambio=(E.luces!==null&&E.luces!==a.lights)||(E.tout!==null&&E.tout!==a.T_out);
+  $("ysi-delta").textContent = cambio ? "Con los valores medidos ("+fmt(a.lights,0)+" Wh de luces, "+fmt(a.T_out,1)+" °C fuera) el gemelo decía "+fmt(p0,0)+" Wh: tu cambio lo mueve "+sig(p-p0,1)+" Wh." : "Con los valores medidos: luces "+fmt(a.lights,0)+" Wh, exterior "+fmt(a.T_out,1)+" °C, lectura actual "+fmt(a.wh,0)+" Wh.";
+  $("ysi-real").textContent = i+1<L.wh.length ? fmt(L.wh[i+1],0)+" Wh" : "sin datos";
+  var fr=["madrugada","manana","tarde","noche"][fila(E.d,E.h).franja];
+  $("ysi-mae").textContent=fmt(D.sim.mae_por_franja[fr],0)+" Wh";
+  $("ysi-nota").textContent = a.wh>UMBRAL ? "Ojo: la lectura actual es un pico. En lecturas sobre "+fmt(UMBRAL,0)+" Wh el gemelo de seis variables de esta página se queda corto "+fmt(Math.abs(D.sim.altas_sesgo),0)+" Wh de media: no sabe qué aparato está encendido." : "La predicción depende sobre todo de la lectura actual. Las luces y el clima la mueven poco, y eso también es información: con estos sensores el gemelo no ve qué aparato se va a encender.";
+  grafHoy();
+}
+
+/* ---------- pantalla 2 ---------- */
+function pintaTipo(){
+  var t=tipoParcial(E.d,E.h), db=DB[E.d];
+  $("tipo-nombre").textContent = !t.sabe ? "Todavía no se puede saber" : (t.tipo===1?"Parece un día de carga alta":"Parece un día normal");
+  $("tipo-barra").firstElementChild.style.left=(50+50*Math.max(-1,Math.min(1,t.margen)))+"%";
+  $("tipo-margen").textContent = t.sabe ? sig(t.margen,2) : "—";
+  $("tipo-horas").textContent = E.h+" de 24";
+  $("tipo-final").textContent = db.tipo_kmeans;
+  var am=Math.abs(t.margen);
+  $("tipo-texto").textContent = !t.sabe ? "Antes de las "+K.hora_tipo+" h los dos tipos de día son casi idénticos (la casa duerme igual). Shiro trata el día como normal y no presume saber más."
+    : am<0.1 ? "El día está junto a la frontera entre los dos tipos. Shiro lo usa con cautela: una hora más de datos puede cambiar la estimación."
+    : "El margen va de −1 (claramente normal) a +1 (claramente carga alta). Cuanto más lejos del cero, más confianza. Se recalcula con cada hora completa.";
+  var chip=$("db-chip"), est=db.dbscan;
+  chip.textContent=est==="desconocido"?"sin días parecidos en la historia":est; chip.className="chip "+(est==="en grupo"?"ok":est==="desconocido"?"fuera":"duda");
+  $("db-texto").textContent = est==="en grupo" ? "Este día se parece a otros días de su tipo vistos entre enero y abril. Lo aprendido se puede aplicar con normalidad."
+    : est==="desconocido" ? "Este día no tiene ningún día parecido de su tipo en la historia de enero a abril. Shiro lo marca como «sin días parecidos en la historia» y debería ser prudente con lo que propone."
+    : "Este día es ruido para DBSCAN: está lejos de los grupos densos de su tipo. Se marca, no se borra.";
+  $("db-dist").textContent=fmt(db.dist_a_nucleo_Wh,1)+" Wh"; $("db-eps").textContent=fmt(db.eps_modelo_Wh,1)+" Wh";
+  grafTipo();
+}
+
+/* ---------- pantalla 3 ---------- */
+var AG=[["pi","Política exacta","Iteración de valor, resuelta ahora en esta página con tus controles."],["ql","Q-learning","Tabla aprendida por prueba y error en el Taller 2; solo recuerda qué acción conviene en cada situación, no cuánto vale."],["dqn","Red DQN","Red neuronal del Taller 3. Ve la hora exacta, no solo la franja."]];
+function estadoTxt(r){
+  var t=r.h<K.hora_tipo?"tipo de día aún sin estimar (se toma como normal)":(r.tipo===1?"día que parece de carga alta":"día que parece normal")+" (margen "+sig(r.margen,2)+")";
+  return "Estado: "+t+" · "+FRANJA[r.franja]+" · "+NIVEL[r.nivel]+" ("+fmt(r.media,0)+" Wh de media) · "+(E.pend?"una carga esperando desde hace "+E.he+" h":"sin carga esperando")+" · tarifa "+(r.franja===0?"de valle":"de punta ×"+fmt(E.punta,1))+".";
+}
+function accTxt(a){ return a===1?"Aplazar "+fmt(DE,0)+" Wh hasta el valle":a===2?"Ejecutar ahora la carga que esperaba":"No hacer nada"; }
+function pintaShiro(){
+  var r=fila(E.d,E.h), os=AG.map(function(g){return accion(g[0],r,E.pend,E.he,E.lam,E.punta);}), pi=os[0];
+  $("o-lam").textContent=fmt(E.lam,3)+" kWh-eq"; $("o-punta").textContent="×"+fmt(E.punta,1);
+  $("d-lam").value=String(E.lam); $("d-punta").value=String(E.punta); $("sel-pend").value=String(E.pend?E.he:0);
+  var sol=vi(E.lam,E.punta), nap=0; for(var s=0;s<sol.pol.length;s++) if(sol.pol[s]===1) nap++;
+  $("vi-info").textContent="Política recalculada en "+sol.it+" iteraciones: aplaza en "+nap+" de los "+(sol.pol.length/2)+" estados sin carga esperando. "+(E.lam===M.lam_def?"λ = "+fmt(M.lam_def,3)+" es la persona paciente del proyecto.":E.lam===M.lam_ex?"λ = "+fmt(M.lam_ex,2)+" es la persona exigente del proyecto.":"");
+  $("prop-acc").textContent=accTxt(pi.a); $("prop-estado").textContent=estadoTxt(r);
+  var ch='', b=brecha(pi), iguales=os[1].a===pi.a&&os[2].a===pi.a;
+  if(!pi.visto) ch+='<span class="chip fuera">estado no visto: no actuar</span>';
+  if(b!==null&&b<0.01) ch+='<span class="chip duda">decisión dudosa</span>';
+  ch+=iguales?'<span class="chip ok">los tres agentes coinciden</span>':'<span class="chip duda">los agentes no coinciden</span>';
+  if(os[2].fuera) ch+='<span class="chip fuera">la red está fuera de sus datos</span>';
+  $("prop-chips").innerHTML=ch;
+  $("prop-registro").textContent="Shiro espera tu decisión.";
+  var hh='';
+  AG.forEach(function(g,k){ var o=os[k], br=brecha(o), filas='';
+    if(o.q){ for(var a=0;a<3;a++){ if(!o.val[a]) continue; filas+='<tr'+(a===o.a?' class="fuerte"':'')+'><td>'+ACC[a]+'</td><td class="n">'+fmt(o.q[a],3)+'</td><td class="n">'+(a===0?"—":sig(o.q[a]-o.q[0],3))+'</td></tr>'; } }
+    var chips='';
+    if(g[0]==="dqn"&&o.fuera) chips+='<span class="chip fuera">fuera de los datos</span>';
+    if(!o.visto) chips+='<span class="chip fuera">estado no visto</span>';
+    if(br!==null) chips+=br<0.01?'<span class="chip duda">dudosa: brecha '+fmt(br,3)+'</span>':'<span class="chip ok">brecha '+fmt(br,3)+'</span>';
+    else if(o.q) chips+='<span class="chip info">única acción posible</span>';
+    if(g[0]!=="pi") chips+='<span class="chip info lit">entrenado con λ '+fmt(M.lam_def,3)+' · punta ×'+fmt(M.punta_def,1)+'</span>';
+    hh+='<div class="panel agente"><h4>'+g[1]+'</h4><p class="acc" data-a="'+o.a+'">'+ACC[o.a]+'</p><div class="chips">'+chips+'</div>'
+      +(o.q?'<div class="tabla"><table><thead><tr><th>Acción posible</th><th class="n">Valor Q</th><th class="n">Frente a no actuar</th></tr></thead><tbody>'+filas+'</tbody></table></div>':'')
+      +'<p class="pq">'+g[2]+(g[0]==="dqn"&&o.fuera?" De madrugada nunca hubo picos en sus datos: aquí extrapola, y manda la política exacta.":"")+(g[0]==="pi"?" Valor Q: lo que vale cada acción de aquí en adelante, en kWh-eq (kWh a precio de valle; menos negativo es mejor). Brecha: cuánto mejor es la acción elegida que la segunda; por debajo de 0,01 se marca «dudosa».":"")+'</p></div>'; });
+  $("agentes").innerHTML=hh;
+  pintaRepetir(false);
+}
+function pintaRepetir(avisar){
+  var filas=[["no","No actuar"]].concat(AG.map(function(g){return [g[0],g[1]];})), s='<thead><tr><th>Agente</th><th class="n">Costo del día</th><th class="n">Ahorro</th><th class="n">Espera</th><th class="n">Aplaza</th><th>Hora a hora (0 a 23 h)</th></tr></thead><tbody>';
+  filas.forEach(function(f){ var r=repetir(E.d,f[0],E.lam,E.punta), tira='';
+    r.acts.forEach(function(x,k){ tira+='<i class="'+(x.a===1?"a":x.a===2?"x":x.p?"e":"")+'" style="--k:'+k+'"></i>'; });
+    s+='<tr><td>'+f[1]+'</td><td class="n">'+fmt(r.costo,3)+' kWh-eq</td><td class="n">'+(f[0]==="no"?"—":fmt(r.ahorro,2)+" %")+'</td><td class="n">'+r.espera+' h'+(r.cierre===null?'':r.cierre<0?' · se cobra a las 24 h':' · ejecuta a las '+r.cierre+' h del día siguiente')+'</td><td class="n">'+r.apl+'</td><td><div class="tira">'+tira+'</div></td></tr>'; });
+  $("rep-tabla").innerHTML=s+'</tbody>';
+  $("rep-info").textContent=(avisar?"Día repetido: ":"")+fechaTxt(D.dias[E.d])+", λ = "+fmt(E.lam,3)+", punta ×"+fmt(E.punta,1)+".";
+}
+
+/* ---------- pantalla 4 ---------- */
+var PREG=[
+ ["¿Qué propones ahora y por qué?",function(){ var r=fila(E.d,E.h), o=accion("pi",r,E.pend,E.he,E.lam,E.punta), b=brecha(o), p=[];
+   p.push("Propongo: "+min1(accTxt(o.a))+". "+estadoTxt(r));
+   if(o.a===1) p.push("Hay un pico en tarifa de punta y ninguna carga esperando. Mover "+c("t3:DE")+" al valle te ahorra la diferencia de tarifa, y con tu costo de espera (λ = "+fmt(E.lam,3)+") eso compensa las horas hasta la madrugada.");
+   else if(o.a===2) p.push("Hay una carga esperando y seguir esperando ya cuesta más que el sobrecosto de ejecutarla a esta hora.");
+   else if(r.nivel!==2&&!E.pend) p.push("No hay pico en esta hora, así que no hay nada que aplazar. Solo se puede aplazar cuando la media de la hora pasa de "+fmt(UMBRAL,0)+" Wh.");
+   else if(r.nivel===2&&!E.pend) p.push("Hay un pico, pero con tus controles aplazar no compensa: la espera hasta el valle pesa más que el ahorro de tarifa.");
+   else p.push("Hay una carga esperando y lo más barato es seguir esperando al valle.");
+   if(b!==null) p.push(b<0.01?"Es una decisión dudosa: la mejor acción supera a la segunda por solo "+fmt(b,3)+" kWh-eq. Si prefieres lo contrario, casi no pierdes nada.":"La mejor acción supera a la segunda por "+fmt(b,3)+" kWh-eq.");
+   p.push("Yo propongo; nada se mueve si no lo apruebas.");
+   return p; }],
+ ["¿Qué tan seguro estás del tipo de día?",function(){ var t=tipoParcial(E.d,E.h), db=DB[E.d], p=[];
+   if(!t.sabe) p.push("A las "+hhmm(E.h,0)+" todavía no lo sé. Antes de las "+K.hora_tipo+" h los dos tipos de día se ven iguales, y por ahora lo trato como normal.");
+   else p.push("Con las "+E.h+" horas vistas, parece un día "+(t.tipo===1?"de carga alta":"normal")+", con margen "+sig(t.margen,2)+" en una escala de −1 a +1. "+(Math.abs(t.margen)<0.1?"Está junto a la frontera: no me fiaría mucho todavía.":"Está razonablemente lejos de la frontera."));
+   p.push("En general: decir siempre «normal» acierta el "+c("c2:km_obs_8h")+" de los días. Con la curva hasta las 8 h acierto el "+c("c2:km_obs_8h_acierto")+", menos que eso. Hasta las 12 h ya reconozco el "+c("c2:km_obs_12h")+" de los días de carga alta.");
+   p.push("Dos métodos distintos (K-Means y el jerárquico de Ward) asignan el mismo tipo en "+c("c2:ward_coinciden")+" días; los desacuerdos están todos junto a la frontera. "+(db.dbscan==="en grupo"?"Además, este día se parece a días conocidos de su tipo.":(db.dbscan==="desconocido"?"Además, este día no tiene días parecidos en la historia, así que debo ser prudente con lo que propongo.":"Además, DBSCAN marca este día como atípico: está lejos de los días de su tipo que ya conozco, así que debo ser prudente.")));
+   return p; }],
+ ["¿Viene un pico en la próxima media hora?",function(){ var a=ahora(), p=[];
+   if(!a.calma) p.push("Ya hay un pico en curso ("+fmt(a.wh,0)+" Wh). Mi semáforo solo anticipa durante la calma.");
+   else p.push("El semáforo está en "+SEM[a.color][0].toLowerCase()+" a las "+hhmm(E.h,50)+", con "+fmt(a.wh,0)+" Wh. "+SEM[a.color][1]);
+   p.push("Qué vale cada color, medido en mayo: en rojo, el "+c("p2:g0_desp_acierto_rojo")+" de las lecturas precede un pico; en ámbar, el "+c("p2:g0_desp_acierto_amarillo")+"; en verde, el "+c("p2:g0_desp_acierto_verde")+".");
+   p.push("Uso solo dos cosas: el consumo actual y con qué frecuencia empiezan picos a esta hora en días como hoy. Los modelos de 36 variables no se distinguieron de este.");
+   return p; }],
+ ["¿Por qué no aplazas por la mañana si soy exigente?",function(){ var sol=vi(M.lam_ex,E.punta), p=[], txt=[];
+   [0,1].forEach(function(t){ [1,2,3].forEach(function(f){ var xi=M.X.indexOf(t+"-"+f+"-2"); if(xi>=0) txt.push((t?"carga alta":"normal")+", "+FRANJA[f]+": "+ACC[sol.pol[2*xi]].toLowerCase()); }); });
+   p.push("Si esperar te cuesta mucho (λ = "+fmt(M.lam_ex,2)+"), un pico de la mañana queda demasiado lejos del valle: son muchas horas con la carga pendiente y el ahorro de tarifa no las paga.");
+   p.push("Lo acabo de recalcular con esa λ y tu tarifa de punta (×"+fmt(E.punta,1)+"). Ante un pico, sin carga esperando: "+txt.join("; ")+".");
+   p.push("El sobrecosto de consumir "+c("t3:DE")+" en punta es de "+c("t3:sobrecosto_kwh")+" (con punta ×"+fmt(M.punta_def,1)+"). Con esa λ compensa esperar como mucho "+c("t3:e4_ex_umbral_h")+": el equilibrio está hacia las "+c("t3:e4_ex_hora_teorica")+", y la red, que ve la hora exacta, aplaza desde las "+c("t3:e4_ex_desde")+".");
+   p.push("La persona exigente y la paciente reciben políticas distintas en "+c("t1:ex_n_difs")+" de "+c("t3:n_estados")+" estados. Por eso λ es un control tuyo.");
+   return p; }],
+ ["¿Cuánto ahorra esto?",function(){ var r=repetir(E.d,"pi",E.lam,E.punta), m=repetirMes("pi",E.lam,E.punta), p=[];
+   p.push("Poco, y prefiero decirlo claro. Hoy ("+fechaTxt(D.dias[E.d])+"), con tus controles, seguir mi política costaría "+fmt(r.costo,3)+" kWh-eq frente a "+fmt(r.base,3)+" sin actuar: "+fmt(r.ahorro,2)+" % de ahorro, con "+r.espera+" h de carga esperando y "+r.apl+" aplazamiento(s).");
+   p.push("Repitiendo así los "+D.dias.length+" días de mayo (cada día empieza sin carga esperando): "+fmt(m.ahorro,2)+" % de ahorro y "+fmt(m.espera,1)+" h de espera al día.");
+   p.push("La cifra medida en el proyecto, con la persona paciente y punta ×"+fmt(M.punta_def,1)+", es "+c("t3:vi_ahorro_te")+" del costo de mayo con "+c("t3:vi_espera_te")+" de espera. La diferencia con no actuar es de "+c("t1:boot_no_te")+": el rango incluye el cero, así que no se distingue de no hacer nada.");
+   p.push("Además, solo el "+c("p2:energia_exceso_anticipado_pct")+" del consumo sobre "+fmt(UMBRAL,0)+" Wh ocurre en picos que alcanzo a avisar. Aplazar por tarifa mueve poco en este hogar; un ahorro mayor probablemente exigiría saber qué aparato se enciende.");
+   return p; }],
+ ["¿Por qué no usas la red siempre?",function(){ var r=fila(E.d,E.h), o=accion("dqn",r,E.pend,E.he,E.lam,E.punta), pi=accion("pi",r,E.pend,E.he,E.lam,E.punta), p=[];
+   p.push("Porque con "+c("t3:n_estados")+" estados la tabla basta. La red captura el "+c("t3:dqn_captura")+" del ahorro de la política exacta; Q-learning con recompensa centrada, el "+c("t3:qlc_captura")+", y aprende en "+c("t3:qlc_dias80")+" frente a "+c("t3:dqn_dias80")+" de la red.");
+   p.push("La política exacta además se puede explicar y recalcular al instante cuando mueves λ o la tarifa. La red quedó entrenada con λ = "+fmt(M.lam_def,3)+" y punta ×"+fmt(M.punta_def,1)+".");
+   p.push("Ahora mismo la red diría «"+ACC[o.a].toLowerCase()+"» y la política exacta «"+ACC[pi.a].toLowerCase()+"»."+(o.fuera?" Ojo: este estado está fuera de los datos de la red, así que no le hago caso.":""));
+   p.push("La red se justifica por lo que viene: la hora exacta, la probabilidad de pico de Guardian, el clima y otras casas no caben en una tabla.");
+   return p; }],
+ ["¿Qué tan bien anticipas un pico?",function(){ var u=D.g0.incertidumbre; return [
+   "Aviso con al menos dos lecturas de antelación (20 min nominales) en "+cn("p2:titular_n20")+" de "+c("p2:def_picos_prueba")+" de mayo: "+c("p2:titular_p20")+", con un rango plausible de "+fmt(u.p20_ic[0],1)+" % a "+fmt(u.p20_ic[1],1)+" %.",
+   "Eso cuesta "+c("p2:titular_min_dia")+" en rojo, y el "+c("p2:titular_falsos")+" de mis avisos no precede un pico.",
+   "Con el mismo tiempo en rojo, mirar solo el medidor avisa "+cn("p2:titular_m20")+" de "+c("p2:def_picos_prueba")+", y marcar al azar, el "+c("p2:azar_p20_desplegado")+". Mi ventaja sobre el medidor es de "+fmt(u.d_regla,1)+" puntos (rango de "+fmt(u.d_regla_ic[0],1)+" a "+fmt(u.d_regla_ic[1],1)+"): no es concluyente.",
+   "En abril, donde se ajustaron los cortes, anticipaba el "+c("p2:g0_val_p20")+"; en mayo, con ese mismo presupuesto, el "+c("p2:g0_prueba_p20")+". Lo medido en validación es optimista."]; }],
+ ["¿Qué pasa si cambia la tarifa de punta?",function(){ var p=[], cuenta=function(pu){ var s=vi(E.lam,pu), n=0; for(var i=0;i<s.pol.length;i+=2) if(s.pol[i]===1) n++; return n; };
+   var tot=0; for(var i=0;i<M.N.length;i++) if(M.N[i]===2) tot++;
+   p.push("Lo calculo ahora con tu λ ("+fmt(E.lam,3)+"). De los "+tot+" estados con pico y sin carga esperando, aplazo en: "+cuenta(1)+" con tarifa plana (×1,0), "+cuenta(1.5)+" con punta ×1,5, "+cuenta(2)+" con ×2,0 y "+cuenta(3)+" con ×3,0. Con tu tarifa actual (×"+fmt(E.punta,1)+"): "+cuenta(E.punta)+".");
+   p.push("Con tarifa plana no aplazo nunca: no hay nada que ganar y la espera cuesta. Esto no era obvio. En la primera versión del modelo el agente aplazaba aunque la tarifa fuera plana, porque dejar un costo para después parecía ahorrarlo. Se corrigió cobrando al aplazar lo que la carga costará en el valle.");
+   var m=repetirMes("pi",E.lam,E.punta); p.push("Con tus controles, repitiendo mayo día por día: "+fmt(m.ahorro,2)+" % de ahorro y "+fmt(m.espera,1)+" h de espera al día.");
+   return p; }],
+ ["¿Qué no sabes hacer?",function(){ return [
+   "No sé qué aparato está encendido. Veo el consumo total, la temperatura y la humedad; por eso el gemelo de esta página se queda corto en los picos (sesgo de "+c("p2:n1b_g3c_altas_sesgo")+" en lecturas sobre "+fmt(UMBRAL,0)+" Wh).",
+   "El ahorro es pequeño porque aplazar por tarifa mueve poco en este hogar. Saber qué aparato se enciende es lo que probablemente haría falta para un ahorro mayor: solo el "+c("p2:energia_exceso_anticipado_pct")+" del consumo sobre "+fmt(UMBRAL,0)+" Wh cae en picos avisados a tiempo.",
+   "Solo conozco una casa, de enero a mayo. No he visto un verano ni otra vivienda, y los días de carga alta ya bajaron al "+c("c2:km_alta_te")+" en mayo: mis definiciones envejecen y hay que reajustarlas cada mes.",
+   "No anticipo la mayoría de los picos: aviso a tiempo "+cn("p2:titular_n20")+" de "+c("p2:def_picos_prueba")+".",
+   "La red no sabe qué hacer con un pico de madrugada porque nunca vio uno. Cuando pasa, lo marco como fuera de los datos.",
+   "Y no ejecuto nada por mi cuenta: propongo, tú apruebas."]; }]
+];
+function pintaPregunta(){
+  var s=''; PREG.forEach(function(q,k){ s+='<button type="button" data-q="'+k+'" aria-pressed="'+(k===E.preg)+'">'+esc(q[0])+'</button>'; });
+  $("pregs").innerHTML=s;
+  var q=PREG[E.preg], ps=q[1]();
+  $("resp").innerHTML='<h3>'+esc(fechaTxt(D.dias[E.d]))+' · '+hhmm(E.h,0)+' · respuesta por plantilla</h3><p class="q">'+esc(q[0])+'</p>'+ps.map(function(t){return '<p>'+esc(t)+'</p>';}).join("");
+}
+
+/* ---------- ficha ---------- */
+function pintaFicha(){ var u=D.g0.incertidumbre; $("fi-dregla").textContent=fmt(u.d_regla,1); $("fi-dregla-ic").textContent=fmt(u.d_regla_ic[0],1)+" a "+fmt(u.d_regla_ic[1],1); }
+
+/* ---------- rutas y eventos ---------- */
+var VISTAS=["hoy","tipo","shiro","pregunta","ficha","prueba"], vista="hoy";
+function pintar(){
+  pintaContexto();
+  if(vista==="hoy") pintaHoy(); else if(vista==="tipo") pintaTipo(); else if(vista==="shiro") pintaShiro(); else if(vista==="pregunta") pintaPregunta(); else if(vista==="ficha") pintaFicha();
+}
+function ruta(){
+  var h=(location.hash||"").replace("#",""); vista=VISTAS.indexOf(h)>=0?h:"hoy";
+  document.querySelectorAll("[data-vista]").forEach(function(s){ s.hidden=s.dataset.vista!==vista; });
+  document.querySelectorAll(".pest a").forEach(function(a){ if(a.dataset.v===vista) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  pintar();
+}
+function mueve(dd,dh){
+  var h=E.h+dh, d=E.d+dd; if(h<0){h=23;d--;} if(h>23){h=0;d++;}
+  var n=D.dias.length; d=(d+n)%n; E.d=d; E.h=h; E.luces=null; E.tout=null; pintar();
+}
+function inicia(){
+  var sd=$("sel-dia"); sd.innerHTML=D.dias.map(function(f,i){return '<option value="'+i+'">'+fechaTxt(f)+'</option>';}).join("");
+  sd.addEventListener("change",function(){E.d=+sd.value;E.luces=null;E.tout=null;pintar();});
+  $("dia-ant").addEventListener("click",function(){mueve(-1,0);}); $("dia-sig").addEventListener("click",function(){mueve(1,0);});
+  $("hora-ant").addEventListener("click",function(){mueve(0,-1);}); $("hora-sig").addEventListener("click",function(){mueve(0,1);});
+  $("regleta").addEventListener("click",function(ev){ var b=ev.target.closest("button"); if(!b) return; E.h=+b.dataset.h; E.luces=null; E.tout=null; pintar(); var nb=$("regleta").querySelector('[data-h="'+E.h+'"]'); if(nb) nb.focus(); });
+  $("d-luces").addEventListener("input",function(){E.luces=+this.value;pintaHoy();});
+  $("d-tout").addEventListener("input",function(){E.tout=+this.value;pintaHoy();});
+  $("ysi-reset").addEventListener("click",function(){E.luces=null;E.tout=null;pintaHoy();});
+  $("d-lam").addEventListener("input",function(){E.lam=Math.round(+this.value*1000)/1000;pintaShiro();});
+  $("d-punta").addEventListener("input",function(){E.punta=Math.round(+this.value*10)/10;pintaShiro();});
+  $("sel-pend").addEventListener("change",function(){var v=+this.value;E.pend=v>0?1:0;E.he=v;pintaShiro();});
+  $("repetir").addEventListener("click",function(){pintaRepetir(true);});
+  $("prop-si").addEventListener("click",function(){ var o=accion("pi",fila(E.d,E.h),E.pend,E.he,E.lam,E.punta); $("prop-registro").textContent="Aprobado a las "+hhmm(E.h,0)+": "+min1(accTxt(o.a))+". Queda anotado; puedes deshacerlo cuando quieras."; });
+  $("prop-no").addEventListener("click",function(){ $("prop-registro").textContent="Entendido: no se toca nada. Shiro vuelve a proponer en la próxima hora."; });
+  $("pregs").addEventListener("click",function(ev){ var b=ev.target.closest("button"); if(!b) return; E.preg=+b.dataset.q; pintaPregunta(); var nb=$("pregs").querySelector('[data-q="'+E.preg+'"]'); if(nb) nb.focus(); });
+  window.addEventListener("hashchange",ruta);
+  var tm=null; window.addEventListener("resize",function(){ clearTimeout(tm); tm=setTimeout(function(){ if(vista==="hoy") grafHoy(); if(vista==="tipo") grafTipo(); },120); });
+  ruta();
+  var res=pruebas(), nC=CIF._n, okC=true;
+  Object.keys(CIF).forEach(function(k){ if(k!=="_n"&&!(CIF[k]&&String(CIF[k].texto).length)) okC=false; });
+  if(document.querySelector(".marco").textContent.indexOf("[[")>=0) okC=false;
+  res.cifras=nC; res.cifras_ok=okC;
+  $("resultado-pruebas").textContent=JSON.stringify(res,null,1);
+  var v=$("verif"), total=res.vi_total+res.red_total+res.margen_total;
+  if(res.ok&&okC){ v.className="ok"; v.textContent="Verificación: OK · "+fmt(nC,0)+" cifras comprobadas · "+fmt(res.superadas,0)+" pruebas superadas"; }
+  else { v.className="mal"; v.textContent="Verificación: FALLA · "+fmt(res.superadas,0)+" de "+fmt(total,0)+" pruebas superadas"; }
+}
+try{ inicia(); }catch(err){ var v=$("verif"); v.className="mal"; v.textContent="Verificación: FALLA · "+err.message; $("resultado-pruebas").textContent=JSON.stringify({ok:false,error:String(err.message)}); }
+})();
+</script>

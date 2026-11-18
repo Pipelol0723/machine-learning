@@ -1,0 +1,1 @@
+Hola, somos el grupo Shiro: Jose, Sofía, Andrés y Alex. En este video presentamos el Taller 3 del tercer corte: de Q-learning a Deep Q-Networks, aplicado al agente de Shiro, que decide cada hora si conviene aplazar el consumo de un hogar.
