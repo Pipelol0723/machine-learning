@@ -828,9 +828,17 @@ Q-learning entrenado y evaluado ✅ (C3-T1 a C3-T3) · informe final y demostrac
       control) · E3 ablación · E4 mapa horario paciente/exigente. γ = 0,99 con red **no** se probó (declarado).
     - Herramientas en el portátil: no hay torch, ffmpeg ni LaTeX; sí la voz Sabina (es-MX) de Windows. El ffmpeg 7.0.2
       está en el escritorio (homelab).
-  - **C3 Parcial — ENTREGADO en Classroom el 2026-11-17 a las 23:55 (a tiempo; vencía el 18-nov a las 23:59; 5 puntos).**
-    Adjuntos, desde Drive `Mi unidad/Machine Learning C3 Parcial`: `Articulo_IEEE_Shiro_Twin.pdf` y `Consola_Shiro.html`
-    **como archivo** (por decisión de Pipe; el enlace del Artifact no se adjuntó). Prototipo con los 3
+  - **C3 Parcial — ENTREGADO en Classroom el 2026-11-17 a las 23:55 y REENTREGADO completo el 2026-11-18 a las 11:24
+    (a tiempo; vencía el 18-nov a las 23:59; 5 puntos).** El 18-nov el profesor pidió por WhatsApp «slides, artículo y
+    código del prototipo final con dataset respectivos»: se anuló la entrega, se conservaron los dos adjuntos y se
+    agregaron tres. Los 5 adjuntos, desde Drive `Mi unidad/Machine Learning C3 Parcial`: `Articulo_IEEE_Shiro_Twin.pdf`,
+    `Consola_Shiro.html` **como archivo** (por decisión de Pipe; el enlace del Artifact no se adjuntó),
+    `Presentacion_Parcial3_Shiro.pdf/.pptx` y `Codigo_y_Dataset_Prototipo_Shiro.zip` (9,1 MB, de
+    `generadores/empaquetar_codigo.py` → `entrega/`, fuera de git: consola, sus 3 scripts, datos exportados, los 7
+    cuadernos de los modelos que usa + los 2 que el Parcial 2 usa como anclas, el CSV, `LEEME.md` y `requirements.txt`, con
+    la estructura del proyecto; probado en carpeta limpia: regenera consola y datos idénticos). Desde la entrega en
+    Classroom, el artículo y la consola de la carpeta de Drive quedaron como accesos directos y en `G:` aparecen con
+    «(1)»: no tocar. Prototipo con los 3
     aprendizajes (3,0) + artículo IEEE de todo el semestre (2,0). Hecho en esta sesión con subagentes (Sonnet: cifras C2 y
     revisiones; Opus: artículo; Fable: consola), cada pieza con revisión independiente y correcciones aplicadas. Plan:
     `Parcial_3/PLAN_PARCIAL3.md`.

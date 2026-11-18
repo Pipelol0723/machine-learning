@@ -28,3 +28,6 @@ desktop.ini
 *.tmp
 *.temp
 *.log
+
+# Paquetes de entrega (se regeneran con generadores/empaquetar_codigo.py)
+3er_Corte_Nov/Parcial_3/entrega/
