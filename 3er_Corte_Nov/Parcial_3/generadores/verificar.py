@@ -8,7 +8,9 @@ r"""Verificación previa a la entrega del Parcial 3 (C3). Debe terminar con cód
    semestre o es un parámetro declarado. El fragmento para publicar existe y no trae <html>/<head>/<body>.
 4. Artículo: sin residuos, decimales trazables, 5–7 páginas en el PDF, y la regla de las dos particiones (un párrafo o
    una tabla que cita la partición aleatoria cita también la temporal).
-5. Capturas de la consola para el artículo.
+5. Presentación: 18–22 diapositivas con notas del orador, sin residuos, decimales trazables, dos particiones y PDF con
+   el mismo número de páginas.
+6. Capturas de la consola para el artículo.
 
 Uso (desde la carpeta del parcial):
     C:\Users\pipel\venvs\ml\Scripts\python.exe -X utf8 generadores\verificar.py
@@ -131,7 +133,46 @@ else:
     else:
         falla("falta el PDF del artículo")
 
-print("4. Capturas")
+print("4. Presentación")
+PPTX = RAIZ / "Presentacion_Parcial3_Shiro.pptx"
+if not PPTX.exists():
+    print("  (no se ha generado la presentación; se omite)")
+else:
+    from pptx import Presentation
+    prs_ = Presentation(PPTX)
+    n_d = len(prs_.slides)
+    (ok(f"{n_d} diapositivas") if 18 <= n_d <= 22 else falla(f"{n_d} diapositivas (se esperaban 18–22)"))
+    bloques, sin_notas = [], []
+    for i, sl in enumerate(prs_.slides, 1):
+        for sh in sl.shapes:
+            if sh.has_text_frame:
+                bloques.append(sh.text_frame.text)
+            if sh.has_table:
+                bloques.append(" | ".join(c.text for fila in sh.table.rows for c in fila.cells))
+        nota = sl.notes_slide.notes_text_frame.text if sl.has_notes_slide else ""
+        (sin_notas.append(i) if len(nota.split()) < 40 else bloques.append(nota))
+    (falla(f"presentación: diapositivas sin notas del orador suficientes: {sin_notas}") if sin_notas
+     else ok("presentación: notas del orador en todas las diapositivas"))
+    todo = "\n".join(bloques)
+    for patron in RESIDUOS:
+        for x in set(re.findall(patron, todo)):
+            falla(f"presentación: residuo «{x}»")
+    h = huérfanos(todo)
+    (falla(f"presentación: decimales que no salen de las cifras: {h}") if h
+     else ok("presentación: todos los decimales son trazables"))
+    malos = [b[:90] for b in bloques if re.search(r"\baleatori[ao]s?\b", b, re.I) and re.search(r"R²|F1|R2", b)
+             and not re.search(r"\btemporal", b, re.I)]
+    (falla(f"presentación: cita la partición aleatoria sin la temporal: {malos[:3]}") if malos
+     else ok("presentación: regla de las dos particiones"))
+    PDFP = PPTX.with_suffix(".pdf")
+    if PDFP.exists():
+        import pymupdf
+        n_p = len(pymupdf.open(PDFP))
+        (ok(f"PDF de la presentación: {n_p} páginas") if n_p == n_d else falla(f"PDF con {n_p} páginas y {n_d} diapositivas"))
+    else:
+        falla("falta el PDF de la presentación")
+
+print("5. Capturas")
 caps = sorted(p.name for p in (RAIZ / "figuras").glob("consola_*.png"))
 (ok(f"{len(caps)} capturas: {caps}") if "consola_captura.png" in caps else falla(f"falta figuras/consola_captura.png ({caps})"))
 

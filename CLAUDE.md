@@ -839,7 +839,10 @@ Q-learning entrenado y evaluado ✅ (C3-T1 a C3-T3) · informe final y demostrac
       (`datos/consola.json` 535 KB y `cifras_p3.json`; 6 anclas: π\* = T1, K-Means, VI, Q-learning, red, serie de mayo) →
       `construir_consola.py` (plantilla `consola_plantilla.html` con `[[prefijo:clave]]` → `Consola_Shiro.html` 614 KB y
       `datos/consola_artifact.html`; capturas `figuras/consola_*.png`) → `generar_articulo.py`
-      (`Articulo_IEEE_Shiro_Twin.docx/.pdf`, 6 pp., 2 columnas, 190 cifras, 16 referencias) → `verificar.py` (**código 0**).
+      (`Articulo_IEEE_Shiro_Twin.docx/.pdf`, 6 pp., 2 columnas, 190 cifras, 16 referencias) → `generar_presentacion.py`
+      (`Presentacion_Parcial3_Shiro.pptx/.pdf`, 22 diapositivas con la paleta oscura de la consola, 173 cifras, notas del
+      orador sin reparto ≈ 20 min; hecha el 18-nov a pedido de Pipe, no entregada en Classroom) → `verificar.py`
+      (**código 0**; también revisa la presentación).
     - **Consola** (5 pantallas por hash #hoy #tipo #shiro #pregunta #ficha; #prueba = autoprueba): la VI en JS reproduce a
       Python en 35/35 combinaciones de λ × tarifa (error de Q 2,6e-8), la red DQN (5e-11) y el margen de K-Means (1,7e-5).
       «Repetir el día» lleva la carga pendiente al día siguiente (con π\* en mayo da 0,59 % y 7,2 h/día = T3). Q-learning y
